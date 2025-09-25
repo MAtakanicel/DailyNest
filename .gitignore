@@ -1,0 +1,17 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+xcuserdata/
+
+# SwiftPM/CocoaPods
+.build/
+Pods/
+Package.resolved
+
+# Firebase/Secrets
+GoogleService-Info.plist
+*.keys
+*.env
