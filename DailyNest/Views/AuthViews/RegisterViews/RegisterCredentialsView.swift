@@ -30,13 +30,15 @@ struct RegisterCredentialsView: View {
                 TextField("e-postanızı giriniz", text: $eMail)
                     .customTextField()
                     .padding(.bottom)
+                    .keyboardType(.emailAddress)
                 
                 Text("Şifreniz:")
                     .opacity(0.6)
                     .font(.system(size: 16))
-                TextField("Şifrenizi giriniz:", text: $password)
-                    .customTextField()
+                SecureField("Şifrenizi giriniz:", text: $password)
+                    .customSecureField()
                     .padding(.bottom)
+                    
                 
             } //Form
             
