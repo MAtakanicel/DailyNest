@@ -10,19 +10,29 @@ struct RegisterFlowView: View {
     @StateObject private var viewModel = RegisterViewModel()
     @State private var stepIndex: Int = 0
     @State var currentStep: RegisterStep = .name
+    @State private var goLogin: Bool = false
     var totalSteps: Int = 3
     
     
     var body: some View {
         VStack{
-        StepIndicator(total: totalSteps, currentIndex: stepIndex, style: .compact)
-            .padding(.horizontal)
-            .padding(.vertical,10)
-            .background(
-                Rectangle()
-                    .fill(AppColors.icon.opacity(0.15))
-                    .cornerRadius(20)
-            )
+            HStack() {
+                
+                Button(action: { previous() }){
+                    Image(systemName: "chevron.left")
+                    Text("Geri")
+                        .padding(.leading,-8)
+                }
+                .padding(.leading, -30)
+                StepIndicator(total: totalSteps, currentIndex: stepIndex, style: .compact)
+                    .padding(.horizontal)
+                    .padding(.vertical,10)
+                    .background(
+                        Rectangle()
+                            .fill(AppColors.icon.opacity(0.15))
+                            .cornerRadius(20)
+                    )
+            }
             
             switch currentStep {
             case .name:
@@ -43,9 +53,8 @@ struct RegisterFlowView: View {
         }
         .padding(.top, 10)
         .background(AppColors.background)
-            .fullScreenCover(isPresented: $isPresented) {
-                
-            }
+        .fullScreenCover(isPresented: $isPresented,content: { }) //Bitiş
+        .fullScreenCover(isPresented: $goLogin, content: { LoginView() }) //Geri
     }
     
     // MARK: - Flow Controls
@@ -62,7 +71,10 @@ struct RegisterFlowView: View {
     }
     
     func previous() {
-        if currentStep == .birthdate {
+        if currentStep == .name {
+            goLogin.toggle()
+        }
+        else if currentStep == .birthdate {
             stepIndex = 0
             currentStep = .name
             print("step: \(stepIndex)")

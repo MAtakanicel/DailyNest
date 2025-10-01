@@ -21,6 +21,8 @@ struct LoginView: View {
                 .font(.system(size: 18))
                 .foregroundColor(AppColors.secondaryText)
             
+            Spacer()
+            
             VStack(alignment: .trailing){
             
                 TextField("E posta", text: $email)
@@ -38,8 +40,7 @@ struct LoginView: View {
                     Text("Şifremi unuttum?")
                         .foregroundColor(AppColors.secondaryText)
                 }
-
-            }
+            }.padding(.horizontal,20)
             
           Spacer()
             Button(action:{ }){
@@ -58,10 +59,8 @@ struct LoginView: View {
             
            Spacer()
         } //VStack
-        .padding()
-        .frame(width: .infinity, height: .infinity, alignment: .topLeading)
         .background(AppColors.background)
- 
+        
         .fullScreenCover(isPresented: $goRegister){
             RegisterFlowView()
         }
