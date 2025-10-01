@@ -8,8 +8,8 @@ enum RegisterStep {
 struct RegisterFlowView: View {
     @State private var isPresented: Bool = false
     @StateObject private var viewModel = RegisterViewModel()
-    @State var stepIndex: Int = 0
-    @State private var currentStep: RegisterStep = .name
+    @State private var stepIndex: Int = 0
+    @State var currentStep: RegisterStep = .name
     var totalSteps: Int = 3
     
     
@@ -27,16 +27,18 @@ struct RegisterFlowView: View {
             switch currentStep {
             case .name:
                 RegisterNameView(viewModel: viewModel){
-                    withAnimation{currentStep = .birthdate}
+                    withAnimation{ next()}
                 }
                 
             case .birthdate:
                 RegisterBirthGenderView(viewModel: viewModel){
-                    withAnimation{currentStep = .credentials}
+                    withAnimation{next()}
                 }
                 
             case .credentials:
-                RegisterCredentialsView()
+                RegisterCredentialsView(viewModel: viewModel){
+                    withAnimation{ finish()}
+                }
             }
         }
         .padding(.top, 10)
@@ -49,21 +51,25 @@ struct RegisterFlowView: View {
     // MARK: - Flow Controls
     func next() {
         if currentStep == .name {
-            stepIndex += 1
+            stepIndex = 1
             currentStep = .birthdate
+            print("step: \(stepIndex)")
         }else if currentStep == .birthdate{
-            stepIndex += 1
+            stepIndex = 2
             currentStep = .credentials
+            print("step: \(stepIndex)")
         }
     }
     
     func previous() {
         if currentStep == .birthdate {
-            stepIndex -= 1
+            stepIndex = 0
             currentStep = .name
+            print("step: \(stepIndex)")
         }else if currentStep == .credentials{
-            stepIndex -= 1
+            stepIndex = 1
             currentStep = .birthdate
+            print("step: \(stepIndex)")
         }
     }
     

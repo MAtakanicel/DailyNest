@@ -7,7 +7,6 @@ class RegisterViewModel: ObservableObject {
 
     // Step 2
     @Published var birthDate: Date = Date()
-    @Published var gender: String = ""
 
     // Step 3
     @Published var email: String = ""

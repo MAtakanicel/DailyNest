@@ -18,6 +18,7 @@ struct RegisterNameView: View {
                     .foregroundColor(AppColors.primaryText)
                 Spacer()
             }
+          
             // Bilgilendirme metni
             Text("Merhaba, deneyiminizi size özel hale getirmek için isminizi istiyoruz.")
                 .font(.subheadline)
@@ -71,7 +72,7 @@ struct RegisterNameView: View {
 
 #if DEBUG
 #Preview {
-    RegisterNameView(viewModel: RegisterViewModel())
-        
+   RegisterNameView(viewModel: RegisterViewModel())
+
 }
 #endif
