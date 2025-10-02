@@ -6,6 +6,8 @@ struct RegisterCredentialsView: View {
     @State private var eMail : String = ""
     @State private var password : String = ""
     @State private var isChecked : Bool = false
+    @State private var KVKKViewIsShown : Bool = false
+    @State private var privacyViewIsShown : Bool = false
     var body: some View {
         VStack(spacing: 20 ){
             //Başlık
@@ -44,21 +46,35 @@ struct RegisterCredentialsView: View {
                 HStack{
                     Image(systemName: isChecked ? "checkmark.square.fill" : "square")
                                 .resizable()
-                                .frame(width: 24, height: 24)
+                                .frame(width: 18, height: 18)
                                 .foregroundColor(isChecked ? AppColors.buttonTapped : AppColors.secondaryText)
                                 .onTapGesture {
                                     isChecked.toggle()
                                 }
                     
-                    Button(action: { } , label: {
-                        Text("KVKK ve Gizlilik Politikasını")
+                    Button(action: { KVKKViewIsShown.toggle() } , label: {
+                        Text("KVKK")
                             .font(.caption)
                             .foregroundColor(AppColors.button)
+                            .bold()
+                    })
+                    
+                    Text("ve")
+                        .font(.caption)
+                        .foregroundColor(AppColors.secondaryText)
+                        
+                    
+                    Button(action: {privacyViewIsShown.toggle() }, label: {
+                        Text("Gizlilik Politikasını")
+                            .font(.caption)
+                            .foregroundColor(AppColors.button)
+                            .bold()
                     })
                     
                     Text("okudum ve kabul ediyorum.")
                         .font(.caption)
                         .foregroundColor(AppColors.secondaryText)
+
                 }
                 
             } //Form
@@ -79,6 +95,11 @@ struct RegisterCredentialsView: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(AppColors.background)
+        
+        //Prototip KVKK ve Privacy tam halinde değil. Düzenlenmeli.
+        .sheet(isPresented: $KVKKViewIsShown, content: { DocumentView(fileName: "kvkk") })
+        .sheet(isPresented: $privacyViewIsShown, content: { DocumentView(fileName: "privacy") })
+        
     } //body
 } //Struct
 

@@ -67,7 +67,7 @@ struct LoginView: View {
                 RegisterFlowView()
             }
             
-            .fullScreenCover(isPresented: $goPasswordSave, content: {PasswordSaveFlow() })
+            .fullScreenCover(isPresented: $goPasswordSave, content: { PasswordSaveFlow() })
         
     }
 }
