@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct RegisterBirthGenderView: View {
-    @State var viewModel : RegisterViewModel
+    @StateObject var viewModel : RegisterViewModel
     @State private var birthDay: Date = {
         var components = DateComponents()
         components.year = 1990

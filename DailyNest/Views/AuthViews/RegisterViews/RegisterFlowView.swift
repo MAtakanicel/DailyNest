@@ -11,8 +11,6 @@ struct RegisterFlowView: View {
     @State private var stepIndex: Int = 0
     @State var currentStep: RegisterStep = .name
     @State private var goLogin: Bool = false
-    var totalSteps: Int = 3
-    
     
     var body: some View {
         VStack{
@@ -24,7 +22,7 @@ struct RegisterFlowView: View {
                         .padding(.leading,-8)
                 }
                 .padding(.leading, -30)
-                StepIndicator(total: totalSteps, currentIndex: stepIndex, style: .compact)
+                StepIndicator(total: 3, currentIndex: stepIndex, style: .compact)
                     .padding(.horizontal)
                     .padding(.vertical,10)
                     .background(
