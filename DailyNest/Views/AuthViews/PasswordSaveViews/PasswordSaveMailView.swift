@@ -1,10 +1,3 @@
-//
-//  PasswordSaveMailView.swift
-//  DailyNest
-//
-//  Created by Atakan İçel on 2.10.2025.
-//
-
 import SwiftUI
 
 struct PasswordSaveMailView: View {

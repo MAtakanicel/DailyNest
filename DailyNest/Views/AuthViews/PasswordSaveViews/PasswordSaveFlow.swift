@@ -1,10 +1,3 @@
-//
-//  PasswordSaveFlow.swift
-//  DailyNest
-//
-//  Created by Atakan İçel on 2.10.2025.
-//
-
 enum PasswordSaveSteps {
     case mail
     case code

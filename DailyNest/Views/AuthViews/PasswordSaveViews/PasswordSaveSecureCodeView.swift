@@ -1,10 +1,3 @@
-//
-//  PasswordSaveSecureCodeView.swift
-//  DailyNest
-//
-//  Created by Atakan İçel on 2.10.2025.
-//
-
 import SwiftUI
 
 struct PasswordSaveSecureCodeView: View {
