@@ -12,7 +12,7 @@ struct PasswordSaveFlow: View {
     @State var currentStep: PasswordSaveSteps = .mail
     @State private var goLogin: Bool = false
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 0){
             HStack() {
                 Button(action: { previous() }){
                     Image(systemName: "chevron.left")
@@ -28,22 +28,23 @@ struct PasswordSaveFlow: View {
                             .fill(AppColors.icon.opacity(0.15))
                             .cornerRadius(20)
                     )
+                
             }
-            
-            
-            switch currentStep {
-            case .mail:
-                PasswordSaveMailView(viewModel: viewModel){ withAnimation{ next() } }
-            case .code:
-                PasswordSaveSecureCodeView(viewModel: viewModel){ withAnimation{ next() } }
-            case .newPassword:
-                PasswordSaveNewPasswordView(viewModel: viewModel){ withAnimation{ finish() } }
-            }
-            
-            
-            
-            
+                
+                switch currentStep {
+                case .mail:
+                    PasswordSaveMailView(viewModel: viewModel){ withAnimation{ next() } }
+                case .code:
+                    PasswordSaveSecureCodeView(viewModel: viewModel){ withAnimation{ next() } }
+                case .newPassword:
+                    PasswordSaveNewPasswordView(viewModel: viewModel){ withAnimation{ finish() } }
+                }
+                
+
         }
+        .padding(.top, 10)
+        .background(AppColors.background)
+        .fullScreenCover(isPresented: $goLogin, content: { LoginView() })
     }
     // MARK: - Flow Controls
     func next() {
@@ -78,6 +79,7 @@ struct PasswordSaveFlow: View {
             goLogin.toggle()
         }
     }
+       
 }
 #Preview {
     PasswordSaveFlow()

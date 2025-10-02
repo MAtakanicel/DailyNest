@@ -5,7 +5,7 @@ struct LoginView: View {
     @State private var goRegister: Bool = false
     @State private var goPasswordSave : Bool = false
     var body: some View {
-        NavigationStack {
+     
             VStack(spacing: 20){
                 Image(.icon)
                     .resizable()
@@ -66,8 +66,9 @@ struct LoginView: View {
             .fullScreenCover(isPresented: $goRegister){
                 RegisterFlowView()
             }
-            .navigationDestination(isPresented: $goPasswordSave, destination:{ PasswordSaveFlow()})
-        }
+            
+            .fullScreenCover(isPresented: $goPasswordSave, content: {PasswordSaveFlow() })
+        
     }
 }
 
