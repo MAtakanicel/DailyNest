@@ -8,18 +8,18 @@ struct PasswordSaveMailView: View {
     var body: some View {
         
         VStack(spacing: 20){
-            Spacer()
+            
             Text("Şifre Kurtarma")
                 .bold()
                 .font(.title)
                 .foregroundColor(AppColors.primaryText)
-                .padding(.bottom, 40)
+                .padding(.vertical, 40)
             
             Text("Lüften kurtarmak istediğiniz hesabın kayıtlı olduğu e-posta adresini giriniz. E-postanıza bir kod gönderilecektir.")
                 .font(.subheadline)
                 .foregroundColor(AppColors.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
-            //    .padding(.bottom,70)
+            
             Spacer()
      
             VStack(alignment: .leading) {
@@ -28,12 +28,13 @@ struct PasswordSaveMailView: View {
                     .customTextField()
                     .keyboardType(.emailAddress)
             }
-            //.padding(.bottom,75)
+            
             Spacer()
             Spacer()
             Button(action: { }, label: {
                 Text("Kod Gönder")
             }).customButton()
+                .frame(width: 250, height: 250)
             
             
             Spacer()
