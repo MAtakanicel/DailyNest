@@ -5,6 +5,7 @@ struct RegisterCredentialsView: View {
     var onComplete : (() -> Void)?
     @State private var eMail : String = ""
     @State private var password : String = ""
+    @State private var isChecked : Bool = false
     var body: some View {
         VStack(spacing: 20 ){
             //Başlık
@@ -40,11 +41,31 @@ struct RegisterCredentialsView: View {
                     .padding(.bottom)
                     
                 
+                HStack{
+                    Image(systemName: isChecked ? "checkmark.square.fill" : "square")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(isChecked ? AppColors.buttonTapped : AppColors.secondaryText)
+                                .onTapGesture {
+                                    isChecked.toggle()
+                                }
+                    
+                    Button(action: { } , label: {
+                        Text("KVKK ve Gizlilik Politikasını")
+                            .font(.caption)
+                            .foregroundColor(AppColors.button)
+                    })
+                    
+                    Text("okudum ve kabul ediyorum.")
+                        .font(.caption)
+                        .foregroundColor(AppColors.secondaryText)
+                }
+                
             } //Form
             
             Spacer()
             
-            Button(action:{ }){
+            Button(action:{  }){
                 Text("Başlayalım ") + Text(" →")
                     .bold()
                     
