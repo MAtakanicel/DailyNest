@@ -10,7 +10,7 @@ struct DailyNestApp: App {
     }
     var body: some Scene {
         WindowGroup {
-            LoginView()
+            TabBarView()
         }
     }
 }
