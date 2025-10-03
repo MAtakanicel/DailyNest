@@ -1,7 +1,7 @@
 import SwiftUI
 
 enum PasswordStrength: Int, CaseIterable {
-    case veryWeak = 1, weak = 2, medium = 3, strong = 4, veryStrong = 5
+    case veryWeak = 0, weak = 1, medium = 2, strong = 3, veryStrong = 4
 
     var title: String {
         switch self {
@@ -30,23 +30,23 @@ enum PasswordStrength: Int, CaseIterable {
 }
 
 func evaluateStrength(_ password: String) -> PasswordStrength {
-    var score = 0
-
-    // Uzunluk
-    if password.count >= 8 { score += 1 }
-    if password.count >= 12 { score += 1 }
-
-    // Karakter çeşitliliği
-    let hasLower = password.range(of: "[a-z]", options: .regularExpression) != nil
-    let hasUpper = password.range(of: "[A-Z]", options: .regularExpression) != nil
-    let hasDigit = password.range(of: "[0-9]", options: .regularExpression) != nil
-    let hasSpecial = password.range(of: "[^A-Za-z0-9]", options: .regularExpression) != nil
-
-    let diversity = [hasLower, hasUpper, hasDigit, hasSpecial].filter { $0 }.count
-    if diversity >= 2 { score += 1 }
-    if diversity >= 3 { score += 1 }
-
-    return PasswordStrength(rawValue: min(score, 4)) ?? .veryWeak
+    let length = password.count
+    
+    let hasUpper = password.contains(where: { $0.isUppercase })
+    let hasSpecial = password.contains(where: { !$0.isLetter && !$0.isNumber })
+    
+    
+    if length >= 12 && hasUpper && hasSpecial {
+        return .veryStrong
+    } else if length >= 8 && hasUpper && hasSpecial {
+        return .strong
+    } else if length >= 8 && (hasUpper || hasSpecial) {
+        return .medium
+    } else if length >= 8 {
+        return .weak
+    } else {
+        return .veryWeak
+    }
 }
 
 // MARK: - UI Component
