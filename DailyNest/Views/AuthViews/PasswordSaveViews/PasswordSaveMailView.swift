@@ -7,8 +7,6 @@ struct PasswordSaveMailView: View {
         
         VStack(spacing: 20){
             
-            Spacer()
-            
             Text("Şifre Kurtarma")
                 .bold()
                 .font(.title)
@@ -38,10 +36,12 @@ struct PasswordSaveMailView: View {
             
             
             Spacer()
+            Spacer()
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(AppColors.background)
+        
     }
 }
 

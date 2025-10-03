@@ -1,5 +1,8 @@
 import SwiftUI
+import Combine
+
 struct LoginView: View {
+    @StateObject private var keyboard = KeyboardObserver()
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var goRegister: Bool = false
@@ -9,24 +12,28 @@ struct LoginView: View {
     }
     var body: some View {
      
+        NavigationStack {
             VStack(spacing: 20){
                 Image(.icon)
                     .resizable()
                     .frame(width: 250, height: 250)
-                
-                Text("Hoş Geldiniz")
-                    .bold()
-                    .font(.title)
-                    .foregroundColor(AppColors.primaryText)
-                
-                
-                
-                Text("Giriş yapabilirsiniz.")
-                    .bold()
-                    .font(.system(size: 18))
-                    .foregroundColor(AppColors.secondaryText)
-                
-                Spacer()
+                if !keyboard.isKeyboardVisible{
+                    Text("DailyNest")
+                        .bold()
+                        .font(.title)
+                        .foregroundColor(AppColors.primaryText)
+                        .padding(.bottom,20)
+                        .padding(.top,-50)
+               
+             
+                    Text("Kişisel Ajandanıza Hoş Geldiniz.")
+                        .bold()
+                        .font(.title3)
+                        .foregroundColor(AppColors.primaryText)
+                    
+                    Spacer()
+                }
+               
                 
                 VStack(alignment: .trailing){
                     
@@ -35,16 +42,15 @@ struct LoginView: View {
                         .keyboardType(.emailAddress)
                         .padding(.bottom,10)
                     
-                    
                     SecureField("Şifre", text: $password)
                         .customSecureField()
                         .padding(.bottom, 5)
                     
-                    
-                    Button(action: {  goPasswordSave.toggle()  }){
-                        Text("Şifremi unuttum?")
-                            .foregroundColor(AppColors.secondaryText)
+                    NavigationLink("Şifremi unuttum?"){
+                        PasswordSaveMailView(viewModel: ForgotPasswordViewModel())
                     }
+                    .foregroundColor(AppColors.secondaryText)
+                    
                 }.padding(.horizontal,20)
                 
                 Spacer()
@@ -70,8 +76,9 @@ struct LoginView: View {
             .fullScreenCover(isPresented: $goRegister){
                 RegisterFlowView()
             }
+        }
             
-            .fullScreenCover(isPresented: $goPasswordSave, content: { PasswordSaveMailView(viewModel: ForgotPasswordViewModel()) })
+            
         
     }
 }
