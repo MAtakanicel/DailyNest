@@ -7,6 +7,7 @@ struct LoginView: View {
     @State private var password: String = ""
     @State private var goRegister: Bool = false
     @State private var goPasswordSave : Bool = false
+    @State private var login : Bool = false
     var isValid: Bool {
         !email.isEmpty && !password.isEmpty
     }
@@ -54,7 +55,7 @@ struct LoginView: View {
                 }.padding(.horizontal,20)
                 
                 Spacer()
-                Button(action:{ }){
+                Button(action:{ login.toggle() }){
                     Text("Giriş Yap")
                 }.customButton()
                     .frame(width: 250, height: 50)
@@ -73,9 +74,8 @@ struct LoginView: View {
             } //VStack
             .background(AppColors.background)
             
-            .fullScreenCover(isPresented: $goRegister){
-                RegisterFlowView()
-            }
+            .fullScreenCover(isPresented: $goRegister){RegisterFlowView()}
+            .fullScreenCover(isPresented: $login, content: {TabBarView()})
         }
             
             

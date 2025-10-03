@@ -8,7 +8,6 @@ enum FloatingTab: String, CaseIterable {
 
 struct TabBarView: View {
     @State private var selectedTab: FloatingTab = .home
-    
     var body: some View {
         ZStack(alignment: .bottom) {
             
@@ -48,7 +47,7 @@ struct TabBarView: View {
                 Image(systemName: tab.rawValue)
                     .font(.system(size: 30, weight: .semibold))
             }
-            .foregroundColor(selectedTab == tab ? .blue : .gray)
+            .foregroundColor(selectedTab == tab ? AppColors.button : .gray)
             .frame(maxWidth: .infinity)
         }
     }
