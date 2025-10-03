@@ -5,9 +5,12 @@ struct RegisterCredentialsView: View {
     var onComplete : (() -> Void)?
     @State private var eMail : String = ""
     @State private var password : String = ""
+    @State private var confirmPassword : String = ""
+    var isValid: Bool{ !password.isEmpty && password == confirmPassword && !eMail.isEmpty}
     @State private var isChecked : Bool = false
     @State private var KVKKViewIsShown : Bool = false
     @State private var privacyViewIsShown : Bool = false
+    
     var body: some View {
         VStack(spacing: 20 ){
             //Başlık
@@ -39,6 +42,13 @@ struct RegisterCredentialsView: View {
                     .opacity(0.6)
                     .font(.system(size: 16))
                 SecureField("Şifrenizi giriniz:", text: $password)
+                    .customSecureField()
+                    .padding(.bottom)
+                
+                Text("Şifrenizi Doğrulayın:")
+                    .opacity(0.6)
+                    .font(.system(size: 16))
+                SecureField("Şifrenizi giriniz:", text: $confirmPassword)
                     .customSecureField()
                     .padding(.bottom)
                     
@@ -80,15 +90,28 @@ struct RegisterCredentialsView: View {
             } //Form
             
             Spacer()
-            
-            Button(action:{  }){
-                Text("Başlayalım ") + Text(" →")
+            Button(action: { },label: {
+                Text("Başlayalım ")
+                    .foregroundColor(.white)
                     .bold()
-                    
-            }
-            .customButton()
-            .frame(width: 250, height: 50)
             
+                + Text(" →")
+                    .bold()
+                    .foregroundColor(.white)
+
+            })
+            .padding(.vertical, 14)
+            .padding(.horizontal, 20)
+            .frame(width: 250,height: 50)
+            .background(isValid ? AppColors.button : Color.gray )
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
+            )
+            .cornerRadius(16)
+            .shadow(color: AppColors.accent.opacity(0.25), radius: 12, x: 0, y: 6)
+            .disabled(!isValid)
+ 
             Spacer()
             
         } //Vstack

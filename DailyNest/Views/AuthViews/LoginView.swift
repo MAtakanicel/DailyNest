@@ -4,6 +4,9 @@ struct LoginView: View {
     @State private var password: String = ""
     @State private var goRegister: Bool = false
     @State private var goPasswordSave : Bool = false
+    var isValid: Bool {
+        !email.isEmpty && !password.isEmpty
+    }
     var body: some View {
      
             VStack(spacing: 20){
@@ -49,6 +52,7 @@ struct LoginView: View {
                     Text("Giriş Yap")
                 }.customButton()
                     .frame(width: 250, height: 50)
+                    .disabled(!isValid)
                 
                 HStack{
                     Text("Hesabın yok mu ?")
@@ -67,7 +71,7 @@ struct LoginView: View {
                 RegisterFlowView()
             }
             
-            .fullScreenCover(isPresented: $goPasswordSave, content: { PasswordSaveFlow() })
+            .fullScreenCover(isPresented: $goPasswordSave, content: { PasswordSaveMailView(viewModel: ForgotPasswordViewModel()) })
         
     }
 }

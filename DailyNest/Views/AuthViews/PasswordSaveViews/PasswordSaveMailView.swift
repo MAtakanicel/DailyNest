@@ -2,12 +2,12 @@ import SwiftUI
 
 struct PasswordSaveMailView: View {
     @StateObject var viewModel : ForgotPasswordViewModel
-    var onNext: (() -> Void)?
-    
     @State var email: String = ""
     var body: some View {
         
         VStack(spacing: 20){
+            
+            Spacer()
             
             Text("Şifre Kurtarma")
                 .bold()
@@ -15,7 +15,7 @@ struct PasswordSaveMailView: View {
                 .foregroundColor(AppColors.primaryText)
                 .padding(.vertical, 40)
             
-            Text("Lüften kurtarmak istediğiniz hesabın kayıtlı olduğu e-posta adresini giriniz. E-postanıza bir kod gönderilecektir.")
+            Text("Lüften kurtarmak istediğiniz hesabın kayıtlı olduğu e-posta adresini giriniz. E-postanıza bir şifre kurtarma linki gönderilecektir.")
                 .font(.subheadline)
                 .foregroundColor(AppColors.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
@@ -29,12 +29,12 @@ struct PasswordSaveMailView: View {
                     .keyboardType(.emailAddress)
             }
             
+  
             Spacer()
-            Spacer()
-            Button(action: { }, label: {
-                Text("Kod Gönder")
+            Button(action: {  }, label: {
+                Text("Link Gönder")
             }).customButton()
-                .frame(width: 250, height: 250)
+                .frame(width: 250, height: 50)
             
             
             Spacer()

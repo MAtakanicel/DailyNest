@@ -56,6 +56,7 @@ struct RegisterNameView: View {
                 Button(action: {onNext?()}){
                     Text("Sonraki Adıma geç") + Text(" →")
                 }.customButton()
+                    .frame(width: 250,height: 250)
                 Spacer()
             }
             .padding(.top, 8)
