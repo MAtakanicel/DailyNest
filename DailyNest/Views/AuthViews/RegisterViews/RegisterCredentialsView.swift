@@ -51,8 +51,10 @@ struct RegisterCredentialsView: View {
                 SecureField("Şifrenizi giriniz:", text: $confirmPassword)
                     .customSecureField()
                     .padding(.bottom)
-                    
-                
+                if !password.isEmpty {
+                    PasswordStrengthBar(strength: evaluateStrength(password))
+                        .padding(.bottom)
+                }
                 HStack{
                     Image(systemName: isChecked ? "checkmark.square.fill" : "square")
                                 .resizable()

@@ -7,7 +7,7 @@ struct PasswordSaveNewPasswordView: View {
     var isValid: Bool{ !password.isEmpty && password == confirmPassword }
     var body: some View {
         VStack(spacing: 20){
-         
+            
             Text("Şifre Kurtarma")
                 .bold()
                 .font(.title)
@@ -17,9 +17,9 @@ struct PasswordSaveNewPasswordView: View {
                 .font(.subheadline)
                 .foregroundColor(AppColors.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
-
+            
             VStack(alignment:.leading){
-             
+                
                 Text("Şifreniz:")
                     .opacity(0.6)
                     .font(.system(size: 16))
@@ -32,9 +32,11 @@ struct PasswordSaveNewPasswordView: View {
                     .font(.system(size: 16))
                 SecureField("Şifrenizi giriniz:", text: $confirmPassword)
                     .customSecureField()
-                    
             }
-            
+            if !password.isEmpty {
+            PasswordStrengthBar(strength: evaluateStrength(password))
+                .padding(.bottom)
+        }
             Button(action: { },label: {
                 Text("Yeni Şifre Belirle")
                     .bold()
