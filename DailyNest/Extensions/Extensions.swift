@@ -62,14 +62,22 @@ extension Button {
 // MARK: - Section Background Colors
 extension AppColors {
     static let sectionBackgroundStart = Color(UIColor { trait in
-        trait.userInterfaceStyle == .dark
-        ? UIColor(red: 40/255, green: 40/255, blue: 45/255, alpha: 1)
-        : UIColor(red: 240/255, green: 240/255, blue: 245/255, alpha: 1)
+        if trait.userInterfaceStyle == .dark {
+            // Dark mode: daha belirgin üst ışık efekti
+            return UIColor(red: 55/255, green: 55/255, blue: 60/255, alpha: 1)
+        } else {
+            // Light mode: daha açık, "sayfa üstü" efekti
+            return UIColor(red: 248/255, green: 248/255, blue: 252/255, alpha: 1)
+        }
     })
     
     static let sectionBackgroundEnd = Color(UIColor { trait in
-        trait.userInterfaceStyle == .dark
-        ? UIColor(red: 30/255, green: 30/255, blue: 35/255, alpha: 1)
-        : UIColor(red: 230/255, green: 230/255, blue: 240/255, alpha: 1)
+        if trait.userInterfaceStyle == .dark {
+            // Dark mode: daha derin gölge efekti
+            return UIColor(red: 25/255, green: 25/255, blue: 30/255, alpha: 1)
+        } else {
+            // Light mode: hafif gri alt ton, derinlik verir
+            return UIColor(red: 232/255, green: 232/255, blue: 238/255, alpha: 1)
+        }
     })
 }
