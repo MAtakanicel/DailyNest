@@ -3,10 +3,10 @@ import SwiftUI
 struct ToDoListView: View {
      @State var todos = [
         ToDo(title: "SwiftUI", isDone: false, isRoutine: false),
-        ToDo(title: "Combine", isDone: false, isRoutine: false),
+        ToDo(title: "Combine", isDone: true, isRoutine: false),
         ToDo(title: "Rutin1", isDone: false, isRoutine: true),
-        ToDo(title: "Rutin2", isDone: true, isRoutine: true),
-        ToDo(title: "Rutin3", isDone: true, isRoutine: true),
+        ToDo(title: "Rutin2", isDone: false, isRoutine: true),
+        ToDo(title: "Rutin3", isDone: false, isRoutine: true),
         ToDo(title: "Rutin4", isDone: false, isRoutine: true)
     ]
     
