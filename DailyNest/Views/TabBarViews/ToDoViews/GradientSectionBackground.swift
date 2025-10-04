@@ -6,25 +6,25 @@ struct GradientSectionBackground: View {
     var body: some View {
         ZStack {
             // MARK: - 1️⃣ Derin gölge katmanı
-            RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: 25)
                 .fill(innerShadowGradient)
                 .blur(radius: 2)
                 .offset(y: 1)
                 .opacity(0.6)
 
             // MARK: - 2️⃣ Ana gradient yüzey
-            RoundedRectangle(cornerRadius: 30)
+            RoundedRectangle(cornerRadius: 25)
                 .fill(mainGradient)
                 .shadow(color: shadowColor, radius: 8, x: 0, y: 4)
 
             // MARK: - 3️⃣ İç ışık kenar efekti (parlak veya koyu)
-            RoundedRectangle(cornerRadius: 40)
+            RoundedRectangle(cornerRadius: 25)
                 .strokeBorder(innerEdgeHighlight, lineWidth: 1)
                 .blendMode(.overlay)
                 .opacity(0.8)
 
             // MARK: - 4️⃣ Dış diffuse parıltı (yumuşak yüzey ışığı)
-            RoundedRectangle(cornerRadius: 40)
+            RoundedRectangle(cornerRadius: 25)
                 .strokeBorder(outerGlow, lineWidth: 1.2)
                 .blur(radius: 6)
                 .opacity(0.5)
@@ -94,7 +94,7 @@ struct GradientSectionBackground: View {
     /// Ana shadow
     private var shadowColor: Color {
         colorScheme == .dark
-        ? Color.black.opacity(0.8)
+        ? Color.black.opacity(0.6)
         : Color.gray.opacity(0.235)
     }
 }
