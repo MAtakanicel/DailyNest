@@ -2,18 +2,13 @@
 
 import Foundation
 
-struct ToDo : Identifiable{
+struct ToDo : Identifiable, Hashable{
     
     let id = UUID()
     let title : String
-    let isDone : Bool
+    var isDone : Bool
+    let isRoutine : Bool
     
 }
 
-struct RoutineToDo : Identifiable{
-    
-    let id = UUID()
-    let title : String
-    let isDone : Bool
-    
-}
+
