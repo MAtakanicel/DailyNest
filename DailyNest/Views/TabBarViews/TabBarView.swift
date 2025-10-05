@@ -8,33 +8,37 @@ enum FloatingTab: String, CaseIterable {
 
 struct TabBarView: View {
     @State private var selectedTab: FloatingTab = .home
+    @State private var path: [ToDo] = []
     var body: some View {
-        ZStack(alignment: .bottom) {
-            
-            // İçerik Alanı
-            Group {
-                switch selectedTab {
-                case .home: ToDoListView()
-                case .agenda: AgendaView()
-                case .profile: SettingsMainView()
+        NavigationStack(path: $path) {
+            ZStack(alignment: .bottom) {
+                
+                // İçerik Alanı
+               
+                    switch selectedTab {
+                    case .home: ToDoListView(path: $path)
+                    case .agenda: AgendaView()
+                    case .profile: SettingsMainView()
+                    }
+                
+               
+
+                
+                // Floating Tab Bar
+                HStack {
+                    tabButton(.home)
+                    tabButton(.agenda)
+                    tabButton(.profile)
                 }
+                .padding(.horizontal, 20)
+                .padding(.top, 12)
+                .padding(.bottom, 20) // Alt boşluk
+                .background(.ultraThinMaterial) // Blur efekt
+                .clipShape(RoundedRectangle(cornerRadius: 25, style: .continuous))
+                .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 6)
+                .padding(.horizontal, 24)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(.systemBackground))
             
-            // Floating Tab Bar
-            HStack {
-                tabButton(.home)
-                tabButton(.agenda)
-                tabButton(.profile)
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, 12)
-            .padding(.bottom, 20) // Alt boşluk
-            .background(.ultraThinMaterial) // Blur efekt
-            .clipShape(RoundedRectangle(cornerRadius: 25, style: .continuous))
-            .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 6)
-            .padding(.horizontal, 24)
         }
     }
     

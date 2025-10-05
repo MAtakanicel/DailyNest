@@ -7,16 +7,41 @@ struct ToDoListView: View {
         ToDo(title: "Rutin1", isDone: false, isRoutine: true),
         ToDo(title: "Rutin2", isDone: false, isRoutine: true),
         ToDo(title: "Rutin3", isDone: false, isRoutine: true),
+        ToDo(title: "Rutin4", isDone: false, isRoutine: true),
+        ToDo(title: "SwiftUI", isDone: false, isRoutine: false),
+        ToDo(title: "Combine", isDone: true, isRoutine: false),
+        ToDo(title: "Rutin1", isDone: false, isRoutine: true),
+        ToDo(title: "Rutin2", isDone: false, isRoutine: true),
+        ToDo(title: "Rutin3", isDone: false, isRoutine: true),
+        ToDo(title: "Rutin4", isDone: false, isRoutine: true),
+        ToDo(title: "SwiftUI", isDone: false, isRoutine: false),
+        ToDo(title: "Combine", isDone: true, isRoutine: false),
+        ToDo(title: "Rutin1", isDone: false, isRoutine: true),
+        ToDo(title: "Rutin2", isDone: false, isRoutine: true),
+        ToDo(title: "Rutin3", isDone: false, isRoutine: true),
         ToDo(title: "Rutin4", isDone: false, isRoutine: true)
     ]
 
     @State private var showRoutines: Bool = true
     @State private var showToDos: Bool = true
-    @State private var path : [ToDo] = []
+    @Binding var path : [ToDo] 
     
     var body: some View {
-        NavigationStack(path: $path) {
+        
             ZStack{
+                VStack{
+                    ScrollView{
+                        RoutineSectionView(todo: todos, showRoutines: $showRoutines, path: $path)
+                    }
+                    
+                    ScrollView{
+                        DailySectionView(todo: todos, showToDos: $showToDos, path: $path)
+                    }
+                    
+                    Color.clear.frame(height: 70)
+                }
+                
+                /*
                     List{
                         RoutineSectionView(todo: todos, showRoutines: $showRoutines, path: $path)
                         DailySectionView(todo: todos, showToDos: $showToDos, path: $path)
@@ -137,6 +162,7 @@ struct ToDoListView: View {
                     }//List
                     .listStyle(.plain)
                     .scrollContentBackground(.hidden)
+                 */
                     .navigationDestination(for: ToDo.self){ todo in ToDoDetailView(todo: todo) }
 
                     
@@ -163,7 +189,7 @@ struct ToDoListView: View {
                         }//HStack
                     }//VStack
             }//ZStack
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
             .background(AppColors.background)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing){
@@ -183,9 +209,10 @@ struct ToDoListView: View {
                             .font(.subheadline)
                             .foregroundColor(AppColors.secondaryText)
                     }
+                    
                 }
             }//toolbar
-        }//NavigationStack
+        //NavigationStack
     }//Body
 }//Struct
 
