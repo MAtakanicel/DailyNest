@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct DailySectionView: View {
-    let dailys: [ToDo]
+    let todo: [ToDo]
     @Binding var showToDos: Bool
     @Binding var path : [ToDo]
     
@@ -9,7 +9,7 @@ struct DailySectionView: View {
         Section {
             if showToDos {
                 VStack(alignment: .leading, spacing: 8) {
-                    ForEach(dailys) { todo in
+                    ForEach(todo.filter{ !$0.isRoutine}) { todo in
                         ToDoRow(todo: todo){
                             path.append(todo)
                         }

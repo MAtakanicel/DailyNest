@@ -9,9 +9,6 @@ struct ToDoListView: View {
         ToDo(title: "Rutin3", isDone: false, isRoutine: true),
         ToDo(title: "Rutin4", isDone: false, isRoutine: true)
     ]
-    
-    var routines: [ToDo] { todos.filter { $0.isRoutine } }
-    var dailys: [ToDo] { todos.filter { !$0.isRoutine } }
 
     @State private var showRoutines: Bool = true
     @State private var showToDos: Bool = true
@@ -19,17 +16,11 @@ struct ToDoListView: View {
     
     var body: some View {
         NavigationStack(path: $path) {
-  
-            ZStack(alignment: .bottomTrailing) {
-                
-              
-
+            ZStack() {
                     List{
-                        
-                        RoutineSectionView(routines: routines, showRoutines: $showRoutines, path: $path)
-                        DailySectionView(dailys: dailys, showToDos: $showToDos, path: $path)
-                        
-                        
+                        RoutineSectionView(todo: todos, showRoutines: $showRoutines, path: $path)
+                        DailySectionView(todo: todos, showToDos: $showToDos, path: $path)
+                    
                         // Eski
                         /*
                          Section {
@@ -145,54 +136,56 @@ struct ToDoListView: View {
                          }*/
                     }//List
                     .scrollContentBackground(.hidden)
-                    .navigationDestination(for: ToDo.self){ todo in
-                        ToDoDetailView(todo: todo)
-                    }
+                    .navigationDestination(for: ToDo.self){ todo in ToDoDetailView(todo: todo) }
+                
+                //Yeni ToDo
                     VStack {
                         Spacer()
                         HStack {
                             Spacer()
-                            Button(action: {
-                                // yeni todo ekleme işlemi
-                            }) {
+                            Button{
+                                
+                            }label: {
                                 Image(systemName: "plus")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
                                     .font(.title2)
-                                    .padding()
+                                    .padding(20)
                                     .background(Color.blue)
                                     .foregroundColor(.white)
                                     .clipShape(Circle())
                                     .shadow(radius: 5)
                             }
-                            .padding()
-                        }
-                    }
-            }
-
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(AppColors.background)
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {}) {
-                            Text("Ekle")
-                                .font(.headline)
-                                .bold()
-                                .foregroundColor(AppColors.button)
-                        }
-                    }
-                    ToolbarItem(placement: .principal) {
-                        VStack {
-                            Text("Bugünüm")
-                                .font(.headline)
-                                .foregroundColor(AppColors.primaryText)
-                            Text(Date(), style: .date)
-                                .font(.subheadline)
-                                .foregroundColor(AppColors.secondaryText)
-                        }
+                            .padding(.trailing,20)
+                            .padding(.bottom,90)
+                        }//HStack
+                    }//VStack
+            }//ZStack
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(AppColors.background)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing){
+                    Button{ }label:{
+                            Text("deneme")
                     }
                 }
-        }
-    }
-}
+                
+                //NavigationTitle
+                ToolbarItem(placement: .principal) {
+                    VStack {
+                        Text("Bugünüm")
+                            .font(.headline)
+                            .foregroundColor(AppColors.primaryText)
+                        
+                        Text(Date(), style: .date)
+                            .font(.subheadline)
+                            .foregroundColor(AppColors.secondaryText)
+                    }
+                }
+            }//toolbar
+        }//NavigationStack
+    }//Body
+}//Struct
 
 #Preview {
     TabBarView()
