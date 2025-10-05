@@ -16,11 +16,11 @@ struct ToDoListView: View {
     
     var body: some View {
         NavigationStack(path: $path) {
-            ZStack() {
+            ZStack{
                     List{
                         RoutineSectionView(todo: todos, showRoutines: $showRoutines, path: $path)
                         DailySectionView(todo: todos, showToDos: $showToDos, path: $path)
-                    
+                        
                         // Eski
                         /*
                          Section {
@@ -135,9 +135,11 @@ struct ToDoListView: View {
                          }
                          }*/
                     }//List
+                    .listStyle(.plain)
                     .scrollContentBackground(.hidden)
                     .navigationDestination(for: ToDo.self){ todo in ToDoDetailView(todo: todo) }
-                
+
+                    
                 //Yeni ToDo
                     VStack {
                         Spacer()

@@ -28,3 +28,7 @@ struct ToDoRow: View {
     }
 }
 
+#Preview {
+    TabBarView()
+}
+

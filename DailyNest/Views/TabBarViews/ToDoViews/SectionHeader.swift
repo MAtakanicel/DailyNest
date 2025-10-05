@@ -20,3 +20,7 @@ struct SectionHeader: View {
         }
     }
 }
+
+#Preview {
+    TabBarView()
+}

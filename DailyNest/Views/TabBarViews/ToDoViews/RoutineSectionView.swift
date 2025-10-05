@@ -27,4 +27,7 @@ struct RoutineSectionView: View {
     }
 }
 
+#Preview {
+    TabBarView()
+}
 

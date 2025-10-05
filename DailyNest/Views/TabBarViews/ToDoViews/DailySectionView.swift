@@ -27,3 +27,7 @@ struct DailySectionView: View {
     }
 }
 
+#Preview {
+    TabBarView()
+}
+
