@@ -1,218 +1,34 @@
 import SwiftUI
 
 struct ToDoListView: View {
-     @State var todos = [
-        ToDo(title: "SwiftUI", isDone: false, isRoutine: false),
-        ToDo(title: "Combine", isDone: true, isRoutine: false),
-        ToDo(title: "Rutin1", isDone: false, isRoutine: true),
-        ToDo(title: "Rutin2", isDone: false, isRoutine: true),
-        ToDo(title: "Rutin3", isDone: false, isRoutine: true),
-        ToDo(title: "Rutin4", isDone: false, isRoutine: true),
-        ToDo(title: "SwiftUI", isDone: false, isRoutine: false),
-        ToDo(title: "Combine", isDone: true, isRoutine: false),
-        ToDo(title: "Rutin1", isDone: false, isRoutine: true),
-        ToDo(title: "Rutin2", isDone: false, isRoutine: true),
-        ToDo(title: "Rutin3", isDone: false, isRoutine: true),
-        ToDo(title: "Rutin4", isDone: false, isRoutine: true),
-        ToDo(title: "SwiftUI", isDone: false, isRoutine: false),
-        ToDo(title: "Combine", isDone: true, isRoutine: false),
-        ToDo(title: "Rutin1", isDone: false, isRoutine: true),
-        ToDo(title: "Rutin2", isDone: false, isRoutine: true),
-        ToDo(title: "Rutin3", isDone: false, isRoutine: true),
-        ToDo(title: "Rutin4", isDone: false, isRoutine: true)
-    ]
+    let todos = tempToDos().todos
 
     @State private var showRoutines: Bool = true
     @State private var showToDos: Bool = true
-    @Binding var path : [ToDo] 
+    @Binding var path : [ToDo]
     
     var body: some View {
         
+        VStack(alignment: .leading) {
+            
+            ToDoListHeader()
+                .padding(.leading,25)
+            
             ZStack{
-                VStack{
-                    ScrollView{
-                        RoutineSectionView(todo: todos, showRoutines: $showRoutines, path: $path)
-                    }
-                    
-                    ScrollView{
-                        DailySectionView(todo: todos, showToDos: $showToDos, path: $path)
-                    }
-                    
-                    Color.clear.frame(height: 70)
-                }
                 
-                /*
-                    List{
-                        RoutineSectionView(todo: todos, showRoutines: $showRoutines, path: $path)
-                        DailySectionView(todo: todos, showToDos: $showToDos, path: $path)
-                        
-                        // Eski
-                        /*
-                         Section {
-                         // MARK: - Eski
-                         if showRoutines {
-                         VStack(alignment: .leading, spacing: 8) {
-                         ForEach(routines.indices, id: \.self) { index in
-                         HStack {
-                         Text(routines[index].title)
-                         .frame(maxWidth: .infinity, alignment: .leading)
-                         .padding(8)
-                         .cornerRadius(8)
-                         .foregroundColor(AppColors.cardText)
-                         
-                         Image(systemName: routines[index].isDone ? "checkmark.circle.fill" : "circle")
-                         .resizable()
-                         .frame(width: 20, height: 20)
-                         .foregroundColor(AppColors.buttonTapped)
-                         .padding(.horizontal)
-                         }
-                         .background(AppColors.cardBackGround)
-                         .cornerRadius(16)
-                         .shadow(color: .gray.opacity(0.25), radius: 4, x: 0, y: 2)
-                         }
-                         }
-                         .padding(10)
-                         .background(
-                         // 🎨 Gradient arka plan
-                         RoundedRectangle(cornerRadius: 20)
-                         .fill(
-                         LinearGradient(
-                         colors: [
-                         AppColors.sectionBackgroundStart,
-                         AppColors.sectionBackgroundEnd
-                         ],
-                         startPoint: .topLeading,
-                         endPoint: .bottomTrailing
-                         )
-                         )
-                         .shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 3)
-                         )
-                         .listRowInsets(EdgeInsets())
-                         .listRowBackground(Color.clear)
-                         }
-                         } header: {
-                         HStack {
-                         Text("GÜNLÜK RUTİNLER")
-                         .font(.headline)
-                         .foregroundColor(AppColors.sectionText)
-                         Button {
-                         withAnimation { showRoutines.toggle() }
-                         } label: {
-                         Image(systemName: showRoutines ? "chevron.down" : "chevron.right")
-                         .foregroundColor(AppColors.buttonTapped)
-                         }
-                         .buttonStyle(BorderlessButtonStyle())
-                         }
-                         }
-                         
-                         Section {
-                         if showToDos {
-                         VStack(alignment: .leading, spacing: 8) {
-                         ForEach(dailys.indices, id: \.self) { index in
-                         HStack {
-                         Text(dailys[index].title)
-                         .frame(maxWidth: .infinity, alignment: .leading)
-                         .padding(8)
-                         .cornerRadius(8)
-                         .foregroundColor(AppColors.cardText)
-                         
-                         Image(systemName: dailys[index].isDone ? "checkmark.circle.fill" : "circle")
-                         .resizable()
-                         .frame(width: 20, height: 20)
-                         .foregroundColor(AppColors.buttonTapped)
-                         .padding(.horizontal)
-                         }
-                         .background(AppColors.cardBackGround)
-                         .cornerRadius(16)
-                         .shadow(color: .gray.opacity(0.25), radius: 4, x: 0, y: 2)
-                         }
-                         }
-                         .padding(10)
-                         .background(
-                         RoundedRectangle(cornerRadius: 20)
-                         .fill(
-                         LinearGradient(
-                         colors: [
-                         AppColors.sectionBackgroundStart,
-                         AppColors.sectionBackgroundEnd
-                         ],
-                         startPoint: .topLeading,
-                         endPoint: .bottomTrailing
-                         )
-                         )
-                         .shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 3)
-                         )
-                         .listRowInsets(EdgeInsets())
-                         .listRowBackground(Color.clear)
-                         }
-                         } header: {
-                         HStack {
-                         Text("İŞLERİM")
-                         .font(.headline)
-                         .foregroundColor(AppColors.sectionText)
-                         Button {
-                         withAnimation { showToDos.toggle() }
-                         } label: {
-                         Image(systemName: showToDos ? "chevron.down" : "chevron.right")
-                         .foregroundColor(AppColors.buttonTapped)
-                         }
-                         .buttonStyle(BorderlessButtonStyle())
-                         }
-                         }*/
-                    }//List
-                    .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
-                 */
-                    .navigationDestination(for: ToDo.self){ todo in ToDoDetailView(todo: todo) }
-
-                    
-                //Yeni ToDo
-                    VStack {
-                        Spacer()
-                        HStack {
-                            Spacer()
-                            Button{
-                                
-                            }label: {
-                                Image(systemName: "plus")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                    .font(.title2)
-                                    .padding(20)
-                                    .background(Color.blue)
-                                    .foregroundColor(.white)
-                                    .clipShape(Circle())
-                                    .shadow(radius: 5)
-                            }
-                            .padding(.trailing,20)
-                            .padding(.bottom,90)
-                        }//HStack
-                    }//VStack
+                
+                
+                
+                
+                
+                
+                //  .navigationDestination(for: ToDo.self){ todo in ToDoDetailView(todo: todo) }
+                
+                NewToDoAddButtonView()
+                
             }//ZStack
-
-            .background(AppColors.background)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing){
-                    Button{ }label:{
-                            Text("deneme")
-                    }
-                }
-                
-                //NavigationTitle
-                ToolbarItem(placement: .principal) {
-                    VStack {
-                        Text("Bugünüm")
-                            .font(.headline)
-                            .foregroundColor(AppColors.primaryText)
-                        
-                        Text(Date(), style: .date)
-                            .font(.subheadline)
-                            .foregroundColor(AppColors.secondaryText)
-                    }
-                    
-                }
-            }//toolbar
-        //NavigationStack
+            .background(AppColors.background).ignoresSafeArea()
+        }.background(AppColors.background)
     }//Body
 }//Struct
 

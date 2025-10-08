@@ -19,3 +19,6 @@ GoogleService-Info.plist
 # Kaynaklar
 *.png
 *.txt	
+
+# DailyNest
+Yedeh.swift
