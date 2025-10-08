@@ -2,13 +2,11 @@ import SwiftUI
 
 struct DailySectionView: View {
     let todo: [ToDo]
-    @State var showToDos: Bool
   //  @Binding var path : [ToDo]
     @State var path : [ToDo] = []
     var body: some View {
-        VStack {
+        VStack(alignment: .center) {
             Section {
-                if showToDos {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(todo.filter{ !$0.isRoutine}) { todo in
                             ToDoRow(todo: todo){
@@ -17,26 +15,23 @@ struct DailySectionView: View {
                             .padding(.vertical,1)
                         }
                     }
-                    .padding(15)
+                    .padding(.horizontal,15)
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
-                }
             } header: {
-                SectionHeader(title: "Bugünkü Görevlerim", isExpanded: $showToDos)
+                SectionHeader(title: "Bugünkü Görevlerim")
+
+                    
             }
         }
-        .background {
-            if showToDos {
-                GradientSectionBackground()
-            } else {
-                Color.clear
-            }
+        .background(GradientSectionBackground())
+
             
-        }
+        
     }
 }
 
 #Preview {
-    DailySectionView(todo: tempToDos().todos , showToDos: true)
+    DailySectionView(todo: tempToDos().todos)
 }
 

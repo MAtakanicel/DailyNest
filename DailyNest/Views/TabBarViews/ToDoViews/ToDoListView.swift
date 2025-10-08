@@ -9,10 +9,15 @@ struct ToDoListView: View {
     
     var body: some View {
         
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 20) {
             
             ToDoListHeader()
                 .padding(.leading,25)
+                .padding(.top, 10)
+            
+            ProgressCard() //verileri statik şu an, gerçek veriler girilince düzenlenmeli !
+                .padding(.horizontal,30)
+                .padding(.top, 10)
             
             ZStack{
                 
@@ -24,7 +29,7 @@ struct ToDoListView: View {
                 
                 //  .navigationDestination(for: ToDo.self){ todo in ToDoDetailView(todo: todo) }
                 
-                NewToDoAddButtonView()
+                NewToDoAddButtonView() //
                 
             }//ZStack
             .background(AppColors.background).ignoresSafeArea()
