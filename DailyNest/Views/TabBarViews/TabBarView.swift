@@ -16,13 +16,10 @@ struct TabBarView: View {
                 // İçerik Alanı
                
                     switch selectedTab {
-                    case .home: ToDoListView(path: $path)
+                    case .home: MainPage(path: $path)
                     case .agenda: AgendaView()
                     case .profile: SettingsMainView()
                     }
-                
-               
-
                 
                 // Floating Tab Bar
                 HStack {
