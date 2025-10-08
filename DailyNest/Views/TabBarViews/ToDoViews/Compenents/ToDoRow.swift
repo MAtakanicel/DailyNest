@@ -14,15 +14,27 @@ struct ToDoRow: View {
                         onTap?()
                     }
                 
-                Image(systemName: todo.isDone ? "checkmark.circle.fill" : "circle")
+  
+                Button(action: { },label:{
+                    Text("Bitti")
+                        .font(.caption.bold())
+                        .foregroundColor(AppColors.primaryText)
+                        .padding(6)
+                })
+                .background(LinearGradient(colors: [AppColors.accentBlue.opacity(0.2), .purple.opacity(0.1)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .cornerRadius(16)
+                .padding(.trailing,10)
+                
+             /*/  Image(systemName: todo.isDone ? "checkmark.circle.fill" : "circle")
                     .resizable()
                     .frame(width: 20, height: 20)
                     .foregroundColor(AppColors.buttonTapped)
                     .padding(.horizontal)
+              */
             }
             .background(AppColors.cardBackGround)
             .cornerRadius(16)
-            .shadow(color: .gray.opacity(0.25), radius: 4, x: 0, y: 2)
+            .shadow(color: .gray.opacity(0.25), radius: 2, x: 0, y: 2)
 
 
     }

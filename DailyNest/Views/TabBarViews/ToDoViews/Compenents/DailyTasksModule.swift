@@ -10,6 +10,7 @@ struct DailyTasksModule: View {
                     ForEach(viewModel.sortedTodos){ todo in
                         
                         ToDoRow(todo: todo){ path.append(todo) }
+                            .padding(.horizontal,3)
                         
                     }
                 }
