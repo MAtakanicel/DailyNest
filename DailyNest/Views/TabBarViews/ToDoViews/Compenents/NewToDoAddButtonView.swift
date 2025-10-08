@@ -32,8 +32,6 @@ struct NewToDoAddButtonView: View {
                         .shadow(color: .blue.opacity(0.4), radius: 10, x: 0, y:4)
                         .foregroundColor(.white)
                 }
-                .padding(.trailing,20)
-                .padding(.bottom,120)
                 .alignmentGuide(.bottom){ _ in 0}
             }//HStack
         }//VStack

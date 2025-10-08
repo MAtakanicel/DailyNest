@@ -1,8 +1,8 @@
 import SwiftUI
+import Combine
 
 struct MainPage: View {
-    let todos = tempToDos().todos
-
+    @StateObject private var viewModel = ToDoViewModel()
     @State private var showRoutines: Bool = true
     @State private var showToDos: Bool = true
     @Binding var path : [ToDo]
@@ -57,16 +57,26 @@ struct MainPage: View {
 
                 Spacer()
             }
+           
+            Text("Bugünkü Görevlerim")
+                .font(.headline).bold()
+                .foregroundColor(AppColors.secondaryText)
+                .padding(.leading,20)
             
             //Görevlerim Kısımı
-            ZStack{
-                
-                //  .navigationDestination(for: ToDo.self){ todo in ToDoDetailView(todo: todo) }
-                
-                NewToDoAddButtonView() //
-                
-            }//ZStack
-            .background(AppColors.background).ignoresSafeArea()
+            VStack(spacing: 0) {
+                DailyTasksModule(path: $path)
+                    .padding(.horizontal)
+                    .padding(.bottom, 60) // Yukarı taşıma
+            }
+            .overlay(
+                NewToDoAddButtonView()
+                    .padding(.trailing,5)
+                    .padding(.bottom,60),
+                alignment: .bottomTrailing
+            )//ZStack
+            .background(AppColors.background)
+            .navigationDestination(for: ToDo.self){ todo in ToDoDetailView(todo: todo) }
         }.background(AppColors.background)
     }//Body
 }//Struct

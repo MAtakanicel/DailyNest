@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct DailySectionView: View {
+    @StateObject private var viewModel = ToDoViewModel()
     let todo: [ToDo]
   //  @Binding var path : [ToDo]
     @State var path : [ToDo] = []
@@ -32,6 +33,6 @@ struct DailySectionView: View {
 }
 
 #Preview {
-    DailySectionView(todo: tempToDos().todos)
+    DailySectionView(todo: ToDoViewModel().sortedTodos)
 }
 

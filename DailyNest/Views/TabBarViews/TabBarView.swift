@@ -27,13 +27,12 @@ struct TabBarView: View {
                     tabButton(.agenda)
                     tabButton(.profile)
                 }
-                .padding(.horizontal, 20)
                 .padding(.top, 12)
-                .padding(.bottom, 20) // Alt boşluk
+                .padding(.bottom, 15) // Alt boşluk
                 .background(.ultraThinMaterial) // Blur efekt
                 .clipShape(RoundedRectangle(cornerRadius: 25, style: .continuous))
                 .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 6)
-                .padding(.horizontal, 24)
+                .padding(.horizontal, 40)
             }
             
         }
