@@ -8,7 +8,7 @@ struct DailyTasksModule: View {
             LazyVStack(alignment: .leading, spacing: 12,){
                 Section {
                     ForEach(viewModel.sortedActiveTodos){ todo in
-                            ToDoRow(todo: todo){ path.append(todo) }
+                        ToDoRow(todo: todo, mode : .compact){ path.append(todo) }
                                 .padding(.horizontal,3)
                     }
                 }

@@ -10,7 +10,7 @@ struct DailySectionView: View {
             Section {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(todo.filter{ !$0.isRoutine}) { todo in
-                            ToDoRow(todo: todo){
+                            ToDoRow(todo: todo, mode: .compact){
                                 path.append(todo)
                             }
                             .padding(.vertical,1)
