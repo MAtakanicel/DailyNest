@@ -5,7 +5,6 @@ enum ToDoRowMode{
     case detailed
 }
 
-
 struct ToDoRow: View {
     var todo: ToDo
     let mode : ToDoRowMode

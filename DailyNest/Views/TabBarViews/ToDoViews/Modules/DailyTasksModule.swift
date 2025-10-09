@@ -2,7 +2,7 @@ import SwiftUI
 
 struct DailyTasksModule: View {
     @StateObject private var viewModel = ToDoViewModel()
-   @Binding var path : [ToDo]
+    @Binding var path : [ToDo]
     var body: some View {
         ScrollView{
             LazyVStack(alignment: .leading, spacing: 12,){

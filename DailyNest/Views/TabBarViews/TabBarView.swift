@@ -7,18 +7,23 @@ enum FloatingTab: String, CaseIterable {
 }
 
 struct TabBarView: View {
+    @State private var mainPagePath: [ToDo] = []
     @State private var selectedTab: FloatingTab = .home
-    @State private var path: [ToDo] = []
     var body: some View {
-        NavigationStack(path: $path) {
             ZStack(alignment: .bottom) {
                 
                 // İçerik Alanı
-               
+                
                     switch selectedTab {
-                    case .home: MainPage(path: $path)
-                    case .agenda: AgendaView()
-                    case .profile: SettingsMainView()
+                        case .home: NavigationStack(path: $mainPagePath){
+                            MainPage(path: $mainPagePath)
+                        }
+                        case .agenda: NavigationStack(){
+                            AgendaView()
+                        }
+                        case .profile: NavigationStack(){
+                            SettingsMainView()
+                        }
                     }
                 
                 // Floating Tab Bar
@@ -35,7 +40,7 @@ struct TabBarView: View {
                 .padding(.horizontal, 40)
             }
             
-        }
+        
     }
     
     // Tek tek tab butonu
