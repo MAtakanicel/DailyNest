@@ -23,7 +23,7 @@ struct RoutineSectionView: View {
                     .listRowBackground(Color.clear)
                 }
             } header: {
-                SectionHeader(title: "GÜNLÜK RUTİNLER")
+               // SectionHeader(title: "GÜNLÜK RUTİNLER")
             }
         }
         .background {

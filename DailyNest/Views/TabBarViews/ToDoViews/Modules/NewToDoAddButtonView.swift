@@ -20,7 +20,7 @@ struct NewToDoAddButtonView: View {
                         .resizable()
                         .frame(width: 20, height: 20)
                         .font(.title2)
-                        .padding(20)
+                        .padding(15)
                         .background(Circle()
                             .fill(
                             LinearGradient(

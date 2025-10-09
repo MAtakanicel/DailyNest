@@ -37,6 +37,7 @@ struct MainPage: View {
                                            endPoint: .bottomTrailing)
                         )
                         .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2))
+                Spacer()
                 
                 NavigationLink(destination: ToDoListView()){
                     Text("Rutinlerim")
@@ -68,11 +69,12 @@ struct MainPage: View {
                 DailyTasksModule(path: $path)
                     .padding(.horizontal)
                     .padding(.bottom, 60) // Yukarı taşıma
+                
             }
             .overlay(
                 NewToDoAddButtonView()
-                    .padding(.trailing,5)
-                    .padding(.bottom,60),
+                    .padding(.trailing,8)
+                    .padding(.bottom,50),
                 alignment: .bottomTrailing
             )//ZStack
             .background(AppColors.background)

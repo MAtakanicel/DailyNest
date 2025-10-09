@@ -20,7 +20,7 @@ struct DailySectionView: View {
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
             } header: {
-                SectionHeader(title: "Bugünkü Görevlerim")
+              //  SectionHeader(title: "Bugünkü Görevlerim")
 
                     
             }

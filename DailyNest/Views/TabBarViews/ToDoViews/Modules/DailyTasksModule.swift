@@ -7,11 +7,9 @@ struct DailyTasksModule: View {
         ScrollView{
             LazyVStack(alignment: .leading, spacing: 12,){
                 Section {
-                    ForEach(viewModel.sortedTodos){ todo in
-                        
-                        ToDoRow(todo: todo){ path.append(todo) }
-                            .padding(.horizontal,3)
-                        
+                    ForEach(viewModel.sortedActiveTodos){ todo in
+                            ToDoRow(todo: todo){ path.append(todo) }
+                                .padding(.horizontal,3)
                     }
                 }
             }
@@ -19,6 +17,7 @@ struct DailyTasksModule: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: 500)
         .background(GradientSectionBackground())
+        .padding(.bottom,10)
     }
 }
 
