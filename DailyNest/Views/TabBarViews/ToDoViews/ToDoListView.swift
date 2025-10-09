@@ -2,16 +2,11 @@
 import SwiftUI
 
 struct ToDoListView: View {
-    @StateObject private var todoVM = ToDoViewModel()
+    @StateObject private var toDoViewModel = ToDoViewModel()
     @Binding var path: [ToDo]
     var body: some View {
-        VStack(spacing: 10){
-            GreetingsModule()
-                .padding(.leading,25)
-                .padding(.top, 10)
-                .padding(.bottom,20)
-            
-            VStack{
+        VStack(alignment:.leading,spacing: 10){
+
                 Text("Rutimlerim")
                     .bold()
                     .font(.title)
@@ -20,17 +15,27 @@ struct ToDoListView: View {
                 ScrollView{
                     LazyVStack{
                         Section{
-                            ForEach(todoVM.todos){ todo in
+                            ForEach(toDoViewModel.todos){ todo in
                                 ToDoRow(todo: todo,mode: .detailed,onTap: {path.append(todo)})
+                                    .padding(.bottom, 5)
                             }
                         }
                     }
                 }
-            }
+                .padding()
+                .background(GradientSectionBackground())
+            
             
         }
+        .padding()
         .background(AppColors.background)
-        
+        .toolbar{
+            ToolbarItem(placement: .principal){
+                VStack{
+                    
+                }
+            }
+        }
         
         
     }

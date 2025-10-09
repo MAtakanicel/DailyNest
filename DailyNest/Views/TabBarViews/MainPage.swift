@@ -30,14 +30,7 @@ struct MainPage: View {
                             .foregroundColor(AppColors.primaryText)
                     }
                     .frame(width: 150, height: 50)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(
-                                LinearGradient(colors: [.blue.opacity(0.15), .purple.opacity(0.1)],
-                                               startPoint: .topLeading,
-                                               endPoint: .bottomTrailing)
-                            )
-                            .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2))
+                    .background(ToDoCategoryButtonBackGround(todoCategory: .daily))
                     Spacer()
                     
                     NavigationLink(destination: ToDoListView(path: $path)){
@@ -48,15 +41,7 @@ struct MainPage: View {
                         
                     }
                     .frame(width: 150, height: 50)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(
-                                LinearGradient(colors: [.blue.opacity(0.15), .purple.opacity(0.1)],
-                                               startPoint: .topLeading,
-                                               endPoint: .bottomTrailing)
-                            )
-                            .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2))
-                    
+                    .background(ToDoCategoryButtonBackGround(todoCategory: .routine))
                     Spacer()
                 }
                 
