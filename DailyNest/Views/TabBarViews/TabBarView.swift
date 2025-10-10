@@ -7,7 +7,7 @@ enum FloatingTab: String, CaseIterable {
 }
 
 struct TabBarView: View {
-    @State private var mainPagePath: [ToDo] = []
+
     @State private var selectedTab: FloatingTab = .home
     var body: some View {
             ZStack(alignment: .bottom) {
@@ -15,8 +15,8 @@ struct TabBarView: View {
                 // İçerik Alanı
                 
                     switch selectedTab {
-                        case .home: NavigationStack(path: $mainPagePath){
-                            MainPage(path: $mainPagePath)
+                        case .home: NavigationStack{
+                            MainPage()
                         }
                         case .agenda: NavigationStack(){
                             AgendaView()

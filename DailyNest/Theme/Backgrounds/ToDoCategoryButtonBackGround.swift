@@ -4,11 +4,14 @@ import SwiftUI
 enum ToDoCategory{
     case routine
     case daily
+    case row
+    case detailedIsDone
+    case detailedNotDone
 }
 
-struct ToDoCategoryButtonBackGround: View {
+struct ToDoButtonsBackgrounds: View {
     @Environment(\.colorScheme) private var colorScheme
-    @State var todoCategory: ToDoCategory
+    let todoCategory: ToDoCategory
     var body: some View {
         
         switch todoCategory {
@@ -20,7 +23,7 @@ struct ToDoCategoryButtonBackGround: View {
                                        startPoint: .leading,
                                        endPoint: .trailing)
                     )
-                    .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
+                    .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
             }else{
                 RoundedRectangle(cornerRadius: 16)
                     .fill(LinearGradient(colors: [.blue.opacity(0.35),.accentColor.opacity(0.2)],
@@ -28,7 +31,7 @@ struct ToDoCategoryButtonBackGround: View {
                                          endPoint: .trailing)
                     ).overlay(
                         RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.white.opacity(0.05))
+                            .stroke(Color.white.opacity(0.1),lineWidth: 2)
                     )
             }
             
@@ -41,7 +44,7 @@ struct ToDoCategoryButtonBackGround: View {
                                        startPoint: .leading,
                                        endPoint: .trailing)
                     )
-                    .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
+                    .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
             }else{
                 RoundedRectangle(cornerRadius: 16)
                     .fill(
@@ -50,14 +53,46 @@ struct ToDoCategoryButtonBackGround: View {
                                        endPoint: .trailing)
                     ).overlay(
                         RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.white.opacity(0.05))
+                            .stroke(Color.white.opacity(0.1),lineWidth: 2)
                     )
             }
+            
+        case .row:
+            if colorScheme == .light{
+                LinearGradient(colors: [AppColors.accentBlue.opacity(0.2),
+                                        .purple.opacity(0.1)], startPoint: .topLeading,
+                               endPoint: .bottomTrailing)
+                .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
+            }else{
+                LinearGradient(colors: [AppColors.accentBlue.opacity(0.3),
+                                        .purple.opacity(0.15)], startPoint: .topLeading,
+                               endPoint: .bottomTrailing)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color.white.opacity(0.1),lineWidth: 2)
+                )
+            }
+            
+        case .detailedIsDone:
+            if colorScheme == .light{
+                
+            }else{
+                
+            }
+            
+            
+        case .detailedNotDone:
+            if colorScheme == .light{
+                
+            }else{
+                
+            }
+            
         }
        
     }
 }
 
 #Preview {
-    ToDoCategoryButtonBackGround(todoCategory: .routine)
+    ToDoButtonsBackgrounds(todoCategory: .routine)
 }

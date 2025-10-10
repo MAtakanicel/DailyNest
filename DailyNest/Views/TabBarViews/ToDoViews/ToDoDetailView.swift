@@ -3,7 +3,6 @@ import SwiftUI
 
 struct ToDoDetailView: View {
     let todo: ToDo
-    
     var body: some View {
         VStack(spacing: 16) {
             Text(todo.title)

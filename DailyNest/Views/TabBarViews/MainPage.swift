@@ -7,8 +7,6 @@ struct MainPage: View {
     @StateObject private var viewModel = MainPageViewModel()
     @State private var showRoutines: Bool = true
     @State private var showToDos: Bool = true
-    @Binding var path: [ToDo]
-    
     var body: some View {
         
             VStack(alignment: .leading, spacing: 10) {
@@ -16,24 +14,24 @@ struct MainPage: View {
                     .padding(.leading,25)
                     .padding(.top, 10)
                 
-                ProgressCard()//verileri statik şu an, gerçek veriler girilince düzenlenmeli !
+                ProgressCard(config: .forType(.allToDo))//verileri statik şu an, gerçek veriler girilince düzenlenmeli !
                     .padding(.horizontal,30)
                     .padding(.top, 10)
                 
                 //Kategori gidişleri
                 HStack {
                     Spacer()
-                    NavigationLink(destination: ToDoListView(path:$path)){
+                    NavigationLink(destination: ToDoListView(mode: .dailyPage)){
                         Text("Günlük İşlerim")
                             .padding()
                             .font(.headline)
                             .foregroundColor(AppColors.primaryText)
                     }
                     .frame(width: 150, height: 50)
-                    .background(ToDoCategoryButtonBackGround(todoCategory: .daily))
+                    .background(ToDoButtonsBackgrounds(todoCategory: .daily))
                     Spacer()
                     
-                    NavigationLink(destination: ToDoListView(path: $path)){
+                    NavigationLink(destination: ToDoListView(mode: .routinePage)){
                         Text("Rutinlerim")
                             .font(.headline)
                             .padding()
@@ -41,7 +39,7 @@ struct MainPage: View {
                         
                     }
                     .frame(width: 150, height: 50)
-                    .background(ToDoCategoryButtonBackGround(todoCategory: .routine))
+                    .background(ToDoButtonsBackgrounds(todoCategory: .routine))
                     Spacer()
                 }
                 
@@ -52,7 +50,7 @@ struct MainPage: View {
                 
                 //Görevlerim Kısımı
                 VStack(spacing: 0) {
-                    DailyTasksModule(path: $path)
+                    DailyTasksModule()
                         .padding(.horizontal)
                         .padding(.bottom, 60) // Yukarı taşıma
                     

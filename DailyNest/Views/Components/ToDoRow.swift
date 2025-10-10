@@ -8,19 +8,15 @@ enum ToDoRowMode{
 struct ToDoRow: View {
     var todo: ToDo
     let mode : ToDoRowMode
-    let onTap: (() -> Void)?
-
-
     var body: some View {
             HStack {
-                Text(todo.title)
-                    .foregroundColor(AppColors.cardText)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(8)
-                    .onTapGesture {
-                        onTap?()
-                    }
-                
+                NavigationLink(destination: ToDoDetailView(todo: todo)) {
+                    Text(todo.title)
+                        .foregroundColor(AppColors.cardText)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(8)
+                }
+   
                 
                 switch mode{
                 case .compact: Button(action: { },label:{
@@ -28,8 +24,9 @@ struct ToDoRow: View {
                         .font(.caption.bold())
                         .foregroundColor(AppColors.primaryText)
                         .padding(6)
+                        .padding(.horizontal,2)
                 })
-                .background(LinearGradient(colors: [AppColors.accentBlue.opacity(0.2), .purple.opacity(0.1)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .background(ToDoButtonsBackgrounds(todoCategory: .row))
                 .cornerRadius(12)
                 .padding(.trailing,15)
                     
@@ -50,6 +47,7 @@ struct ToDoRow: View {
             .background(AppColors.cardBackGround)
             .cornerRadius(16)
             .shadow(color: .gray.opacity(0.25), radius: 2, x: 0, y: 2)
+            .navigationDestination(for: ToDo.self){ todo in ToDoDetailView(todo: todo) }
 
 
     }
