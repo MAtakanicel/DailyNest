@@ -19,6 +19,7 @@ final class ToDoViewModel : ObservableObject {
         routineTodos.filter{ !$0.isCompleted }
     }
     
+
     var sortedTodos : [ToDo] {
         todos.sorted { a, b in
             if a.isRoutine != b.isRoutine {
@@ -29,25 +30,12 @@ final class ToDoViewModel : ObservableObject {
         }
     }
     
-    var activeTodos : [ToDo] {
+    var mainPageToDos : [ToDo] {
         sortedTodos.filter{ !$0.isCompleted }
     }
     
     var completedTodos : [ToDo] {
         sortedTodos.filter{ $0.isCompleted }
     }
-    
-    //Rutinler başta, son eklenen üstte ve sadec aktifler
-    var sortedActiveTodos : [ToDo] {
-        activeTodos.sorted { a, b in
-            if a.isRoutine != b.isRoutine {
-                return a.isRoutine && !b.isRoutine
-            }else {
-                return !a.isCompleted && b.isCompleted
-            }
-        }
-    }
-    
-    
-    
+
 }

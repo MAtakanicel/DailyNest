@@ -4,6 +4,10 @@ enum ToDoRowMode{
     case compact
     case detailed
 }
+enum toDoState{
+    case active
+    case completed
+}
 
 struct ToDoRow: View {
     var todo: ToDo

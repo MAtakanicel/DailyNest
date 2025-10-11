@@ -31,15 +31,15 @@ final class ProgressCardViewModel : ObservableObject{
         switch type{
         case .allToDo:
             title = "Bugünkü İlerlemem"
-            gradient = [AppColors.accentBlue, .white]
+            gradient = [.blue.opacity(0.8), .purple.opacity(0.8)]
             
         case .dailyToDo:
             title = "Bugünün Görevleri"
-            gradient = [.purple.opacity(0.8),.pink.opacity(0.2)]
+            gradient = [.purple.opacity(0.7),.pink.opacity(0.3)]
             
         case .routineToDo:
             title = "Bugünün Rutinleri"
-            gradient = [.blue.opacity(0.8), AppColors.accentBlue.opacity(0.2)]
+            gradient = [.blue.opacity(0.7), AppColors.accentBlue.opacity(0.3)]
         }
         
         return ProgressCardConfig(

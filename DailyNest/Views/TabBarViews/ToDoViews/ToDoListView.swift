@@ -6,12 +6,17 @@ enum Mode{
     case dailyPage
 }
 
+enum ToDoFilter: String, CaseIterable{
+    case active = "Aktifler"
+    case all = "Tümü"
+}
+
 struct ToDoListView: View {
     let mode: Mode
     @StateObject private var toDoViewModel = ToDoViewModel()
     @StateObject private var mainPageViewModel = MainPageViewModel()
     @StateObject private var progressCardViewModel = ProgressCardViewModel()
-    @State private var showCompleted: Bool = false
+    @State private var selectFilter : ToDoFilter = .all
 
     var progressConfig : ProgressCardConfig{
         switch mode{
@@ -26,16 +31,18 @@ struct ToDoListView: View {
     var todos: [ToDo] {
         switch mode {
         case .routinePage:
-            if showCompleted{
-                return toDoViewModel.routineTodos
-            }else{
+            switch selectFilter {
+            case .active:
                 return toDoViewModel.activeRoutineTodos
+            case .all:
+               return toDoViewModel.routineTodos
             }
         case .dailyPage:
-            if showCompleted{
-                return toDoViewModel.dailyTodos
-            }else{
+            switch selectFilter {
+            case .active:
                 return toDoViewModel.activeDailyTodos
+            case .all:
+                return toDoViewModel.dailyTodos
             }
         }
     }
@@ -43,9 +50,9 @@ struct ToDoListView: View {
     var title: String{
         switch mode{
         case .dailyPage:
-            return "Bugünün görevleri"
+            return " Görevlerim"
         case .routinePage:
-            return "Bugünün rutinleri"
+            return "Rutinlerim"
         }
     }
     
@@ -89,8 +96,14 @@ struct ToDoListView: View {
             ProgressCard(config: progressConfig)
                 .padding(.bottom,15)
             
-            
-            
+            Picker("Filtre",selection: $selectFilter){
+                ForEach(ToDoFilter.allCases, id: \.self){ filter in
+                    Text(filter.rawValue)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding(.bottom,10)
+  
             ScrollView{
                 LazyVStack{
                     Section{

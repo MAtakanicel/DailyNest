@@ -22,15 +22,14 @@ struct ProgressCard: View {
                     ZStack{
                         Circle()
                             .stroke(lineWidth: 8)
-                            .foregroundColor(AppColors.accentBlue)
+                            .foregroundColor(.white)
                         
                         Circle()
                             .trim(from: 0, to: config.progress)
                             .stroke(
-                                LinearGradient(
+                                AngularGradient(
                                     colors: config.progressColor ,
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing),
+                                    center: .top),
                                 style: StrokeStyle(lineWidth: 8, lineCap: .round)
                             )
                             .rotationEffect(.degrees(-90))
@@ -58,6 +57,14 @@ struct ProgressCard: View {
     }
 }
 
-#Preview {
-    TabBarView()
+struct ProgressCard_Previews: PreviewProvider {
+    static var vm = ProgressCardViewModel()
+    static var previews: some View {
+        VStack(spacing: 30){
+            ProgressCard(config: vm.config(for: .allToDo))
+            ProgressCard(config: vm.config(for: .dailyToDo))
+            ProgressCard(config: vm.config(for: .routineToDo))
+        }.padding(20)
+            .background(AppColors.background)
+    }
 }
