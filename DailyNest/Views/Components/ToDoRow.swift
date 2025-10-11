@@ -23,7 +23,8 @@ struct ToDoRow: View {
    
                 
                 switch mode{
-                case .compact: Button(action: { },label:{
+                case .compact:
+                    Button(action: { },label:{
                     Text("Tamamla")
                         .font(.caption.bold())
                         .foregroundColor(AppColors.primaryText)
@@ -35,23 +36,21 @@ struct ToDoRow: View {
                 .padding(.trailing,15)
                     
                 case .detailed:
-                    if !todo.isCompleted{
-                        
-                    
-                    }else{
                         Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
                             .resizable()
                             .frame(width: 20, height: 20)
-                            .foregroundColor(AppColors.buttonTapped)
+                            .foregroundColor(todo.isCompleted ? AppColors.checkmarkGreen : AppColors.checkmarkRed)
                             .padding(.horizontal)
-                     
-                    }
+
                 }
             }
-            .background(AppColors.cardBackGround)
+            .background(todo.isCompleted ?
+                CompanentBackgrounds(component: .toDoCellComplited):
+                CompanentBackgrounds(component: .toDoCellNotComplited)
+            )
             .cornerRadius(16)
             .shadow(color: .gray.opacity(0.25), radius: 2, x: 0, y: 2)
-            .navigationDestination(for: ToDo.self){ todo in ToDoDetailView(todo: todo) }
+
 
 
     }

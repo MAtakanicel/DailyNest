@@ -26,20 +26,20 @@ final class ProgressCardViewModel : ObservableObject{
         let percentString = "\(Int(progress * 100))%"
         
         let title: String
-        let gradient: [Color]
+        let color: [Color]
         
         switch type{
         case .allToDo:
             title = "Bugünkü İlerlemem"
-            gradient = [.blue.opacity(0.8), .purple.opacity(0.8)]
+            color = [AppColors.progressBlue]
             
         case .dailyToDo:
             title = "Bugünün Görevleri"
-            gradient = [.purple.opacity(0.7),.pink.opacity(0.3)]
+            color = [AppColors.progressPurple]
             
         case .routineToDo:
             title = "Bugünün Rutinleri"
-            gradient = [.blue.opacity(0.7), AppColors.accentBlue.opacity(0.3)]
+            color = [AppColors.progressGreen]
         }
         
         return ProgressCardConfig(
@@ -47,10 +47,21 @@ final class ProgressCardViewModel : ObservableObject{
             progressPercentage: percentString,
             progress: progress,
             progressText: "\(completedCount) / \(totalCount) tamamlandı.",
-            progressColor: gradient
+            progressColor: color
         )
     }
    
 }
 
 
+struct ProgressCard_Previewss: PreviewProvider {
+    static var vm = ProgressCardViewModel()
+    static var previews: some View {
+        VStack(spacing: 30){
+            ProgressCard(config: vm.config(for: .allToDo))
+            ProgressCard(config: vm.config(for: .dailyToDo))
+            ProgressCard(config: vm.config(for: .routineToDo))
+        }.padding(20)
+            .background(AppColors.background)
+    }
+}

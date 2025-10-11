@@ -5,8 +5,6 @@ enum ToDoCategory{
     case routine
     case daily
     case row
-    case detailedIsDone
-    case detailedNotDone
 }
 
 struct ToDoButtonsBackgrounds: View {
@@ -19,14 +17,14 @@ struct ToDoButtonsBackgrounds: View {
             if colorScheme == .light{
                 RoundedRectangle(cornerRadius: 16)
                     .fill(
-                        LinearGradient(colors: [.blue.opacity(0.2), .accentColor.opacity(0.05)],
+                        LinearGradient(colors: [AppColors.progressGreen.opacity(0.2),.mint.opacity(0.05)],
                                        startPoint: .leading,
                                        endPoint: .trailing)
                     )
                     .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
             }else{
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(LinearGradient(colors: [.blue.opacity(0.35),.accentColor.opacity(0.2)],
+                    .fill(LinearGradient(colors: [AppColors.progressGreen.opacity(0.4),.mint.opacity(0.15)],
                                          startPoint: .leading,
                                          endPoint: .trailing)
                     ).overlay(
@@ -59,13 +57,12 @@ struct ToDoButtonsBackgrounds: View {
             
         case .row:
             if colorScheme == .light{
-                LinearGradient(colors: [AppColors.accentBlue.opacity(0.2),
-                                        .purple.opacity(0.1)], startPoint: .topLeading,
+                LinearGradient(colors: [.purple.opacity(0.2),.mint.opacity(0.15)],
+                               startPoint: .topLeading,
                                endPoint: .bottomTrailing)
                 .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
             }else{
-                LinearGradient(colors: [AppColors.accentBlue.opacity(0.3),
-                                        .purple.opacity(0.15)], startPoint: .topLeading,
+                LinearGradient(colors: [.purple.opacity(0.25), .mint.opacity(0.15)], startPoint: .topLeading,
                                endPoint: .bottomTrailing)
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
@@ -73,26 +70,19 @@ struct ToDoButtonsBackgrounds: View {
                 )
             }
             
-        case .detailedIsDone:
-            if colorScheme == .light{
-                
-            }else{
-                
-            }
-            
-            
-        case .detailedNotDone:
-            if colorScheme == .light{
-                
-            }else{
-                
-            }
             
         }
        
     }
 }
 
-#Preview {
-    ToDoButtonsBackgrounds(todoCategory: .routine)
+struct ToDoCategoryButtonBackGrounds_Previews : PreviewProvider {
+    static var todo : [ToDo] = MockData.mockData
+    static var previews: some View {
+    
+        MainPage()
+        
+    }
+    
 }
+

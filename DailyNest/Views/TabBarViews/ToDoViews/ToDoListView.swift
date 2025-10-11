@@ -79,13 +79,13 @@ struct ToDoListView: View {
         VStack(alignment:.leading,spacing: 0){
           
         
-            Text(title)
+      /*      Text(title)
                 .font(.title2.bold())
                 .foregroundColor(AppColors.primaryText)
                 .padding(.leading,10)
                 .padding(.bottom,5)
-                .padding(.top,15)
-            
+
+       */
             Text(description)
                 .font(.subheadline)
                 .foregroundColor(AppColors.secondaryText)
@@ -102,8 +102,8 @@ struct ToDoListView: View {
                 }
             }
             .pickerStyle(.segmented)
-            .padding(.bottom,10)
-  
+            .padding(.bottom,5)
+            .padding(.horizontal,40)
             ScrollView{
                 LazyVStack{
                     Section{
@@ -116,16 +116,18 @@ struct ToDoListView: View {
             }
             .padding()
             .background(background)
-            
+            .padding(.bottom,50)
             
             
         }
         .padding(20)
         .background(AppColors.background)
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 #Preview {
-    ToDoListView(mode: .dailyPage)
+    ToDoListView(mode: .routinePage)
 }
 

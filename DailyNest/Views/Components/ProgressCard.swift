@@ -53,7 +53,7 @@ struct ProgressCard: View {
                 Spacer()
             }
             .padding(25)
-            .background(CompanontBackgrounds(component: .progressCard))
+            .background(CompanentBackgrounds(component: .progressCard))
     }
 }
 

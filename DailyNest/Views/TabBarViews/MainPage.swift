@@ -62,7 +62,6 @@ struct MainPage: View {
                         .padding(.bottom,50),
                     alignment: .bottomTrailing
                 )//ZStack
-                .navigationDestination(for: ToDo.self){ todo in ToDoDetailView(todo: todo) }
             }.background(AppColors.background)
         
     }//Body

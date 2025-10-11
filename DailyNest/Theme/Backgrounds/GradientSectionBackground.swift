@@ -49,15 +49,17 @@ struct GradientSectionBackground: View {
                 if colorScheme == .light {
                     RoundedRectangle(cornerRadius: 30)
                         .fill(
-                            LinearGradient(colors: [.blue.opacity(0.07), .accentColor.opacity(0.04) ],
+                            LinearGradient(colors: [.green.opacity(0.1),.mint.opacity(0.1)],
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing)
                         )
                         .shadow(color: .black.opacity(0.2), radius: 5)
+                        .background(.ultraThinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 30))
                 }else{
                     RoundedRectangle(cornerRadius: 30)
                         .fill(
-                            LinearGradient(colors: [.blue.opacity(0.1), .accentColor.opacity(0.05) ],
+                            LinearGradient(colors: [.green.opacity(0.06),.mint.opacity(0.04) ],
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing)
                         )
@@ -73,7 +75,7 @@ struct GradientSectionBackground: View {
                 if colorScheme == .light {
                     RoundedRectangle(cornerRadius: 30)
                         .fill(
-                            LinearGradient(colors: [.purple.opacity(0.06), .pink.opacity(0.03)],
+                            LinearGradient(colors: [.purple.opacity(0.12), .purple.opacity(0.06)],
                                            startPoint: .topLeading,
                                            endPoint: .bottomTrailing)
                         )
@@ -82,7 +84,7 @@ struct GradientSectionBackground: View {
                 }else{
                     RoundedRectangle(cornerRadius: 30)
                         .fill(
-                            LinearGradient(colors: [.purple.opacity(0.04), .pink.opacity(0.02)],
+                            LinearGradient(colors: [.purple.opacity(0.03), .purple.opacity(0.02)],
                                            startPoint: .topLeading,
                                            endPoint: .bottomTrailing)
                         )
@@ -124,5 +126,5 @@ struct GradientSectionBackground: View {
     }
 }
 #Preview {
-    ToDoListView(mode: .dailyPage)
+    ToDoListView( mode: .dailyPage)
 }

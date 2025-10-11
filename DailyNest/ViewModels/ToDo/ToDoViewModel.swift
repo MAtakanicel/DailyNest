@@ -2,13 +2,23 @@ import Foundation
 
 final class ToDoViewModel : ObservableObject {
     @Published var todos  = MockData.mockData
+   
+    var sortedTodos : [ToDo] {
+        todos.sorted { a, b in
+            if a.isRoutine != b.isRoutine {
+                return a.isRoutine && !b.isRoutine
+            }else{
+                return !a.isCompleted && b.isCompleted
+            }
+        }
+    }
 
     var routineTodos : [ToDo] {
-        todos.filter{ $0.isRoutine }
+        sortedTodos.filter{ $0.isRoutine }
     }
     
     var dailyTodos : [ToDo] {
-        todos.filter{ !$0.isRoutine }
+        sortedTodos.filter{ !$0.isRoutine }
     }
     
     var activeDailyTodos : [ToDo] {
@@ -20,15 +30,7 @@ final class ToDoViewModel : ObservableObject {
     }
     
 
-    var sortedTodos : [ToDo] {
-        todos.sorted { a, b in
-            if a.isRoutine != b.isRoutine {
-                return a.isRoutine && !b.isRoutine
-            }else{
-                return !a.isCompleted && b.isCompleted
-            }
-        }
-    }
+   
     
     var mainPageToDos : [ToDo] {
         sortedTodos.filter{ !$0.isCompleted }
