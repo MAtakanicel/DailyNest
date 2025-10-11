@@ -23,5 +23,5 @@ struct ToDoDetailView: View {
 }
 
 #Preview {
-    ToDoDetailView(todo: ToDo(title: "Deneme", isDone: true, isRoutine: false))
+    ToDoDetailView(todo: ToDo(title: "Deneme", isCompleted: true, isRoutine: false))
 }

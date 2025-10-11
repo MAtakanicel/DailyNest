@@ -31,11 +31,11 @@ struct ToDoRow: View {
                 .padding(.trailing,15)
                     
                 case .detailed:
-                    if !todo.isDone{
+                    if !todo.isCompleted{
                         
                     
                     }else{
-                        Image(systemName: todo.isDone ? "checkmark.circle.fill" : "circle")
+                        Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
                             .resizable()
                             .frame(width: 20, height: 20)
                             .foregroundColor(AppColors.buttonTapped)

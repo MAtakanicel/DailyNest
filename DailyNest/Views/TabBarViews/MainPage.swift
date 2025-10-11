@@ -5,6 +5,7 @@ import Combine
 
 struct MainPage: View {
     @StateObject private var viewModel = MainPageViewModel()
+    @StateObject private var progressCardViewModel = ProgressCardViewModel()
     @State private var showRoutines: Bool = true
     @State private var showToDos: Bool = true
     var body: some View {
@@ -14,7 +15,7 @@ struct MainPage: View {
                     .padding(.leading,25)
                     .padding(.top, 10)
                 
-                ProgressCard(config: .forType(.allToDo))//verileri statik şu an, gerçek veriler girilince düzenlenmeli !
+                ProgressCard(config: progressCardViewModel.config(for: .allToDo))
                     .padding(.horizontal,30)
                     .padding(.top, 10)
                 
