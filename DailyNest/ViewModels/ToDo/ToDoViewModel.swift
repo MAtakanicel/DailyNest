@@ -42,3 +42,10 @@ final class ToDoViewModel : ObservableObject {
     
 
 }
+
+
+/*
+
+ Sıralama Ölçütü-> Hatırlatıcı (Tarihe yaklaştıkça yukarı) > Öncelik (yüksekten düşüğe) > Rutin > Görev > Tamamlanmış
+ 
+ */

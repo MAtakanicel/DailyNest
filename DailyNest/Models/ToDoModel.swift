@@ -24,8 +24,11 @@ struct ToDo : Identifiable, Codable, Equatable, Hashable{
     var isCompleted:Bool // tmamlanma
     var completedAt:Date? //Belki
       
-    var priority: ToDoPriority? // Bildirim veya hatırlatıcı için
-
+    var priority: ToDoPriority? //Sıralama için
+    
+    var reminderDate: Date?
+    var isReminderOn: Bool
+    
     init(
         id: UUID,
         title: String,
@@ -37,7 +40,9 @@ struct ToDo : Identifiable, Codable, Equatable, Hashable{
         routineDays: [WeekDay]? = nil,
         isCompleted: Bool,
         completedAt: Date? = nil,
-        priority: ToDoPriority? = nil
+        priority: ToDoPriority? = nil,
+        reminderDate: Date? = nil,
+        isReminderOn: Bool = false
     ) {
         self.id = id
         self.title = title
@@ -50,5 +55,7 @@ struct ToDo : Identifiable, Codable, Equatable, Hashable{
         self.isCompleted = isCompleted
         self.completedAt = completedAt
         self.priority = priority
+        self.reminderDate = reminderDate
+        self.isReminderOn = isReminderOn
     }
 }
