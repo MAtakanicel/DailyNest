@@ -29,7 +29,7 @@
 
 
 ## Models
-- [ ] ToDoModel
+- [√] ToDoModel
 
 ## Components
 ### CompnentViews

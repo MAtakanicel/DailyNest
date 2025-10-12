@@ -17,6 +17,7 @@ struct ToDoListView: View {
     @StateObject private var mainPageViewModel = MainPageViewModel()
     @StateObject private var progressCardViewModel = ProgressCardViewModel()
     @State private var selectFilter : ToDoFilter = .all
+    @State private var searchText: String = ""
 
     var progressConfig : ProgressCardConfig{
         switch mode{
@@ -47,6 +48,16 @@ struct ToDoListView: View {
         }
     }
     
+    var searchedTodos: [ToDo] {
+        if searchText.isEmpty{
+            return todos
+        }else{
+            return todos.filter{
+                $0.title.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+    
     var title: String{
         switch mode{
         case .dailyPage:
@@ -56,12 +67,12 @@ struct ToDoListView: View {
         }
     }
     
-    var description: String{
+    var placeholder: String{
         switch mode{
         case .dailyPage:
-            return "Bu güne ait tüm görevleriniz."
+            return "Görev ara"
         case .routinePage:
-            return "Bu güne ait tüm rutinleriniz."
+            return "Rutin ara"
         }
     }
     
@@ -77,20 +88,6 @@ struct ToDoListView: View {
     
     var body: some View {
         VStack(alignment:.leading,spacing: 0){
-          
-        
-      /*      Text(title)
-                .font(.title2.bold())
-                .foregroundColor(AppColors.primaryText)
-                .padding(.leading,10)
-                .padding(.bottom,5)
-
-       */
-            Text(description)
-                .font(.subheadline)
-                .foregroundColor(AppColors.secondaryText)
-                .padding(.leading,20)
-                .padding(.bottom,20)
             
             
             ProgressCard(config: progressConfig)
@@ -107,13 +104,14 @@ struct ToDoListView: View {
             ScrollView{
                 LazyVStack{
                     Section{
-                        ForEach(todos){ todo in
+                        ForEach(searchedTodos){ todo in
                             ToDoRow(todo: todo,mode: .detailed)
                                 .padding(.bottom, 5)
                         }
                     }
                 }
             }
+            .searchable(text: $searchText,placement: .navigationBarDrawer(displayMode: . always),prompt: placeholder)
             .padding()
             .background(background)
             .padding(.bottom,50)

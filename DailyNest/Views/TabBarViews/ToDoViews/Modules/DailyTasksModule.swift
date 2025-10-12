@@ -6,7 +6,7 @@ struct DailyTasksModule: View {
         ScrollView{
             LazyVStack(alignment: .leading, spacing: 12,){
                 Section {
-                    ForEach(viewModel.mainPageToDos){ todo in
+                    ForEach(viewModel.allActiveToDos){ todo in
                         ToDoRow(todo: todo, mode : .compact)
                                 .padding(.horizontal,3)
                     }

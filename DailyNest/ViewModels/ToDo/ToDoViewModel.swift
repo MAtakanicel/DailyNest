@@ -3,6 +3,7 @@ import Foundation
 final class ToDoViewModel : ObservableObject {
     @Published var todos  = MockData.mockData
    
+    //Önce rutin, Tamamlanmışlar en altta
     var sortedTodos : [ToDo] {
         todos.sorted { a, b in
             if a.isRoutine != b.isRoutine {
@@ -12,32 +13,32 @@ final class ToDoViewModel : ObservableObject {
             }
         }
     }
-
+    //sadece rutin
     var routineTodos : [ToDo] {
         sortedTodos.filter{ $0.isRoutine }
     }
-    
+    //sadece rutin olmayan
     var dailyTodos : [ToDo] {
         sortedTodos.filter{ !$0.isRoutine }
     }
-    
+    //Sadece aktif rutin olmayan
     var activeDailyTodos : [ToDo] {
         dailyTodos.filter{ !$0.isCompleted }
     }
-    
+    //Sadece aktif rutin
     var activeRoutineTodos : [ToDo] {
         routineTodos.filter{ !$0.isCompleted }
     }
     
-
-   
-    
-    var mainPageToDos : [ToDo] {
+    //Tüm aktif ToDolar
+    var allActiveToDos : [ToDo] {
         sortedTodos.filter{ !$0.isCompleted }
     }
-    
+    //Tüm tamamlanmış ToDolar
     var completedTodos : [ToDo] {
         sortedTodos.filter{ $0.isCompleted }
     }
+    
+    
 
 }
