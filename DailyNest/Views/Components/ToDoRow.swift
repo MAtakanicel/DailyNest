@@ -14,7 +14,7 @@ struct ToDoRow: View {
     let mode : ToDoRowMode
     var body: some View {
             HStack {
-                NavigationLink(destination: ToDoDetailView(todo: todo)) {
+                NavigationLink(destination: ToDoDetailView()) {
                     Text(todo.title)
                         .foregroundColor(AppColors.cardText)
                         .frame(maxWidth: .infinity, alignment: .leading)

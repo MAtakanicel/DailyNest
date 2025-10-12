@@ -2,7 +2,7 @@
 import SwiftUI
 
 struct ToDoDetailView: View {
-    let todo: ToDo
+    let todo: ToDo = ToDo(id: UUID(), title: "Ödev Teslimi", detail: "Proje PDF’ini yükle", date: .now.addingTimeInterval(86400 * 3), createdAt: .now, updateAt: nil, isRoutine: false, routineDays: nil, isCompleted: false, completedAt: nil, priority: .high)
     var body: some View {
         VStack(spacing: 16) {
             Text(todo.title)
@@ -23,5 +23,5 @@ struct ToDoDetailView: View {
 }
 
 #Preview {
-    ToDoDetailView(todo: ToDo(title: "Deneme", isCompleted: true, isRoutine: false))
+    ToDoDetailView()
 }

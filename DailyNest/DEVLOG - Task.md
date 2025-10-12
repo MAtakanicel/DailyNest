@@ -1,5 +1,7 @@
 # 🧾 Task Listesi
-
+- [√] -> Tamamlanmış. (Tasarım veya kodlama bitmiş. Maksimum ufak düzenlemeler.)
+- [x] -> Dosya yok. (açılması ve kodlanması lazım)
+- [ ] -> Dosya var, Daha bitmedi.
 ## Views
 - [√] TabBarView
 - [√] MainPage 

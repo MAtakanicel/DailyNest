@@ -39,12 +39,12 @@ struct RegisterFlowView: View {
                 }
                 
             case .birthdate:
-                RegisterBirthGenderView(viewModel: viewModel){
+                RegisterBirthView(viewModel: viewModel){
                     withAnimation{next()}
                 }
                 
             case .credentials:
-                RegisterCredentialsView(viewModel: viewModel){
+                RegisterFinalView(viewModel: viewModel){
                     withAnimation{ finish()}
                 }
             }
