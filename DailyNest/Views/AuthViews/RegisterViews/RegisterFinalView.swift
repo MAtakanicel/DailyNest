@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct RegisterCredentialsView: View {
+struct RegisterFinalView: View {
     @StateObject var viewModel : RegisterViewModel
     var onComplete : (() -> Void)?
     @State private var eMail : String = ""

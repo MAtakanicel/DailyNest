@@ -57,7 +57,7 @@ struct MainPage: View {
                     
                 }
                 .overlay(
-                    NewToDoAddButtonView()
+                    NewToDoAddButton()
                         .padding(.trailing,8)
                         .padding(.bottom,50),
                     alignment: .bottomTrailing

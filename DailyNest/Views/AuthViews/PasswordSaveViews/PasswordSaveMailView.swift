@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PasswordSaveMailView: View {
-    @StateObject var viewModel : ForgotPasswordViewModel
+    @StateObject var viewModel : PasswordSaveViewModel
     @State var email: String = ""
     var body: some View {
         
@@ -46,5 +46,5 @@ struct PasswordSaveMailView: View {
 }
 
 #Preview {
-    PasswordSaveMailView(viewModel: ForgotPasswordViewModel())
+    PasswordSaveMailView(viewModel: PasswordSaveViewModel())
 }

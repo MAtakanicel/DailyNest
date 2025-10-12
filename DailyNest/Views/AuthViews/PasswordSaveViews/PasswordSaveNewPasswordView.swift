@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PasswordSaveNewPasswordView: View {
-    @StateObject var viewModel = ForgotPasswordViewModel()
+    @StateObject var viewModel = PasswordSaveViewModel()
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
     var isValid: Bool{ !password.isEmpty && password == confirmPassword }

@@ -1,13 +1,7 @@
-//
-//  NewToDoAddButtonView.swift
-//  DailyNest
-//
-//  Created by Atakan İçel on 8.10.2025.
-//
 
 import SwiftUI
 
-struct NewToDoAddButtonView: View {
+struct NewToDoAddButton: View {
     var body: some View {
         VStack {
             Spacer()
@@ -40,7 +34,7 @@ struct NewToDoAddButtonView: View {
 
 #Preview {
     Group {
-        NewToDoAddButtonView()
+        NewToDoAddButton()
         TabBarView()
     }
 

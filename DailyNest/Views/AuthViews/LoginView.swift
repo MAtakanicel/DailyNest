@@ -48,7 +48,7 @@ struct LoginView: View {
                         .padding(.bottom, 5)
                     
                     NavigationLink("Şifremi unuttum?"){
-                        PasswordSaveMailView(viewModel: ForgotPasswordViewModel())
+                        PasswordSaveMailView(viewModel: PasswordSaveViewModel())
                     }
                     .foregroundColor(AppColors.secondaryText)
                     
