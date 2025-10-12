@@ -3,6 +3,7 @@ import SwiftUI
 struct GreetingsModule: View {
     @StateObject private var viewModel = MainPageViewModel()
     var body: some View {
+        
         VStack(alignment: .leading){
             Text("\(viewModel.getDaytime())  \(viewModel.userName) 👋")
                 .font(.title.bold())
@@ -12,6 +13,13 @@ struct GreetingsModule: View {
             
             Text(viewModel.updateDate())
                 .font(.subheadline)
+                .padding(.bottom,1)
+                .onAppear {
+                    print("Greetings göründü")
+                }
+                .onDisappear {
+                    print("Greetings silindi")
+                }
         }
     }
     

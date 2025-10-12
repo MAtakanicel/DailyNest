@@ -26,6 +26,7 @@
 - [ ] RegisterViewModel
 - [ ] ToDoViewModel
 - [ ] MainPageViewModel
+- [ ] NoficationViewModel
 
 
 ## Models
@@ -40,13 +41,13 @@
 - [ ] NewToDoAddButton
 - [ ] CustomButtonstyle
 - [ ] CustomTextField
+- [ ] NoficationButton
 
 ###ComponentViewModels
 - [√] ProgressBarViewModel
 - [x] StepIndicatorViewModel
 - [x] PasswordStrengthBarViewModel
-- [x] NewToDoAddButtonViewModel
-- [ ]   
+- [x] NewToDoAddButtonViewModel   
 - [ ]
 - [ ]
 

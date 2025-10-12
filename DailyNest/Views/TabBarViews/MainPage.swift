@@ -4,16 +4,23 @@ import Combine
 // TODO: İşev atamaları viewmodelden sonra yapılacak. İşlevleri atarken, view kontrollerini yap. 
 
 struct MainPage: View {
-    @StateObject private var viewModel = MainPageViewModel()
+    @StateObject private var mainVM = MainPageViewModel()
     @StateObject private var progressCardViewModel = ProgressCardViewModel()
     @State private var showRoutines: Bool = true
     @State private var showToDos: Bool = true
     var body: some View {
         
             VStack(alignment: .leading, spacing: 10) {
-                GreetingsModule()
-                    .padding(.leading,25)
-                    .padding(.top, 10)
+                
+                HStack(spacing: 0) {
+                    GreetingsModule()
+                    
+                    Spacer()
+                    
+                    NoficationButton()
+                    
+                }
+                .padding(.horizontal,20)
                 
                 ProgressCard(config: progressCardViewModel.config(for: .allToDo))
                     .padding(.horizontal,30)
@@ -63,6 +70,7 @@ struct MainPage: View {
                     alignment: .bottomTrailing
                 )//ZStack
             }.background(AppColors.background)
+            
         
     }//Body
 }//Struct
