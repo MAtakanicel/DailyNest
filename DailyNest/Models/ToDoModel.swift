@@ -1,12 +1,5 @@
 import Foundation
 
-enum WeekDay: String,Codable,CaseIterable{
-    case monday, tuesday, wednesday, thursday, friday, saturday, sunday
-}
-
-enum ToDoPriority: String,Codable,CaseIterable{
-    case high, medium, low
-}
 
 struct ToDo : Identifiable, Codable, Equatable, Hashable{
     
