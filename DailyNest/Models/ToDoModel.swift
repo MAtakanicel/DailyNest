@@ -35,8 +35,8 @@ struct ToDo : Identifiable, Codable, Equatable, Hashable{
         detail: String? = nil,
         date: Date? = nil,
         createdAt: Date,
-        updateAt: Date? = nil
-        , isRoutine: Bool,
+        updateAt: Date? = nil,
+         isRoutine: Bool,
         routineDays: [WeekDay]? = nil,
         isCompleted: Bool,
         completedAt: Date? = nil,
