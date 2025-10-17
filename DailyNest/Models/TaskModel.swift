@@ -1,9 +1,6 @@
 
 import Foundation
 
-enum ToDoPriority: String,Codable,CaseIterable{
-    case high, medium, low
-}
 
 struct Task: Schedulable {
     let id: UUID
