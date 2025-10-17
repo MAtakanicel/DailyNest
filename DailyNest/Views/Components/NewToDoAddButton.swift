@@ -2,13 +2,14 @@
 import SwiftUI
 
 struct NewToDoAddButton: View {
+    @State var isPresented: Bool = false
     var body: some View {
         VStack {
             Spacer()
             HStack {
                 Spacer()
                 Button{
-                    
+                    isPresented.toggle()
                 }label: {
                     Image(systemName: "plus")
                         .resizable()
@@ -27,6 +28,7 @@ struct NewToDoAddButton: View {
                         .foregroundColor(.white)
                 }
                 .alignmentGuide(.bottom){ _ in 0}
+                .navigationDestination(isPresented: $isPresented, destination:{ NewToDoView()})
             }//HStack
         }//VStack
     }

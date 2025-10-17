@@ -9,7 +9,7 @@ struct NoficationButton: View {
                 .foregroundColor(.blue)
                 .font(.system(size: 22))
         }
-        .badge(10, color: .red)
+     
     }
 }
 

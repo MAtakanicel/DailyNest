@@ -14,12 +14,6 @@ struct GreetingsModule: View {
             Text(viewModel.updateDate())
                 .font(.subheadline)
                 .padding(.bottom,1)
-                .onAppear {
-                    print("Greetings göründü")
-                }
-                .onDisappear {
-                    print("Greetings silindi")
-                }
         }
     }
     
