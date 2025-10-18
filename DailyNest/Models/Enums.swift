@@ -7,5 +7,11 @@ enum ToDoPriority: String,Codable,CaseIterable{
 
 
 enum WeekDay: String,Codable,CaseIterable{
-    case monday, tuesday, wednesday, thursday, friday, saturday, sunday
+    case monday
+    case tuesday
+    case wednesday
+    case thursday
+    case friday
+    case saturday
+    case sunday
 }
