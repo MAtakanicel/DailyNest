@@ -28,21 +28,25 @@ final class TaskViewModel : ObservableObject{
     func addTask(_ task : Task) async{
         let newTask = Task(
             id: UUID(),
-            description: <#T##String?#>,
-            isReminder: <#T##Bool#>,
-            title: <#T##String#>,
-            createdAt: <#T##Date#>,
-            date: <#T##Date?#>,
-            isCompleted: <#T##Bool#>,
-            completedAt: <#T##Date?#>,
-            priority: <#T##ToDoPriority?#>,
-            reminderDate: <#T##Date?#>
+            description: task.description,
+            isReminder: task.isReminder,
+            title: task.title,
+            createdAt: task.createdAt,
+            date: task.date,
+            isCompleted: task.isCompleted,
+            completedAt: task.completedAt,
+            priority: task.priority,
+            reminderDate: task.completedAt
         )
         tasks.append(newTask)
         await saveTasks()
     }
     
-    
+    func toggleIsCompleted(for task: Task) async{
+        guard let index = tasks.firstIndex(of: task) else { return }
+        tasks[index].isCompleted.toggle()
+        await saveTasks()
+    }
     
     
     

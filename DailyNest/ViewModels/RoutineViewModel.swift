@@ -40,6 +40,13 @@ final class RoutineViewModel : ObservableObject {
         await saveRoutines()
         
     }
+    
+    func toggleIsCompletedToday(for routine: Routine) async{
+        guard let index = routines.firstIndex(of: routine) else { return }
+        routines[index].isCompletedToday.toggle()
+        await saveRoutines()
+    }
+    
     // Tamamlama fonksiyonu eklenecek
     // Bildirim eklenecek
 }
