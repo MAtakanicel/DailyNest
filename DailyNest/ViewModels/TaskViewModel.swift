@@ -1,8 +1,17 @@
-//
-//  TaskViewModel.swift
-//  DailyNest
-//
-//  Created by Atakan İçel on 18.10.2025.
-//
-
+import Combine
 import Foundation
+
+
+
+@MainActor
+final class TaskViewModel : ObservableObject{
+    @Published var tasks: [Task] = []
+    
+    init() {
+        loadTasks()
+    }
+    
+    func loadTasks() {
+        tasks = Data.mockTasks
+    }
+}
