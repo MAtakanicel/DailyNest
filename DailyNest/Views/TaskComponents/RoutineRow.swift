@@ -26,22 +26,14 @@ struct RoutineRow: View {
                         .foregroundColor(AppColors.cardText)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(8)
+                        .padding(.leading,5)
                 }
                 switch mode{
                 case .compact:
-                    Button(action: { },label:{
-                        Text("Tamamla")
-                            .font(.caption.bold())
-                            .foregroundColor(AppColors.primaryText)
-                            .padding(6)
-                            .padding(.horizontal,2)
-                    })
-                    .background(ToDoButtonsBackgrounds(todoCategory: .row))
-                    .cornerRadius(12)
-                    .padding(.trailing,15)
+                    EmptyView()
                     
                 case .detailed:
-                    Image(systemName: routine.isCompletedToday ? "checkmark.circle.fill" : "circle")
+                    Image(systemName: routine.isCompletedToday ? "checkmark.circle.fill" : "")
                         .resizable()
                         .frame(width: 20, height: 20)
                         .foregroundColor(routine.isCompletedToday ? AppColors.checkmarkGreen : AppColors.checkmarkRed)
@@ -50,8 +42,8 @@ struct RoutineRow: View {
                 }
             }
             .background(routine.isCompletedToday ?
-                        CompanentBackgrounds(component: .toDoCellComplited):
-                            CompanentBackgrounds(component: .toDoCellNotComplited)
+                        ComponentBackgrounds(component: .toDoCellCompleted):
+                            ComponentBackgrounds(component: .toDoCellNotComplited)
             )
             .cornerRadius(16)
             .shadow(color: .gray.opacity(0.25), radius: 2, x: 0, y: 2)

@@ -11,7 +11,7 @@ import SwiftData
 enum FloatingTab: String, CaseIterable {
     case home = "house.fill"
     case agenda = "calendar"
-    case profile = "person.crop.circle.fill"
+    case settings = "gear"
 }
 
 struct TabBar: View {
@@ -33,7 +33,7 @@ struct TabBar: View {
                     case .agenda: NavigationStack(){
                         Agenda()
                     }
-                    case .profile: NavigationStack(){
+                    case .settings: NavigationStack(){
                         Settings()
                     }
                     }
@@ -48,7 +48,7 @@ struct TabBar: View {
                 HStack(spacing: 0) {
                     tabButton(.home)
                     tabButton(.agenda)
-                    tabButton(.profile)
+                    tabButton(.settings)
                 }
                 .padding(.top, 12)
                 .padding(.bottom, 15) // Alt boşluk

@@ -17,6 +17,7 @@ struct TaskRow: View {
                         .foregroundColor(AppColors.cardText)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(8)
+                        .padding(.leading,5)
                 }
                 switch mode{
                 case .compact:
@@ -41,8 +42,8 @@ struct TaskRow: View {
                 }
             }
             .background(task.isCompleted ?
-                        CompanentBackgrounds(component: .toDoCellComplited):
-                            CompanentBackgrounds(component: .toDoCellNotComplited)
+                        ComponentBackgrounds(component: .toDoCellCompleted):
+                            ComponentBackgrounds(component: .toDoCellNotComplited)
             )
             .cornerRadius(16)
             .shadow(color: .gray.opacity(0.25), radius: 2, x: 0, y: 2)

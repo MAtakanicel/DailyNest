@@ -3,11 +3,11 @@ import SwiftUI
 
 enum AppComponents{
     case progressCard
-    case toDoCellComplited
+    case toDoCellCompleted
     case toDoCellNotComplited
 }
 
-struct CompanentBackgrounds: View {
+struct ComponentBackgrounds: View {
     @Environment(\.colorScheme) private var colorScheme
     let component : AppComponents
     var body: some View {
@@ -25,7 +25,7 @@ struct CompanentBackgrounds: View {
                     .shadow(color: .black.opacity(0.2), radius: 6,x: 0, y: 3)
             }
             
-        case .toDoCellComplited:
+        case .toDoCellCompleted:
             if colorScheme == .light{
                 Color.black.opacity(0.05)
             }else{

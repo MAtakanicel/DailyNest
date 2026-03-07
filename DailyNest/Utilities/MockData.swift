@@ -40,7 +40,8 @@ class MockData{
                 title: "Kitap Oku 📚",
                 details: "Yatmadan önce 20 sayfa.",
                 routineDays: WeekDay.allCases, 
-                isReminderOn: false
+                isReminderOn: false,
+                
             ),
             RoutineTask(
                 title: "Su İçmeyi Unutma 💧",
@@ -73,7 +74,8 @@ class MockData{
             DailyTask(
                 title: "Kediyi Veterinere Götür 🐈",
                 date: Calendar.current.date(byAdding: .day, value: 2, to: Date())!, // 2 gün sonra
-                priority: .low
+                priority: .low,
+                
             )
         ]
         

@@ -27,13 +27,8 @@ struct MainPage: View {
                     
                     Spacer()
                     
-                    Button(action: { }) {
-                        Image(systemName: "bell")
-                            .foregroundColor(.blue)
-                            .font(.system(size: 22))
-                    }
+                    NewTaskButton(onTap: { })
 
-                    
                 }
                 .padding(.horizontal,20)
                 
@@ -70,7 +65,8 @@ struct MainPage: View {
                     .font(.headline).bold()
                     .foregroundColor(AppColors.secondaryText)
                     .padding(.leading,20)
-                
+                    
+           
                 //Görevlerim Kısımı
                 VStack(spacing: 0) {
                     MainPageTaskList()
@@ -78,13 +74,7 @@ struct MainPage: View {
                         .padding(.bottom, 60) // Yukarı taşıma
 
                 }
-           /*     .overlay(
-                    NewToDoAddButton()
-                        .padding(.trailing,8)
-                        .padding(.bottom,50),
-                    alignment: .bottomTrailing
-                )*/
-               
+                        
             }.background(AppColors.background)
             
         
@@ -92,6 +82,6 @@ struct MainPage: View {
 }//Struct
 
 #Preview {
-    MainPage()
+    TabBar()
         .modelContainer(MockData.previewContainer)
 }

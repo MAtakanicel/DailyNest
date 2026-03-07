@@ -55,7 +55,7 @@ struct TaskListView: View {
         }
     }
     
-    var filtredDailys : [DailyTask] {
+    var filteredDailys : [DailyTask] {
         
         let searchFiltered = dailyTasks.filter { task in
             searchText.isEmpty ? true : task.title.localizedCaseInsensitiveContains(searchText)
@@ -112,7 +112,7 @@ struct TaskListView: View {
                                     RoutineRow(routine: task, mode: .detailed)
                                 }
                             case .dailyPage:
-                                ForEach(filtredDailys){ task in
+                                ForEach(filteredDailys){ task in
                                     TaskRow(task: task, mode: .detailed)
                                 }
                             }
