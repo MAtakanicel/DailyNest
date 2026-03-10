@@ -10,6 +10,7 @@ import SwiftData
 
 enum FloatingTab: String, CaseIterable {
     case home = "house.fill"
+    case routine = "repeat"
     case agenda = "calendar"
     case settings = "gear"
 }
@@ -21,6 +22,14 @@ struct TabBar: View {
     @Query private var routineTasks: [RoutineTask]
 
     @State private var selectedTab: FloatingTab = .home
+    
+    @Namespace private var tabBarAnimation
+    
+    @StateObject private var homeViewModel: HomeViewModel
+    
+    init(homeViewModel: HomeViewModel ){
+        _homeViewModel = StateObject(wrappedValue: HomeViewModel())
+    }
     var body: some View {
             ZStack(alignment: .bottom) {
                 
@@ -28,7 +37,10 @@ struct TabBar: View {
                 Group{
                     switch selectedTab {
                     case .home: NavigationStack{
-                        MainPage()
+                        MainPage(vm: homeViewModel)
+                    }
+                    case .routine: NavigationStack(){
+                        RoutinesView(homeViewModel: homeViewModel)
                     }
                     case .agenda: NavigationStack(){
                         Agenda()
@@ -47,6 +59,7 @@ struct TabBar: View {
                 // Floating Tab Bar
                 HStack(spacing: 0) {
                     tabButton(.home)
+                    tabButton(.routine)
                     tabButton(.agenda)
                     tabButton(.settings)
                 }
@@ -89,7 +102,7 @@ struct TabBar: View {
                     Circle()
                         .fill(AppColors.button)
                         .frame(width: 5, height: 5)
-                        .matchedGeometryEffect(id: "TabDot", in: Namespace().wrappedValue) //Animasyon için namespace (Şimdilik basit)
+                        .matchedGeometryEffect(id: "TabDot", in: tabBarAnimation) //Animasyon için namespace (Şimdilik basit)
                 }
             }
             .foregroundColor(selectedTab == tab ? AppColors.button : .gray.opacity(0.8))
@@ -100,6 +113,6 @@ struct TabBar: View {
 }
 
 #Preview {
-    TabBar()
+    TabBar(homeViewModel: HomeViewModel())
         .modelContainer(MockData.previewContainer)
 }

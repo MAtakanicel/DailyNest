@@ -33,11 +33,13 @@ struct RoutineRow: View {
                     EmptyView()
                     
                 case .detailed:
-                    Image(systemName: routine.isCompletedToday ? "checkmark.circle.fill" : "")
-                        .resizable()
-                        .frame(width: 20, height: 20)
-                        .foregroundColor(routine.isCompletedToday ? AppColors.checkmarkGreen : AppColors.checkmarkRed)
-                        .padding(.horizontal)
+                    if routine.isCompletedToday {
+                        Image(systemName: "checkmark.circle.fill")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundColor(AppColors.checkmarkGreen)
+                            .padding(.horizontal)
+                    }
                     
                 }
             }

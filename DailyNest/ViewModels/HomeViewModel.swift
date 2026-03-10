@@ -12,7 +12,6 @@ import SwiftUI
 @MainActor
 final class HomeViewModel : ObservableObject {
     
-    let userName : String = "Atakan"
     
     func createProgressCard( dailyTasks:[DailyTask], routineTasks : [RoutineTask], type : ProgressDataType ) -> ProgressCardConfig{
         

@@ -12,7 +12,6 @@ struct MainPageTaskList: View {
     @Query(sort: \DailyTask.date, order: . reverse ) private var dailyTasks : [DailyTask]
     @Query(sort: \RoutineTask.createdAt, order: .reverse) private var routineTasks : [RoutineTask]
     
-    private let height = UIScreen.main.bounds.height * 0.6
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false){
@@ -22,11 +21,23 @@ struct MainPageTaskList: View {
                     if !todaysRoutines.isEmpty{
                         ForEach(todaysRoutines){ routine in
                             RoutineRow(routine: routine ,mode: .compact)
+                                .swipeActions(edge: .trailing){
+                                    Button{ }label:{
+                                        Label("Complete", systemImage: "checkmark")
+                                    }
+                                    .tint(.green)
+                                }
                         }
                     
                         if !todaysTasks.isEmpty{
                             ForEach(todaysTasks){ task in
                                 TaskRow(task: task, mode: .compact)
+                                    .swipeActions(edge: .trailing){
+                                        Button{ }label:{
+                                            Label("Complete", systemImage: "checkmark")
+                                        }
+                                        .tint(.green)
+                                    }
                             }
                         }
                     }
@@ -34,7 +45,7 @@ struct MainPageTaskList: View {
             }
         }
         .padding()
-        .frame(maxWidth: .infinity, maxHeight: height)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(GradientSectionBackground(viewStyle: .mainPage))
         .padding(.bottom,10)
     }

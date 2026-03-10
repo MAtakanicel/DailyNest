@@ -30,5 +30,5 @@ struct GreetingsModule: View {
 }
 
 #Preview {
-    TabBar()
+    TabBar(homeViewModel: HomeViewModel())
 }

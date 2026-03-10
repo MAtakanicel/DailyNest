@@ -21,23 +21,16 @@ struct TaskRow: View {
                 }
                 switch mode{
                 case .compact:
-                    Button(action: { },label:{
-                        Text("Tamamla")
-                            .font(.caption.bold())
-                            .foregroundColor(AppColors.primaryText)
-                            .padding(6)
-                            .padding(.horizontal,2)
-                    })
-                    .background(ToDoButtonsBackgrounds(todoCategory: .row))
-                    .cornerRadius(12)
-                    .padding(.trailing,15)
+                   EmptyView()
                     
                 case .detailed:
-                    Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
-                        .resizable()
-                        .frame(width: 20, height: 20)
-                        .foregroundColor(task.isCompleted ? AppColors.checkmarkGreen : AppColors.checkmarkRed)
-                        .padding(.horizontal)
+                    if task.isCompleted {
+                        Image(systemName: "checkmark.circle.fill")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundColor(AppColors.checkmarkGreen)
+                            .padding(.horizontal)
+                    }
                     
                 }
             }

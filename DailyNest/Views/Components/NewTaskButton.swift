@@ -36,6 +36,6 @@ struct NewTaskButton: View {
 }
 
 #Preview {
-    TabBar()
+    TabBar(homeViewModel: HomeViewModel())
         .modelContainer(MockData.previewContainer)
 }

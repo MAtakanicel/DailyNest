@@ -13,26 +13,6 @@ enum Mode{
     case dailyPage
 }
 
-enum TaskFilter: CaseIterable, Hashable{
-    case active
-    case all
-    
-    func title(for mode: Mode) -> String{
-        switch (mode, self){
-        case (.routinePage, .active):
-        return "Active Routines"
-            
-        case (.routinePage, .all):
-            return "All Routines"
-            
-        case (.dailyPage, .active):
-            return "Active Tasks"
-            
-        case (.dailyPage, .all):
-            return "All Tasks"
-        }
-    }
-}
 
 struct TaskListView: View {
     @ObservedObject var vm : HomeViewModel
@@ -93,36 +73,9 @@ struct TaskListView: View {
                 ProgressCard(config: progressConfig)
                     .padding(.bottom,15)
                 
-                Picker("Filtre",selection: $selectFilter){
-                    ForEach(TaskFilter.allCases, id: \.self){ filter in
-                        Text(filter.title(for: mode))
-                            .tag(filter)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding(.bottom,5)
-                .padding(.horizontal,40)
+
                 
-                ScrollView{
-                    LazyVStack{
-                        Section{
-                            switch mode {
-                            case .routinePage:
-                                ForEach(filtredRoutines){ task in
-                                    RoutineRow(routine: task, mode: .detailed)
-                                }
-                            case .dailyPage:
-                                ForEach(filteredDailys){ task in
-                                    TaskRow(task: task, mode: .detailed)
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                .padding()
-                .background(mode == .dailyPage ? GradientSectionBackground(viewStyle: .dailyPage) : GradientSectionBackground(viewStyle: .routinePage))
-                .padding(.bottom,50)
+          
                 
                 
             }

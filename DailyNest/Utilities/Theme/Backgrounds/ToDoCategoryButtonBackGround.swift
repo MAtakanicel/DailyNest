@@ -80,7 +80,7 @@ struct ToDoCategoryButtonBackGrounds_Previews : PreviewProvider {
  //   static var todo : [ToDo] = MockData.mockData
     static var previews: some View {
     
-        MainPage()
+        MainPage(vm: HomeViewModel())
         
     }
     
