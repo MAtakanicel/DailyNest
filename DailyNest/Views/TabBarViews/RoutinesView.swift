@@ -28,6 +28,7 @@ struct RoutinesView: View {
         self.routineViewModel = routineViewModel
     }
     
+    @State private var showNewRoutineSheet : Bool = false
     var body: some View {
         ZStack{
             
@@ -44,7 +45,7 @@ struct RoutinesView: View {
                     
                     Spacer()
                     
-                    NewTaskButton(mode: .routine,destination: NewRoutineSheetView(routineViewModel: RoutineViewModel()))
+                    NewTaskButton(mode: .routine){ showNewRoutineSheet.toggle() }
                 }
                 .padding(.horizontal,20)
                 
@@ -96,6 +97,9 @@ struct RoutinesView: View {
                 Spacer()
             }
             .padding(.horizontal,20)
+        }
+        .sheet(isPresented: $showNewRoutineSheet) {
+            NewRoutineSheetView(routineViewModel: routineViewModel)
         }
     }
     

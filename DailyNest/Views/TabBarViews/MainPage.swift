@@ -29,6 +29,7 @@ struct MainPage: View {
         _showNamePopUp = State(initialValue: savedName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
     }
     
+    @State private var showNewDailySheet : Bool = false
     var body: some View {
         ZStack{
             AppColors.background.ignoresSafeArea()
@@ -40,7 +41,7 @@ struct MainPage: View {
                     
                     Spacer()
                     
-                    NewTaskButton(mode:.main, destination: NewDailySheetView(dailyViewModel: DailyViewModel()))
+                    NewTaskButton(mode:.main){ showNewDailySheet.toggle() }
                     
                 }
                 .padding(.horizontal,20)
@@ -85,6 +86,9 @@ struct MainPage: View {
                 
                 
             }
+        }
+        .sheet(isPresented: $showNewDailySheet){
+            NewDailySheetView(dailyViewModel: dailyViewModel)
         }
         
     }//Body

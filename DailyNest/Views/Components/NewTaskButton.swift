@@ -13,13 +13,13 @@ enum NewTaskMode{
     case routine
 }
 
-struct NewTaskButton<Destination: View>: View {
+struct NewTaskButton: View {
     let mode : NewTaskMode
-    let destination : Destination
+    let onTap : () -> Void
     var body: some View {
         
-        NavigationLink {
-            destination
+        Button {
+                onTap()
         }label: {
             Image(systemName: "plus")
                 .foregroundColor(AppColors.primaryText)
