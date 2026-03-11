@@ -17,13 +17,15 @@ enum TaskFilter: String, CaseIterable, Hashable{
 struct RoutinesView: View {
     @Query(sort: \RoutineTask.createdAt, order: .reverse) private var routineTasks : [RoutineTask]
     
-    @ObservedObject var homeViewModel : HomeViewModel
+    @ObservedObject private var homeViewModel : HomeViewModel
+    @ObservedObject private var routineViewModel: RoutineViewModel
     
     @State private var selectFilter : TaskFilter = .all
     @State private var searchText: String = ""
     
-    init(homeViewModel: HomeViewModel){
+    init(homeViewModel: HomeViewModel, routineViewModel: RoutineViewModel){
         self.homeViewModel = homeViewModel
+        self.routineViewModel = routineViewModel
     }
     
     var body: some View {
@@ -32,11 +34,41 @@ struct RoutinesView: View {
             AppColors.background.ignoresSafeArea()
             
             VStack(spacing: 16){
+                
+                HStack(spacing: 16){
+                    Text("My Routines")
+                        .font(.title2.bold())
+                        .foregroundColor(AppColors.primaryText)
+                        .padding(.bottom,2)
+                        .padding(.top,15)
+                    
+                    Spacer()
+                    
+                    NewTaskButton(mode: .routine,destination: NewRoutineSheetView(routineViewModel: RoutineViewModel()))
+                }
+                .padding(.horizontal,20)
+                
                 ProgressCard(config: homeViewModel.createProgressCard(
                     dailyTasks: [],
                     routineTasks: routineTasks,
                     type: .routineTasks
                 ))
+                
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(AppColors.primaryText)
+                    TextField("Search Routine", text: $searchText)
+                        .foregroundColor(AppColors.primaryText)
+                }
+                .padding(10)
+                .background(.ultraThinMaterial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(.gray.opacity(0.7), lineWidth: 0.5)
+                )
+                .cornerRadius(12)
+                .padding(.horizontal, 20)
+                
                 
                 Picker("Filtre",selection: $selectFilter){
                     ForEach(TaskFilter.allCases, id: \.self){ filter in
@@ -61,12 +93,10 @@ struct RoutinesView: View {
                 .background(GradientSectionBackground(viewStyle: .routinePage))
                 .padding(.bottom,50)
                 
+                Spacer()
             }
             .padding(.horizontal,20)
         }
-        .navigationTitle("Routines")
-        .navigationBarTitleDisplayMode(.inline)
-        .searchable(text: $searchText,placement: .navigationBarDrawer(displayMode: . always),prompt: "Search Routine")
     }
     
     var filtredRoutines : [RoutineTask]{
@@ -84,5 +114,6 @@ struct RoutinesView: View {
 }
 
 #Preview {
-    RoutinesView(homeViewModel: HomeViewModel())
+    RoutinesView(homeViewModel: HomeViewModel(),routineViewModel: RoutineViewModel())
+        .modelContainer(MockData.previewContainer)
 }

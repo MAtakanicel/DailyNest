@@ -35,7 +35,7 @@ struct DailyNestApp: App {
     
     var body: some Scene {
         WindowGroup{
-            TabBar(homeViewModel: HomeViewModel())
+            TabBar(homeViewModel: HomeViewModel(),dailyViewModel: DailyViewModel(),routineViewModel: RoutineViewModel())
         }.modelContainer(container) // Veri tabanı DI
     }
 }

@@ -15,7 +15,7 @@ final class RoutineTask{
     
     var routineDays : [WeekDay]
     
-    var lastCompletionDate:Date?
+    var completionHistory:[Date]
     
     var isReminderOn:Bool
     var reminderTime:Date?
@@ -39,13 +39,12 @@ final class RoutineTask{
             self.reminderTime = reminderTime
             
             self.createdAt = .now
-            self.lastCompletionDate = nil
+            self.completionHistory = [ ]
         }
     
     // Bugün yapıldı mı kontrolü
         var isCompletedToday: Bool {
-            guard let lastDate = lastCompletionDate else { return false }
-            return Calendar.current.isDateInToday(lastDate)
+            completionHistory.contains{ Calendar.current.isDateInToday($0)}
         }
     
 }

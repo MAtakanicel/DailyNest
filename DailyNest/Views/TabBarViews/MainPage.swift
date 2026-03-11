@@ -11,6 +11,7 @@ import SwiftData
 struct MainPage: View {
     @AppStorage("userName") private var userName: String = ""
     @ObservedObject private var vm : HomeViewModel
+    @ObservedObject private var dailyViewModel : DailyViewModel
     
     @Environment(\.modelContext) private var context
     @Query private var dailyTasks : [DailyTask]
@@ -18,8 +19,11 @@ struct MainPage: View {
     
     @State private var showNamePopUp : Bool
     
-    init(vm: HomeViewModel){
+
+    
+    init(vm: HomeViewModel, dailyViewModel: DailyViewModel){
         self.vm = vm
+        self.dailyViewModel = dailyViewModel
         
         let savedName = UserDefaults.standard.string(forKey: "userName") ?? ""
         _showNamePopUp = State(initialValue: savedName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -32,11 +36,11 @@ struct MainPage: View {
             VStack(alignment: .leading, spacing: 10) {
                 
                 HStack(spacing: 0) {
-                    GreetingsModule(greeting: vm.getDaytime(), userName: userName, dateString: vm.updateDate())
+                    greetings
                     
                     Spacer()
                     
-                    NewTaskButton(onTap: { })
+                    NewTaskButton(mode:.main, destination: NewDailySheetView(dailyViewModel: DailyViewModel()))
                     
                 }
                 .padding(.horizontal,20)
@@ -85,6 +89,20 @@ struct MainPage: View {
         
     }//Body
     
+    private var greetings : some View {
+        VStack(alignment: .leading){
+            Text("\(vm.getDaytime())  \(userName) 👋")
+                .font(.title2.bold())
+                .foregroundColor(AppColors.primaryText)
+                .padding(.bottom,2)
+                .padding(.top,15)
+            
+            Text(vm.updateDate())
+                .font(.subheadline)
+                .padding(.bottom,1)
+        }
+    }
+    
     private var welcomePopUp : some View {
         VStack(spacing: 16){
             VStack(spacing: 4){
@@ -128,6 +146,6 @@ struct MainPage: View {
 }//Struct
 
 #Preview {
-    TabBar(homeViewModel: HomeViewModel())
+    TabBar(homeViewModel: HomeViewModel(),dailyViewModel: DailyViewModel(),routineViewModel: RoutineViewModel())
         .modelContainer(MockData.previewContainer)
 }
