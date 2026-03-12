@@ -13,6 +13,7 @@ enum FloatingTab: String, CaseIterable {
     case routine = "repeat"
     case agenda = "calendar"
     case settings = "gear"
+    case priority = "star.fill"
 }
 
 struct TabBar: View {
@@ -52,6 +53,10 @@ struct TabBar: View {
                     case .settings: NavigationStack(){
                         Settings()
                     }
+                    case .priority : NavigationStack{
+                        EmptyView()
+                    }
+                        
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -65,14 +70,15 @@ struct TabBar: View {
                     tabButton(.home)
                     tabButton(.routine)
                     tabButton(.agenda)
+                    tabButton(.priority)
                     tabButton(.settings)
                 }
-                .padding(.top, 12)
-                .padding(.bottom, 15) // Alt boşluk
+                .padding(.top, 10)
+                .padding(.bottom, 10) // Alt boşluk
                 .background(.ultraThinMaterial) // Blur efekt
-                .clipShape(RoundedRectangle(cornerRadius: 25, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
                 .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 6)
-                .padding(.horizontal, 40)
+                .padding(.horizontal, 30)
             }
             .ignoresSafeArea(.keyboard)
             .onAppear{

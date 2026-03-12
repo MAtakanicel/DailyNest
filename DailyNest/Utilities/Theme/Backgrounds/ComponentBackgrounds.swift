@@ -16,13 +16,16 @@ struct ComponentBackgrounds: View {
             
         case .progressCard:
             if colorScheme == .light {
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 24)
                     .fill(.white.opacity(0.5))
+                    .stroke(Color.black.opacity(0.1), lineWidth: 1)
                     .shadow(color: .black.opacity(0.2), radius: 6,x: 0, y: 3)
             }else{
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 24)
                     .fill(.white.opacity(0.05))
+                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
                     .shadow(color: .black.opacity(0.2), radius: 6,x: 0, y: 3)
+                  
             }
             
         case .toDoCellCompleted:

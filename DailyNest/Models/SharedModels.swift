@@ -30,7 +30,7 @@ enum TaskPriority: Int, Codable,CaseIterable {
     var color: Color {
         switch self {
         case .low:
-            return .blue
+            return Color(.systemGreen)
         case .medium:
             return .yellow
         case .high:

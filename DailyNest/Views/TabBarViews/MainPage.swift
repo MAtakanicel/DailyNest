@@ -49,6 +49,7 @@ struct MainPage: View {
                 ProgressCard(config: vm.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .allTasks))
                     .padding(.horizontal,30)
                     .padding(.top, 10)
+                    
                 
                 
                 Text("Bugünkü Görevlerim")

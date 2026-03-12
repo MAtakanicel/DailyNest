@@ -62,19 +62,7 @@ struct ProgressCard: View {
             .background(ComponentBackgrounds(component: .progressCard))
     }
 }
-/*
-struct ProgressCard_Previews: PreviewProvider {
-    static var vm = ProgressCardViewModel()
-    static var previews: some View {
-        VStack(spacing: 30){
-            ProgressCard(config: vm.config(for: .allToDo))
-            ProgressCard(config: vm.config(for: .dailyToDo))
-            ProgressCard(config: vm.config(for: .routineToDo))
-        }.padding(20)
-            .background(AppColors.background)
-    }
-}
-*/
+
 
 #Preview{
    

@@ -28,7 +28,8 @@ final class DailyTask{
              date: Date = .now,
              priority: TaskPriority = .medium,
              isReminderOn: Bool = false,
-             reminderDate: Date? = nil) {
+             reminderDate: Date? = nil
+    ) {
             
             self.title = title
             self.details = details

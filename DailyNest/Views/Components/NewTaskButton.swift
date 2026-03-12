@@ -29,10 +29,7 @@ struct NewTaskButton: View {
                     Group{
                         switch mode{
                         case .main:
-                            LinearGradient(colors: [.purple.opacity(0.2),.mint.opacity(0.15)],
-                                           startPoint: .topLeading,
-                                           endPoint: .bottomTrailing
-                            )
+                            ToDoButtonsBackgrounds(todoCategory: .daily)
                             .shadow(
                                 color: .black.opacity(0.1),
                                 radius: 3,
@@ -42,11 +39,7 @@ struct NewTaskButton: View {
                             .cornerRadius(50)
                             
                         case .routine:
-                            LinearGradient(
-                                colors: [.mint.opacity(0.2), .green.opacity(0.25) ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            ToDoButtonsBackgrounds(todoCategory: .routine)
                             .shadow(
                                 color: .black.opacity(0.1),
                                 radius: 3,

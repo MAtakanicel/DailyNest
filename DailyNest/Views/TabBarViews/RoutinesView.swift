@@ -36,7 +36,7 @@ struct RoutinesView: View {
             
             VStack(spacing: 16){
                 
-                HStack(spacing: 16){
+                HStack(spacing: 0){
                     Text("My Routines")
                         .font(.title2.bold())
                         .foregroundColor(AppColors.primaryText)
@@ -47,7 +47,7 @@ struct RoutinesView: View {
                     
                     NewTaskButton(mode: .routine){ showNewRoutineSheet.toggle() }
                 }
-                .padding(.horizontal,20)
+                
                 
                 ProgressCard(config: homeViewModel.createProgressCard(
                     dailyTasks: [],

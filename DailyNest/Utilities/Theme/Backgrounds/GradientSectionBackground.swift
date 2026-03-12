@@ -3,7 +3,6 @@ import SwiftUI
 enum ViewStyle{
     case mainPage
     case routinePage
-    case dailyPage
 }
 
 struct GradientSectionBackground: View {
@@ -63,31 +62,6 @@ struct GradientSectionBackground: View {
                             LinearGradient(colors: [.green.opacity(0.06),.mint.opacity(0.04) ],
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color.white.opacity(0.1),lineWidth: 0.3)
-                        )
-                }
-                
-              
-                
-            case .dailyPage:
-                if colorScheme == .light {
-                    RoundedRectangle(cornerRadius: 30)
-                        .fill(
-                            LinearGradient(colors: [.purple.opacity(0.12), .purple.opacity(0.06)],
-                                           startPoint: .topLeading,
-                                           endPoint: .bottomTrailing)
-                        )
-                        .shadow(color: .black.opacity(0.2), radius: 5)
-                    
-                }else{
-                    RoundedRectangle(cornerRadius: 30)
-                        .fill(
-                            LinearGradient(colors: [.purple.opacity(0.03), .purple.opacity(0.02)],
-                                           startPoint: .topLeading,
-                                           endPoint: .bottomTrailing)
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: 30)
