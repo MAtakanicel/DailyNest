@@ -8,11 +8,8 @@
 import SwiftUI
 
 struct NewRoutineSheetView: View {
-    @ObservedObject var routineViewModel : RoutineViewModel
-    
-    init(routineViewModel: RoutineViewModel){
-        self.routineViewModel = routineViewModel
-    }
+    @ObservedObject var routineViewModel: RoutineViewModel
+
     var body: some View {
         Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
