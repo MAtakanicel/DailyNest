@@ -1,5 +1,5 @@
 //
-//  Settings.swift
+//  SettingsView.swift
 //  DailyNest
 //
 //  Created by Atakan on 30.01.2026.

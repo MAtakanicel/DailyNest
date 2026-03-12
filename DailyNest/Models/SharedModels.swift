@@ -8,12 +8,12 @@
 import Foundation
 import SwiftUI
 
-enum TaskPriority: Int, Codable,CaseIterable {
+enum TaskPriority: Int, Codable, CaseIterable {
     case low = 0
     case medium = 1
     case high = 2
     case veryHigh = 3
-    
+
     var title: String {
         switch self {
         case .low:
@@ -26,7 +26,7 @@ enum TaskPriority: Int, Codable,CaseIterable {
             return "Very High"
         }
     }
-    
+
     var color: Color {
         switch self {
         case .low:
@@ -41,8 +41,7 @@ enum TaskPriority: Int, Codable,CaseIterable {
     }
 }
 
-
-enum WeekDay : Int,Codable, CaseIterable{
+enum WeekDay: Int, Codable, CaseIterable {
     case sunday = 1
     case monday = 2
     case tuesday = 3
@@ -50,9 +49,8 @@ enum WeekDay : Int,Codable, CaseIterable{
     case thursday = 5
     case friday = 6
     case saturday = 7
-    
-    
-    var shortName : String{
+
+    var shortName: String {
         switch self {
         case .monday: "Mon"
         case .tuesday: "Tue"

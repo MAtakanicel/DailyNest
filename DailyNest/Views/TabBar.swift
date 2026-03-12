@@ -1,12 +1,12 @@
 //
-//  MainTabView.swift
+//  TabBar.swift
 //  DailyNest
 //
 //  Created by Atakan on 30.01.2026.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 enum FloatingTab: String, CaseIterable {
     case home = "house.fill"
@@ -18,111 +18,101 @@ enum FloatingTab: String, CaseIterable {
 
 struct TabBar: View {
     @Environment(\.modelContext) private var context
-    
+
     @Query private var dailyTasks: [DailyTask]
     @Query private var routineTasks: [RoutineTask]
 
     @State private var selectedTab: FloatingTab = .home
-    
+
     @Namespace private var tabBarAnimation
-    
-    @StateObject private var homeViewModel: HomeViewModel
-    @StateObject private var dailyViewModel : DailyViewModel
-    @StateObject private var routineViewModel: RoutineViewModel
-    
-    init(homeViewModel: HomeViewModel, dailyViewModel: DailyViewModel, routineViewModel: RoutineViewModel ){
-        _homeViewModel = StateObject(wrappedValue: HomeViewModel())
-        _dailyViewModel = StateObject(wrappedValue: DailyViewModel())
-        _routineViewModel = StateObject(wrappedValue: RoutineViewModel())
-    }
+
     var body: some View {
-            ZStack(alignment: .bottom) {
-                
-                // İçerik Alanı
-                Group{
-                    switch selectedTab {
-                    case .home: NavigationStack{
-                        MainPage(vm: homeViewModel,dailyViewModel: dailyViewModel)
+        ZStack(alignment: .bottom) {
+            // İçerik Alanı
+            Group {
+                switch selectedTab {
+                case .home: NavigationStack {
+                        MainPage()
                     }
-                    case .routine: NavigationStack(){
-                        RoutinesView(homeViewModel: homeViewModel,routineViewModel: routineViewModel)
+                case .routine: NavigationStack {
+                        RoutinesView()
                     }
-                    case .agenda: NavigationStack(){
+                case .agenda: NavigationStack {
                         Agenda()
                     }
-                    case .settings: NavigationStack(){
+                case .settings: NavigationStack {
                         Settings()
                     }
-                    case .priority : NavigationStack{
+                case .priority: NavigationStack {
                         EmptyView()
                     }
-                        
-                    }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-               
-                .safeAreaInset(edge: .bottom) {
-                    Color.clear.frame(height: 80) // TabBar yüksekliği kadar boşluk
-                }
-                
-                // Floating Tab Bar
-                HStack(spacing: 0) {
-                    tabButton(.home)
-                    tabButton(.routine)
-                    tabButton(.agenda)
-                    tabButton(.priority)
-                    tabButton(.settings)
-                }
-                .padding(.top, 10)
-                .padding(.bottom, 10) // Alt boşluk
-                .background(.ultraThinMaterial) // Blur efekt
-                .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 6)
-                .padding(.horizontal, 30)
             }
-            .ignoresSafeArea(.keyboard)
-            .onAppear{
-               checkAndLoadMockData()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .safeAreaInset(edge: .bottom) {
+                Color.clear.frame(height: 80) // TabBar yüksekliği kadar boşluk
             }
-            
-        
+
+            // Floating Tab Bar
+            HStack(spacing: 0) {
+                tabButton(.home)
+                tabButton(.routine)
+                tabButton(.agenda)
+                tabButton(.priority)
+                tabButton(.settings)
+            }
+            .padding(.top, 10)
+            .padding(.bottom, 10) // Alt boşluk
+            .background(.ultraThinMaterial) // Blur efekt
+            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+            .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 6)
+            .padding(.horizontal, 30)
+        }
+        .ignoresSafeArea(.keyboard)
+        .onAppear {
+            checkAndLoadMockData()
+        }
     }
-    //Data Kontrol
+
+    /// Data Kontrol
     private func checkAndLoadMockData() {
-            #if DEBUG
-            if dailyTasks.isEmpty && routineTasks.isEmpty {
+        #if DEBUG
+            if dailyTasks.isEmpty, routineTasks.isEmpty {
                 MockData.shared.insertSampleData(modelContext: context)
                 print("📦 Veritabanı mock data ile yüklendi.")
             }
-            #endif
-        }
-    
-    // Tek tek tab butonu
+        #endif
+    }
+
+    /// Tek tek tab butonu
     private func tabButton(_ tab: FloatingTab) -> some View {
         Button {
-            withAnimation(.spring(response: 0.3,dampingFraction: 0.7)){
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                 selectedTab = tab
             }
         } label: {
             VStack(spacing: 4) {
                 Image(systemName: tab.rawValue)
-                    .font(.system(size: 25, weight: .medium)) //30 ve semibold
-                
-                if selectedTab == tab{
+                    .font(.system(size: 25, weight: .medium)) // 30 ve semibold
+
+                if selectedTab == tab {
                     Circle()
                         .fill(AppColors.button)
                         .frame(width: 5, height: 5)
-                        .matchedGeometryEffect(id: "TabDot", in: tabBarAnimation) //Animasyon için namespace (Şimdilik basit)
+                        .matchedGeometryEffect(id: "TabDot", in: tabBarAnimation) // Animasyon için namespace (Şimdilik basit)
                 }
             }
             .foregroundColor(selectedTab == tab ? AppColors.button : .gray.opacity(0.8))
             .frame(maxWidth: .infinity)
         }
     }
-
 }
 
 #Preview {
-    TabBar(homeViewModel: HomeViewModel(),dailyViewModel: DailyViewModel(),routineViewModel: RoutineViewModel())
+    TabBar()
         .modelContainer(MockData.previewContainer)
+        .environment(HomeViewModel())
+        .environment(DailyViewModel())
+        .environment(RoutineViewModel())
+        
 }
