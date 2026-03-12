@@ -16,16 +16,13 @@ enum TaskFilter: String, CaseIterable, Hashable {
 struct RoutinesView: View {
     @Query(sort: \RoutineTask.createdAt, order: .reverse) private var routineTasks: [RoutineTask]
 
-    @ObservedObject private var homeViewModel: HomeViewModel
-    @ObservedObject private var routineViewModel: RoutineViewModel
+    @Environment(RoutineViewModel.self) private var routineViewModel
+    @Environment(HomeViewModel.self) private var homeViewModel
 
     @State private var selectFilter: TaskFilter = .all
     @State private var searchText: String = ""
 
-    init(homeViewModel: HomeViewModel, routineViewModel: RoutineViewModel) {
-        self.homeViewModel = homeViewModel
-        self.routineViewModel = routineViewModel
-    }
+
 
     @State private var showNewRoutineSheet: Bool = false
     var body: some View {
@@ -94,7 +91,7 @@ struct RoutinesView: View {
             .padding(.horizontal, 20)
         }
         .sheet(isPresented: $showNewRoutineSheet) {
-            NewRoutineSheetView(routineViewModel: routineViewModel)
+            NewRoutineSheetView()
         }
     }
 
@@ -113,6 +110,8 @@ struct RoutinesView: View {
 }
 
 #Preview {
-    RoutinesView(homeViewModel: HomeViewModel(), routineViewModel: RoutineViewModel())
+    RoutinesView()
         .modelContainer(MockData.previewContainer)
+        .environment(HomeViewModel())
+        .environment(RoutineViewModel())
 }

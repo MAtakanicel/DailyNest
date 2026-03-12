@@ -26,26 +26,16 @@ struct TabBar: View {
 
     @Namespace private var tabBarAnimation
 
-    @StateObject private var homeViewModel: HomeViewModel
-    @StateObject private var dailyViewModel: DailyViewModel
-    @StateObject private var routineViewModel: RoutineViewModel
-
-    init(homeViewModel _: HomeViewModel, dailyViewModel _: DailyViewModel, routineViewModel _: RoutineViewModel) {
-        _homeViewModel = StateObject(wrappedValue: HomeViewModel())
-        _dailyViewModel = StateObject(wrappedValue: DailyViewModel())
-        _routineViewModel = StateObject(wrappedValue: RoutineViewModel())
-    }
-
     var body: some View {
         ZStack(alignment: .bottom) {
             // İçerik Alanı
             Group {
                 switch selectedTab {
                 case .home: NavigationStack {
-                        MainPage(vm: homeViewModel, dailyViewModel: dailyViewModel)
+                        MainPage()
                     }
                 case .routine: NavigationStack {
-                        RoutinesView(homeViewModel: homeViewModel, routineViewModel: routineViewModel)
+                        RoutinesView()
                     }
                 case .agenda: NavigationStack {
                         Agenda()
@@ -119,6 +109,10 @@ struct TabBar: View {
 }
 
 #Preview {
-    TabBar(homeViewModel: HomeViewModel(), dailyViewModel: DailyViewModel(), routineViewModel: RoutineViewModel())
+    TabBar()
         .modelContainer(MockData.previewContainer)
+        .environment(HomeViewModel())
+        .environment(DailyViewModel())
+        .environment(RoutineViewModel())
+        
 }

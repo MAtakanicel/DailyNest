@@ -32,10 +32,15 @@ struct DailyNestApp: App {
             fatalError("Veritabanı Hatası : \(error.localizedDescription)")
         }
     }
-
+    @State private var homeViewModel = HomeViewModel()
+    @State private var dailyViewModel = DailyViewModel()
+    @State private var routineViewModel = RoutineViewModel()
     var body: some Scene {
         WindowGroup {
-            TabBar(homeViewModel: HomeViewModel(), dailyViewModel: DailyViewModel(), routineViewModel: RoutineViewModel())
+            TabBar()
         }.modelContainer(container) // Veri tabanı DI
+            .environment(homeViewModel)
+            .environment(dailyViewModel)
+            .environment(routineViewModel)
     }
 }

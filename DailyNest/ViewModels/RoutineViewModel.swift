@@ -5,11 +5,12 @@
 //  Created by Atakan on 10.03.2026.
 //
 
-import Combine
+import Observation
 import Foundation
 import SwiftData
 
-final class RoutineViewModel: ObservableObject {
+@Observable @MainActor
+final class RoutineViewModel {
     func createRoutine(
         title: String,
         details: String? = nil,

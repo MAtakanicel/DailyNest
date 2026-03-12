@@ -14,7 +14,7 @@ enum Mode {
 }
 
 struct TaskListView: View {
-    @ObservedObject var vm: HomeViewModel
+    let homeViewModel: HomeViewModel
 
     @Query(sort: \DailyTask.date, order: .reverse) private var dailyTasks: [DailyTask]
     @Query(sort: \RoutineTask.createdAt, order: .reverse) private var routineTasks: [RoutineTask]
@@ -27,10 +27,10 @@ struct TaskListView: View {
     var progressConfig: ProgressCardConfig {
         switch mode {
         case .routinePage:
-            return vm.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .routineTasks)
+            return homeViewModel.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .routineTasks)
 
         case .dailyPage:
-            return vm.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .dailyTasks)
+            return homeViewModel.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .dailyTasks)
         }
     }
 

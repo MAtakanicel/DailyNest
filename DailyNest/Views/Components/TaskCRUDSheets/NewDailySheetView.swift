@@ -8,11 +8,7 @@
 import SwiftUI
 
 struct NewDailySheetView: View {
-    @ObservedObject var dailyViewModel: DailyViewModel
-
-    init(dailyViewModel: DailyViewModel) {
-        self.dailyViewModel = dailyViewModel
-    }
+    @Environment(DailyViewModel.self) private var dailyViewModel
 
     @State private var newTitle: String = "s"
     @State private var newDescription: String? = ""
@@ -61,5 +57,6 @@ struct NewDailySheetView: View {
 }
 
 #Preview {
-    NewDailySheetView(dailyViewModel: DailyViewModel())
+    NewDailySheetView()
+        .environment(DailyViewModel())
 }

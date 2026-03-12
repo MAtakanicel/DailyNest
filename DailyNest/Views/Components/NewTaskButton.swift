@@ -54,6 +54,6 @@ struct NewTaskButton: View {
 }
 
 #Preview {
-    TabBar(homeViewModel: HomeViewModel(), dailyViewModel: DailyViewModel(), routineViewModel: RoutineViewModel())
+    TabBar()
         .modelContainer(MockData.previewContainer)
 }

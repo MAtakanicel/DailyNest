@@ -5,11 +5,12 @@
 //  Created by Atakan on 10.03.2026.
 //
 
-import Combine
+import Observation
 import Foundation
 import SwiftData
 
-final class DailyViewModel: ObservableObject {
+@Observable @MainActor
+final class DailyViewModel {
     func createDaily(
         title: String,
         details: String? = nil,

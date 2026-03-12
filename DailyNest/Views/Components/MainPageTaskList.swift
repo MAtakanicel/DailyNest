@@ -9,12 +9,12 @@ import SwiftUI
 
 struct MainPageTaskList: View {
     let header: String
-    let tasks:
+    let tasks: [RoutineTask]
 
     var body: some View {
         LazyVStack(alignment: .leading, spacing: 12) {
             Section(header) {
-                ForEach(todaysRoutines) { routine in
+                ForEach(tasks) { routine in
                     RoutineRow(routine: routine, mode: .compact)
                         .swipeActions(edge: .trailing) {
                             Button {} label: {

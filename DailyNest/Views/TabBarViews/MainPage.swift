@@ -10,19 +10,17 @@ import SwiftUI
 
 struct MainPage: View {
     @AppStorage("userName") private var userName: String = ""
-    @ObservedObject private var vm: HomeViewModel
-    @ObservedObject private var dailyViewModel: DailyViewModel
-
+    
+    @Environment(HomeViewModel.self) private var homeViewModel
+    @Environment(DailyViewModel.self) private var dailyViewModel
+    
     @Environment(\.modelContext) private var context
     @Query private var dailyTasks: [DailyTask]
     @Query private var routineTasks: [RoutineTask]
 
     @State private var showNamePopUp: Bool
 
-    init(vm: HomeViewModel, dailyViewModel: DailyViewModel) {
-        self.vm = vm
-        self.dailyViewModel = dailyViewModel
-
+    init() {
         let savedName = UserDefaults.standard.string(forKey: "userName") ?? ""
         _showNamePopUp = State(initialValue: savedName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
     }
@@ -42,7 +40,7 @@ struct MainPage: View {
                 }
                 .padding(.horizontal, 20)
 
-                ProgressCard(config: vm.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .allTasks))
+                ProgressCard(config: homeViewModel.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .allTasks))
                     .padding(.horizontal, 30)
                     .padding(.top, 10)
 
@@ -52,9 +50,8 @@ struct MainPage: View {
                     .padding(.leading, 20)
 
                 // Görevlerim Kısımı
-                MainPageTaskList()
-                    .padding(.horizontal)
-                    .padding(.bottom, 60) // Yukarı taşıma
+          //      MainPageTaskList()
+
             }
 
             if showNamePopUp {
@@ -76,19 +73,19 @@ struct MainPage: View {
             }
         }
         .sheet(isPresented: $showNewDailySheet) {
-            NewDailySheetView(dailyViewModel: dailyViewModel)
+            NewDailySheetView()
         }
     } // Body
 
     private var greetings: some View {
         VStack(alignment: .leading) {
-            Text("\(vm.getDaytime())  \(userName) 👋")
+            Text("\(homeViewModel.getDaytime())  \(userName) 👋")
                 .font(.title2.bold())
                 .foregroundColor(AppColors.primaryText)
                 .padding(.bottom, 2)
                 .padding(.top, 15)
 
-            Text(vm.updateDate())
+            Text(homeViewModel.formattedDate())
                 .font(.subheadline)
                 .padding(.bottom, 1)
         }
@@ -124,18 +121,25 @@ struct MainPage: View {
                 showNamePopUp.toggle()
             }) {
                 Text("Continue")
-                    .foregroundStyle(userName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .gray : AppColors.appleSignInText)
+                    .foregroundStyle(trimmeduserName.isEmpty ? .gray : AppColors.appleSignInText)
                     .font(.title3)
                     .padding(12)
             }
-            .background(userName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color.gray.opacity(0.2) : AppColors.appleSignInBackground.opacity(0.85))
+            .background(trimmeduserName.isEmpty ? Color.gray.opacity(0.2) : AppColors.appleSignInBackground.opacity(0.85))
             .clipShape(RoundedRectangle(cornerRadius: 16))
-            .disabled(userName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            .disabled(trimmeduserName.isEmpty)
         }
+    }
+    
+    private var trimmeduserName: String {
+        userName.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 } // Struct
 
 #Preview {
-    TabBar(homeViewModel: HomeViewModel(), dailyViewModel: DailyViewModel(), routineViewModel: RoutineViewModel())
+    TabBar()
         .modelContainer(MockData.previewContainer)
+        .environment(HomeViewModel())
+        .environment(DailyViewModel())
+        .environment(RoutineViewModel())
 }

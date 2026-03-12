@@ -5,12 +5,13 @@
 //  Created by Atakan on 30.01.2026.
 //
 
-import Combine
+
 import Foundation
 import SwiftUI
+import Observation
 
-@MainActor
-final class HomeViewModel: ObservableObject {
+@Observable @MainActor
+final class HomeViewModel {
     func createProgressCard(dailyTasks: [DailyTask], routineTasks: [RoutineTask], type: ProgressDataType) -> ProgressCardConfig {
         let todayIndex = Calendar.current.component(.weekday, from: Date()) // Bu gününün indexi
         let todayWeekDay = WeekDay(rawValue: todayIndex)
@@ -71,7 +72,7 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    func updateDate() -> String {
+    func formattedDate() -> String {
         return Date().formatted(.dateTime.weekday(.wide).day().month(.wide))
     }
 }
