@@ -10,7 +10,7 @@ import SwiftUI
 struct DailysSections: View {
     let header : String
     let items : [DailyTask]
-    @State private var isExpanded : Bool = false
+    @Binding var isExpanded : Bool 
     var body: some View {
         VStack(spacing: 0){
             Section{
@@ -47,5 +47,5 @@ struct DailysSections: View {
 }
 
 #Preview {
-    DailysSections(header: "Header", items: [])
+    
 }

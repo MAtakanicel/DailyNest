@@ -11,7 +11,7 @@ import SwiftData
 struct RoutineSection: View {
     let items : [RoutineTask]
     let context : ModelContext
-    @State private var isExpanded : Bool = false
+    @Binding var isExpanded : Bool 
     var body: some View {
         VStack(spacing: 0){
             Section{

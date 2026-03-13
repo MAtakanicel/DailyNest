@@ -67,10 +67,14 @@ final class DailyViewModel {
     }
     
     func todaysDailys(_ dailys: [DailyTask]) -> [DailyTask] {
-        return dailys.filter { Calendar.current.isDate($0.date, inSameDayAs: Date()) }
+        return dailys.filter { !$0.isCompleted && Calendar.current.isDate($0.date, inSameDayAs: Date()) }
     }
     
     func overdueDailys(_ dailys: [DailyTask]) -> [DailyTask] {
-        return dailys.filter { $0.date < Date() && !Calendar.current.isDate($0.date, inSameDayAs: Date()) }
+        return dailys.filter { !$0.isCompleted && $0.date < Date() && !Calendar.current.isDate($0.date, inSameDayAs: Date()) }
+    }
+    
+    func todayCompletedDailys(_ dailys: [DailyTask]) -> [DailyTask] {
+        return dailys.filter { $0.isCompleted && Calendar.current.isDate($0.completedAt ?? Date(), inSameDayAs: Date()) }
     }
 }
