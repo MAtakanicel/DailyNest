@@ -21,7 +21,7 @@ final class DailyViewModel {
         isReminderOn: Bool = false,
         reminderDate: Date? = nil,
         context: ModelContext
-    ) -> Result<Bool, Error> {
+    ) {
         let task = DailyTask(
             title: title,
             details: details,
@@ -32,47 +32,38 @@ final class DailyViewModel {
         )
 
         context.insert(task)
-        do {
-            try context.save()
-            print("Task Kayıtedildi. Task: \(task.title) ")
-            return .success(true)
-        } catch {
-            print("Task Kayıtı Başarısız. Hata: \(error.localizedDescription)")
-            alertMessage = error.localizedDescription
-            return .failure(error)
-        }
+        
+       updateDaily(task, context: context,method: "Create")
     }
 
-    func deleteDaily(_ task: DailyTask, context: ModelContext) -> Result<Bool, Error> {
+   
+    func deleteDaily(_ task: DailyTask, context: ModelContext) {
         context.delete(task)
+        
+        updateDaily(task, context: context,method: "Delete")
+    }
+
+    
+    func updateDaily(_ task: DailyTask, context: ModelContext,method: String = "update")  {
         do {
             try context.save()
-            print("Task Silindi.")
-            return .success(true)
+            print("Daily işlemi başarılı. (\(method)) Task: \(task.title)")
+           
         } catch {
-            print("Task silinemedi. Hata: \(error.localizedDescription)")
-            alertMessage = error.localizedDescription
-            return .failure(error)
+            print("Daily işlemi başarısız. (\(method)) Task:\(task.title) Hata: \(error.localizedDescription)")
+            self.alertMessage = error.localizedDescription
+            
         }
     }
 
-    func updateDaily(_ task: DailyTask, context: ModelContext) -> Result<Bool, Error> {
-        do {
-            try context.save()
-            print("Task güncellendi. Task: \(task.title)")
-            return .success(true)
-        } catch {
-            print("Task güncellenemedi. Task:\(task.title) Hata: \(error.localizedDescription)")
-            alertMessage = error.localizedDescription
-            return .failure(error)
-        }
-    }
 
-    func toggleDailyCompletion(_ task: DailyTask, context: ModelContext) -> Result<Bool, Error> {
+    func toggleDailyCompletion(_ task: DailyTask, context: ModelContext)  {
         task.isCompleted.toggle()
         task.completedAt = task.isCompleted ? Date() : nil
-        print("Task tamamlanıyor.")
-        return updateDaily(task, context: context)
+        print("Task \(task.isCompleted ? "tamamlandı" : "geri alındı").")
+        
+        
+        updateDaily(task, context: context,method: "Toggle")
     }
     
     func todaysDailys(_ dailys: [DailyTask]) -> [DailyTask] {
@@ -80,6 +71,6 @@ final class DailyViewModel {
     }
     
     func overdueDailys(_ dailys: [DailyTask]) -> [DailyTask] {
-        return dailys.filter{ $0.date < Date() && !Calendar.current.isDate($0.date, inSameDayAs: Date())  }
+        return dailys.filter { $0.date < Date() && !Calendar.current.isDate($0.date, inSameDayAs: Date()) }
     }
 }

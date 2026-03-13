@@ -13,6 +13,7 @@ import SwiftData
 final class RoutineViewModel {
     var alertMessage: String? = nil
     
+  
     func createRoutine(
         title: String,
         details: String? = nil,
@@ -20,7 +21,7 @@ final class RoutineViewModel {
         isReminderOn: Bool = false,
         reminderTime: Date? = nil,
         context: ModelContext
-    ) -> Result<Bool, Error> {
+    ) {
         let routine = RoutineTask(
             title: title,
             details: details,
@@ -31,64 +32,43 @@ final class RoutineViewModel {
 
         context.insert(routine)
 
-        do {
-            try context.save()
-            print("Routine Oluşturma başarılı. Routine:\(routine.title)")
-            return .success(true)
-        } catch {
-            print("Routine Oluşturma sırasında hata meydana geldi.\(error.localizedDescription)")
-            alertMessage = error.localizedDescription
-            return .failure(error)
-        }
+        updateRoutine(routine, context: context,method: "create")
     }
 
-    func deleteRoutine(_ task: RoutineTask, context: ModelContext) -> Result<Bool, Error> {
-        context.delete(task)
-
-        do {
-            try context.save()
-            print("Routine silindi.")
-            return .success(true)
-        } catch {
-            print("Routine silinemedi. Hata: \(error.localizedDescription)")
-            alertMessage = error.localizedDescription
-            return .failure(error)
-        }
-    }
-
-    func updateRoutine(_ routine: RoutineTask, context: ModelContext) -> Result<Bool, Error> {
-        do {
-            try context.save()
-            print("Routine güncellendi.Routine: \(routine.title)")
-            return .success(true)
-        } catch {
-            print("Routine güncellenemedi.Routine: \(routine.title)  Hata: \(error.localizedDescription)")
-            alertMessage = error.localizedDescription
-            return .failure(error)
-        }
-    }
-
-    func toggleRoutineCompletion(_ task: RoutineTask, context: ModelContext){
-        let today = task.completionHistory.first(where: {Calendar.current.isDateInToday($0.date) })
+    func deleteRoutine(_ routine: RoutineTask, context: ModelContext) {
+        context.delete(routine)
         
-        if let completion = today{
-            if completion.todaysCompletionCount < task.maxCount {
+        updateRoutine(routine, context: context,method: "Delete")
+    }
+    
+   
+    func updateRoutine(_ routine: RoutineTask, context: ModelContext,method : String = "update") {
+        do {
+            try context.save()
+            print("Routine işlemi başarılı. (\(method)) Routine: \(routine.title)")
+            
+        } catch {
+            print("Routine işlemi başarısız. (\(method)) Routine: \(routine.title)  Hata: \(error.localizedDescription)")
+            self.alertMessage = error.localizedDescription
+           
+        }
+    }
+
+    
+    func toggleRoutineCompletion(_ routine: RoutineTask, context: ModelContext) {
+        let today = routine.completionHistory.first(where: { Calendar.current.isDateInToday($0.date) })
+        
+        if let completion = today {
+            if completion.todaysCompletionCount < routine.maxCount {
                 completion.todaysCompletionCount += 1
+                print("routine: \(routine.title), count + 1")
             }
         } else {
             let newDailyLog = DailyLog(date: Date(), todaysCompletionCount: 1)
-            task.completionHistory.append(newDailyLog)
-            
+            routine.completionHistory.append(newDailyLog)
+            print("\(routine.title) yeni günlük kayıt oluşturuldu.")
         }
-        do {
-            try context.save()
-            print("Routine toggle yapıldı.")
-        }catch{
-            alertMessage = error.localizedDescription
-            print("Routine toggle hatası: \(error.localizedDescription)")
-            return
-        }
-        
+         updateRoutine(routine, context: context,method: "toggleRoutineCompletion")
     }
     
     func todaysRoutines(routines: [RoutineTask]) -> [RoutineTask] {
