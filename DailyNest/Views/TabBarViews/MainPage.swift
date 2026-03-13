@@ -44,13 +44,21 @@ struct MainPage: View {
                     .padding(.horizontal, 30)
                     .padding(.top, 10)
 
-                Text("Bugünkü Görevlerim")
-                    .font(.headline).bold()
-                    .foregroundColor(AppColors.secondaryText)
-                    .padding(.leading, 20)
-
                 // Görevlerim Kısımı
-          //      MainPageTaskList()
+                ScrollView{
+                    LazyVStack(spacing:0){
+                        DailysSections(header: "Geçmiş Görevler", items: dailyViewModel.overdueDailys(dailyTasks))
+                            .padding(.horizontal,20)
+                            .padding(.bottom,20)
+                        
+                        DailysSections(header: "Today", items: dailyViewModel.todaysDailys(dailyTasks))
+                            .padding(.horizontal,20)
+                            .padding(.bottom,20)
+                        
+                        RoutineSection(items: routineTasks)
+                            .padding(.horizontal,20)
+                    }
+                }
 
             }
 

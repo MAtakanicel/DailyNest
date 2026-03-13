@@ -75,6 +75,11 @@ class MockData {
                 date: Calendar.current.date(byAdding: .day, value: 2, to: Date())!, // 2 gün sonra
                 priority: .low
             ),
+            DailyTask(
+                title: "Köpeği Veterinere Götür 🐈",
+                date: Calendar.current.date(byAdding: .day, value: -2, to: Date())!, // 2 gün önce
+                priority: .low
+            ),
         ]
 
         for routineTask in routineTasks {

@@ -10,7 +10,6 @@ enum AppColors {
     static let secondaryText: Color = .dynamic(lightHex: "#636366", darkHex: "#AEAEB2")
     static let accent: Color = .dynamic(lightHex: "#007AFF", darkHex: "#0A84FF")
     static let success: Color = .dynamic(lightHex: "#34C759", darkHex: "#32D74B")
-    static let danger: Color = .dynamic(lightHex: "#FF3B30", darkHex: "#FF453A")
     static let warning: Color = .dynamic(lightHex: "#FF9500", darkHex: "#FF9F0A")
     static let icon: Color = .dynamic(lightHex: "#8E8E93", darkHex: "#98989E")
     static let button: Color = .dynamic(lightHex: "#007AFF", darkHex: "#0A84FF")
@@ -26,6 +25,7 @@ enum AppColors {
     static let progressBlue: Color = .dynamic(lightHex: "#007AFF", darkHex: "#0A84FF")
     static let progressPurple: Color = .dynamic(lightHex: "#AF52DE", darkHex: "#BF5AF2")
     static let progressGreen: Color = .dynamic(lightHex: "#34C759", darkHex: "#30D158")
+    static let progressRed: Color = .dynamic(lightHex: "#FF3B30", darkHex: "#FF453A")
 
     // Apple Button Soft
     static let appleSignInBackgroundSoft: Color = .dynamic(lightHex: "#1C1C1E", darkHex: "#F2F2F7")

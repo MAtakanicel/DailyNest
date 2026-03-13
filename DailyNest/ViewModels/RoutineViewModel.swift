@@ -11,6 +11,8 @@ import SwiftData
 
 @Observable @MainActor
 final class RoutineViewModel {
+    var alertMessage: String? = nil
+    
     func createRoutine(
         title: String,
         details: String? = nil,
@@ -51,20 +53,31 @@ final class RoutineViewModel {
     func updateRoutine(_: RoutineTask, context: ModelContext) -> Result<Bool, Error> {
         do {
             try context.save()
+            print("Routine güncellendi.")
             return .success(true)
         } catch {
             return .failure(error)
         }
     }
 
-    func toggleRoutineCompletion(_ task: RoutineTask, context: ModelContext) -> Result<Bool, Error> {
-        if task.isCompletedToday {
-            task.completionHistory.removeAll { Calendar.current.isDateInToday($0) }
+    func toggleRoutineCompletion(_ task: RoutineTask, context: ModelContext){
+        let today = task.completionHistory.first(where: {Calendar.current.isDateInToday($0.date) })
+        
+        if let completion = today{
+            if completion.todaysCompletionCount < task.maxCount {
+                completion.todaysCompletionCount += 1
+            }
         } else {
-            task.completionHistory.append(Date())
+            let newDailyLog = DailyLog(date: Date(), todaysCompletionCount: 1)
+            task.completionHistory.append(newDailyLog)
+            
         }
-
-        return updateRoutine(task, context: context)
+        do {
+            try context.save()
+        }catch{
+            print("Routine toggle hatası: \(error.localizedDescription)")
+        }
+        
     }
     
     func todaysRoutines(routines: [RoutineTask]) -> [RoutineTask] {

@@ -77,7 +77,7 @@ struct RoutinesView: View {
                     LazyVStack {
                         Section {
                             ForEach(filtredRoutines) { task in
-                                RoutineRow(routine: task, mode: .detailed)
+                                RoutineRow(routine: task)
                             }
                         }
                     }
