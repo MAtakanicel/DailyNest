@@ -33,8 +33,11 @@ final class RoutineViewModel {
 
         do {
             try context.save()
+            print("Routine Oluşturma başarılı. Routine:\(routine.title)")
             return .success(true)
         } catch {
+            print("Routine Oluşturma sırasında hata meydana geldi.\(error.localizedDescription)")
+            alertMessage = error.localizedDescription
             return .failure(error)
         }
     }
@@ -44,18 +47,23 @@ final class RoutineViewModel {
 
         do {
             try context.save()
+            print("Routine silindi.")
             return .success(true)
         } catch {
+            print("Routine silinemedi. Hata: \(error.localizedDescription)")
+            alertMessage = error.localizedDescription
             return .failure(error)
         }
     }
 
-    func updateRoutine(_: RoutineTask, context: ModelContext) -> Result<Bool, Error> {
+    func updateRoutine(_ routine: RoutineTask, context: ModelContext) -> Result<Bool, Error> {
         do {
             try context.save()
-            print("Routine güncellendi.")
+            print("Routine güncellendi.Routine: \(routine.title)")
             return .success(true)
         } catch {
+            print("Routine güncellenemedi.Routine: \(routine.title)  Hata: \(error.localizedDescription)")
+            alertMessage = error.localizedDescription
             return .failure(error)
         }
     }
@@ -74,8 +82,11 @@ final class RoutineViewModel {
         }
         do {
             try context.save()
+            print("Routine toggle yapıldı.")
         }catch{
+            alertMessage = error.localizedDescription
             print("Routine toggle hatası: \(error.localizedDescription)")
+            return
         }
         
     }

@@ -55,7 +55,7 @@ struct MainPage: View {
                             .padding(.horizontal,20)
                             .padding(.bottom,20)
                         
-                        RoutineSection(items: routineTasks)
+                        RoutineSection(items: routineTasks,context: context)
                             .padding(.horizontal,20)
                     }
                 }

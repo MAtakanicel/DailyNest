@@ -11,6 +11,8 @@ import SwiftData
 
 @Observable @MainActor
 final class DailyViewModel {
+    var alertMessage: String? = nil
+    
     func createDaily(
         title: String,
         details: String? = nil,
@@ -32,8 +34,11 @@ final class DailyViewModel {
         context.insert(task)
         do {
             try context.save()
+            print("Task Kayıtedildi. Task: \(task.title) ")
             return .success(true)
         } catch {
+            print("Task Kayıtı Başarısız. Hata: \(error.localizedDescription)")
+            alertMessage = error.localizedDescription
             return .failure(error)
         }
     }
@@ -42,17 +47,23 @@ final class DailyViewModel {
         context.delete(task)
         do {
             try context.save()
+            print("Task Silindi.")
             return .success(true)
         } catch {
+            print("Task silinemedi. Hata: \(error.localizedDescription)")
+            alertMessage = error.localizedDescription
             return .failure(error)
         }
     }
 
-    func updateDaily(_: DailyTask, context: ModelContext) -> Result<Bool, Error> {
+    func updateDaily(_ task: DailyTask, context: ModelContext) -> Result<Bool, Error> {
         do {
             try context.save()
+            print("Task güncellendi. Task: \(task.title)")
             return .success(true)
         } catch {
+            print("Task güncellenemedi. Task:\(task.title) Hata: \(error.localizedDescription)")
+            alertMessage = error.localizedDescription
             return .failure(error)
         }
     }
@@ -60,7 +71,7 @@ final class DailyViewModel {
     func toggleDailyCompletion(_ task: DailyTask, context: ModelContext) -> Result<Bool, Error> {
         task.isCompleted.toggle()
         task.completedAt = task.isCompleted ? Date() : nil
-
+        print("Task tamamlanıyor.")
         return updateDaily(task, context: context)
     }
     

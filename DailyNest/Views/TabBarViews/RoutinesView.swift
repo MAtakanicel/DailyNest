@@ -23,7 +23,7 @@ struct RoutinesView: View {
     @State private var searchText: String = ""
 
 
-
+    @Environment(\.modelContext) private var context
     @State private var showNewRoutineSheet: Bool = false
     var body: some View {
         ZStack {
@@ -77,7 +77,7 @@ struct RoutinesView: View {
                     LazyVStack {
                         Section {
                             ForEach(filtredRoutines) { task in
-                                RoutineRow(routine: task)
+                                RoutineRow(routine: task,context: context)
                             }
                         }
                     }
