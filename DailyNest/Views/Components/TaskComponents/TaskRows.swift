@@ -39,9 +39,15 @@ struct RoutineRow: View {
                     .foregroundColor(AppColors.cardText)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(12)
-                    .padding(.leading, 5)
-            }
+                }
             
+            Spacer()
+            
+            Text("\(routineViewModel.todaysRoutineCompletionCount(routine)) / \(routine.maxCount)")
+                .font(.subheadline)
+                .italic()
+                .foregroundStyle(AppColors.secondaryText)
+                .padding(.trailing,10)
         }
             .background(routine.isCompletedToday ?
                         ComponentBackgrounds(component: .toDoCellCompleted) :

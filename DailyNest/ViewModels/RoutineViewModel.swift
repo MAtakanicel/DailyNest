@@ -71,9 +71,14 @@ final class RoutineViewModel {
          updateRoutine(routine, context: context,method: "toggleRoutineCompletion")
     }
     
-    func todaysRoutines(routines: [RoutineTask]) -> [RoutineTask] {
+    func todaysRoutineCompletionCount(_ routine: RoutineTask) -> Int {
+        let today = routine.completionHistory.first(where: { Calendar.current.isDateInToday($0.date) })
+        return today?.todaysCompletionCount ?? 0
+    }
+    
+    func todaysRoutines(_ routines: [RoutineTask]) -> [RoutineTask] {
         let todayIndex = Calendar.current.component(.weekday, from: Date())
         guard let today = WeekDay(rawValue: todayIndex) else { return [] }
-        return routines.filter { $0.routineDays.contains(today) }
+        return routines.filter { $0.routineDays.contains(today) && !$0.isCompletedToday }
     }
 }

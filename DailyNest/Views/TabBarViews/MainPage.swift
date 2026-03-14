@@ -18,6 +18,7 @@ struct MainPage: View {
     
     @Environment(HomeViewModel.self) private var homeViewModel
     @Environment(DailyViewModel.self) private var dailyViewModel
+    @Environment(RoutineViewModel.self) private var routineViewModel
     
     @Environment(\.modelContext) private var context
     @Query private var dailyTasks: [DailyTask]
@@ -45,7 +46,10 @@ struct MainPage: View {
                 }
                 .padding(.horizontal, 20)
 
-                ProgressCard(config: homeViewModel.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .allTasks))
+                ProgressCard(config: homeViewModel.createProgressCard(
+                    dailyTasks: dailyViewModel.todaysDailys(dailyTasks),
+                    routineTasks: routineViewModel.todaysRoutines(routineTasks),
+                    type: .allTasks))
                     .padding(.horizontal, 30)
                     .padding(.top, 10)
 
@@ -72,7 +76,7 @@ struct MainPage: View {
                             .padding(.bottom,20)
                         
                         RoutineSection(
-                            items: routineTasks,
+                            items: routineViewModel.todaysRoutines(routineTasks),
                             context: context,
                             isExpanded: $routineSectionExpanded
                         )
