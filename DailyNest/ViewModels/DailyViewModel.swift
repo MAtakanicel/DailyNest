@@ -11,6 +11,8 @@ import SwiftData
 
 @Observable @MainActor
 final class DailyViewModel {
+    var alertMessage: String? = nil
+    
     func createDaily(
         title: String,
         details: String? = nil,
@@ -19,7 +21,7 @@ final class DailyViewModel {
         isReminderOn: Bool = false,
         reminderDate: Date? = nil,
         context: ModelContext
-    ) -> Result<Bool, Error> {
+    ) {
         let task = DailyTask(
             title: title,
             details: details,
@@ -30,45 +32,49 @@ final class DailyViewModel {
         )
 
         context.insert(task)
-        do {
-            try context.save()
-            return .success(true)
-        } catch {
-            return .failure(error)
-        }
+        
+       updateDaily(task, context: context,method: "Create")
     }
 
-    func deleteDaily(_ task: DailyTask, context: ModelContext) -> Result<Bool, Error> {
+   
+    func deleteDaily(_ task: DailyTask, context: ModelContext) {
         context.delete(task)
+        
+        updateDaily(task, context: context,method: "Delete")
+    }
+
+    
+    func updateDaily(_ task: DailyTask, context: ModelContext,method: String = "update")  {
         do {
             try context.save()
-            return .success(true)
+            print("Daily işlemi başarılı. (\(method)) Task: \(task.title)")
+           
         } catch {
-            return .failure(error)
+            print("Daily işlemi başarısız. (\(method)) Task:\(task.title) Hata: \(error.localizedDescription)")
+            self.alertMessage = error.localizedDescription
+            
         }
     }
 
-    func updateDaily(_: DailyTask, context: ModelContext) -> Result<Bool, Error> {
-        do {
-            try context.save()
-            return .success(true)
-        } catch {
-            return .failure(error)
-        }
-    }
 
-    func toggleDailyCompletion(_ task: DailyTask, context: ModelContext) -> Result<Bool, Error> {
+    func toggleDailyCompletion(_ task: DailyTask, context: ModelContext)  {
         task.isCompleted.toggle()
         task.completedAt = task.isCompleted ? Date() : nil
-
-        return updateDaily(task, context: context)
+        print("Task \(task.isCompleted ? "tamamlandı" : "geri alındı").")
+        
+        
+        updateDaily(task, context: context,method: "Toggle")
     }
     
     func todaysDailys(_ dailys: [DailyTask]) -> [DailyTask] {
-        return dailys.filter { Calendar.current.isDate($0.date, inSameDayAs: Date()) }
+        return dailys.filter { !$0.isCompleted && Calendar.current.isDate($0.date, inSameDayAs: Date()) }
     }
     
     func overdueDailys(_ dailys: [DailyTask]) -> [DailyTask] {
-        return dailys.filter{ $0.date < Date() && !Calendar.current.isDate($0.date, inSameDayAs: Date())  }
+        return dailys.filter { !$0.isCompleted && $0.date < Date() && !Calendar.current.isDate($0.date, inSameDayAs: Date()) }
+    }
+    
+    func todayCompletedDailys(_ dailys: [DailyTask]) -> [DailyTask] {
+        return dailys.filter { $0.isCompleted && Calendar.current.isDate($0.completedAt ?? Date(), inSameDayAs: Date()) }
     }
 }

@@ -44,6 +44,7 @@ class MockData {
             ),
             RoutineTask(
                 title: "Su İçmeyi Unutma 💧",
+                maxCount: 5,
                 details: "Günde 2.5 Litre hedef.",
                 routineDays: WeekDay.allCases
             ),

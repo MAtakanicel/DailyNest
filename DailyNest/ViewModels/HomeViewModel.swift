@@ -12,15 +12,14 @@ import Observation
 
 @Observable @MainActor
 final class HomeViewModel {
+  
+    
     func createProgressCard(dailyTasks: [DailyTask], routineTasks: [RoutineTask], type: ProgressDataType) -> ProgressCardConfig {
         let todayIndex = Calendar.current.component(.weekday, from: Date()) // Bu gününün indexi
-        let todayWeekDay = WeekDay(rawValue: todayIndex)
+        
 
-        let todaysTasks = dailyTasks.filter { Calendar.current.isDateInToday($0.date) }
-        let activeRoutineTasks = routineTasks.filter { routine in
-            guard let today = todayWeekDay else { return false }
-            return routine.routineDays.contains(today)
-        }
+        var todaysDailys : [DailyTask]
+        let activeRoutineTasks : [RoutineTask]
 
         var completedCount: Int
         var totalCount: Int
@@ -29,14 +28,14 @@ final class HomeViewModel {
 
         switch type {
         case .allTasks:
-            totalCount = todaysTasks.count + activeRoutineTasks.count
-            completedCount = todaysTasks.filter { $0.isCompleted }.count + activeRoutineTasks.filter { $0.isCompletedToday }.count
+            totalCount = dailyTasks.count + activeRoutineTasks.count
+            completedCount = dailyTasks.filter { $0.isCompleted }.count + activeRoutineTasks.filter { $0.isCompletedToday }.count
             title = "Today's Progress"
             colors = [AppColors.progressBlue, AppColors.progressBlue.opacity(0.6)]
 
         case .dailyTasks:
-            totalCount = todaysTasks.count
-            completedCount = todaysTasks.filter { $0.isCompleted }.count
+            totalCount = dailyTasks.count
+            completedCount = dailyTasks.filter { $0.isCompleted }.count
             title = "Today's Tasks"
             colors = [AppColors.progressPurple, AppColors.progressPurple.opacity(0.6)]
 

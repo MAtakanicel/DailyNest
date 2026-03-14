@@ -17,7 +17,7 @@ struct GradientSectionBackground: View {
 
                 RoundedRectangle(cornerRadius: 30)
                     .fill(backgroundFill)
-                    .shadow(color: shadowColor, radius: 6, x: 0, y: 3)
+                    //.shadow(color: shadowColor, radius: 6, x: 0, y: 3)
 
                 // MARK: - Üstten gelen soft light vurgusu (dark mod)
 

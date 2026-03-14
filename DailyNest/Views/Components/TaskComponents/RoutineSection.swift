@@ -6,17 +6,19 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct RoutineSection: View {
     let items : [RoutineTask]
-    @State private var isExpanded : Bool = false
+    let context : ModelContext
+    @Binding var isExpanded : Bool 
     var body: some View {
         VStack(spacing: 0){
             Section{
               
                 if isExpanded{
                     ForEach(items){ item in
-                        RoutineRow(routine: item)
+                        RoutineRow(routine: item,context: context)
                             .padding(2)
                     }
                 }
@@ -46,5 +48,4 @@ struct RoutineSection: View {
 }
 
 #Preview {
-    RoutineSection(items: [ ])
 }

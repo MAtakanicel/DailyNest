@@ -11,8 +11,14 @@ import SwiftUI
 struct MainPage: View {
     @AppStorage("userName") private var userName: String = ""
     
+    @AppStorage("pastSectionExpanded") private var pastSectionExpanded = false
+    @AppStorage("todaySectionExpanded") private var todaySectionExpanded = false
+    @AppStorage("routineSectionExpanded") private var routineSectionExpanded = false
+    @AppStorage("completedSectionExpanded") private var completedSectionExpanded = false
+    
     @Environment(HomeViewModel.self) private var homeViewModel
     @Environment(DailyViewModel.self) private var dailyViewModel
+    @Environment(RoutineViewModel.self) private var routineViewModel
     
     @Environment(\.modelContext) private var context
     @Query private var dailyTasks: [DailyTask]
@@ -40,25 +46,55 @@ struct MainPage: View {
                 }
                 .padding(.horizontal, 20)
 
-                ProgressCard(config: homeViewModel.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .allTasks))
+                ProgressCard(config: homeViewModel.createProgressCard(
+                    dailyTasks: dailyViewModel.todaysDailys(dailyTasks),
+                    routineTasks: routineViewModel.todaysRoutines(routineTasks),
+                    type: .allTasks))
                     .padding(.horizontal, 30)
                     .padding(.top, 10)
 
                 // Görevlerim Kısımı
                 ScrollView{
                     LazyVStack(spacing:0){
-                        DailysSections(header: "Geçmiş Görevler", items: dailyViewModel.overdueDailys(dailyTasks))
-                            .padding(.horizontal,20)
+                        
+                        if !dailyViewModel.overdueDailys(dailyTasks).isEmpty{
+                            
+                            DailysSections(
+                                header: "Geçmiş Görevler",
+                                items: dailyViewModel.overdueDailys(dailyTasks),
+                                isExpanded: $pastSectionExpanded
+                            )
+                            .padding(.bottom,20)
+                        }
+                        
+                        DailysSections(
+                            header: "Today",
+                            items: dailyViewModel.todaysDailys(dailyTasks),
+                            isExpanded: $todaySectionExpanded
+                        )
+                           
                             .padding(.bottom,20)
                         
-                        DailysSections(header: "Today", items: dailyViewModel.todaysDailys(dailyTasks))
-                            .padding(.horizontal,20)
+                        RoutineSection(
+                            items: routineViewModel.todaysRoutines(routineTasks),
+                            context: context,
+                            isExpanded: $routineSectionExpanded
+                        )
+                        
                             .padding(.bottom,20)
                         
-                        RoutineSection(items: routineTasks)
-                            .padding(.horizontal,20)
+                        if !dailyViewModel.todayCompletedDailys(dailyTasks).isEmpty {
+                         
+                            DailysSections(
+                                header: "Completed",
+                                items: dailyViewModel.todayCompletedDailys(dailyTasks),
+                                isExpanded: $completedSectionExpanded
+                            )
+                            .opacity(0.75)
+                        }
                     }
                 }
+                .padding(.horizontal,20)
 
             }
 
