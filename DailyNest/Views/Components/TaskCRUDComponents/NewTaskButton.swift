@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 enum NewTaskMode {
-    case main
+    case daily
     case routine
 }
 
@@ -27,25 +27,22 @@ struct NewTaskButton: View {
                 .background(
                     Group {
                         switch mode {
-                        case .main:
-                            ToDoButtonsBackgrounds(todoCategory: .daily)
-                                .shadow(
-                                    color: .black.opacity(0.1),
-                                    radius: 3,
-                                    x: 0,
-                                    y: 2
+                        case .daily:
+                          Circle()
+                                .fill(AppColors.button)
+                                .overlay(
+                                    Circle()
+                                        .stroke(AppColors.overlayStroke.opacity(0.1), lineWidth: 1)
                                 )
-                                .cornerRadius(50)
 
                         case .routine:
-                            ToDoButtonsBackgrounds(todoCategory: .routine)
-                                .shadow(
-                                    color: .black.opacity(0.1),
-                                    radius: 3,
-                                    x: 0,
-                                    y: 2
+                            Circle()
+                                .fill(AppColors.routine)
+                                .overlay(
+                                    Circle()
+                                        .stroke(AppColors.overlayStroke.opacity(0.1), lineWidth: 1)
                                 )
-                                .cornerRadius(50)
+                                
                         }
                     }
                 )
@@ -56,4 +53,7 @@ struct NewTaskButton: View {
 #Preview {
     TabBar()
         .modelContainer(MockData.previewContainer)
+        .environment(HomeViewModel())
+        .environment(DailyViewModel())
+        .environment(RoutineViewModel())
 }

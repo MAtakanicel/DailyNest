@@ -43,7 +43,12 @@ struct RoutineSection: View {
         }
         .frame(maxWidth:.infinity)
         .padding(10)
-        .background(GradientSectionBackground(viewStyle: .mainPage) )
+        .background(
+            GradientSectionBackground(viewStyle: .mainPage)
+                .overlay(RoundedRectangle(cornerRadius: 30)
+                    .stroke(Color.gray.opacity(0.25),lineWidth: 1)
+                )
+        )
     }
 }
 

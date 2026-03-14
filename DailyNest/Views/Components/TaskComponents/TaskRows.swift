@@ -31,7 +31,11 @@ struct RoutineRow: View {
                 }
             }
             .onTapGesture {
-                routineViewModel.toggleRoutineCompletion(routine, context: context)
+                if !routine.isCompletedToday{
+                    routineViewModel.toggleRoutineCompletion(routine, context: context)
+                } else {
+                    routineViewModel.routineCompetionResetToday(routine, context: context)
+                }
             }
             
             NavigationLink(destination: EmptyView()) {
@@ -108,6 +112,7 @@ struct RoutineRow: View {
                             ComponentBackgrounds(component: .toDoCellNotComplited))
             .cornerRadius(16)
             .shadow(color: .gray.opacity(0.25), radius: 2, x: 0, y: 2)
+        
         }
     }
 

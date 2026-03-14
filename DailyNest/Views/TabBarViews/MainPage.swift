@@ -33,7 +33,7 @@ struct MainPage: View {
 
     @State private var showNewDailySheet: Bool = false
     var body: some View {
-        ZStack {
+        ZStack() {
             AppColors.background.ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 10) {
@@ -41,15 +41,23 @@ struct MainPage: View {
                     greetings
 
                     Spacer()
-
-                    NewTaskButton(mode: .main) { showNewDailySheet.toggle() }
+                    
+                    Button{ }label:{
+                        Image(systemName: "line.horizontal.3")
+                            .resizable()
+                            .frame(width: 18,height: 18)
+                            .padding(15)
+                            .background(
+                                Circle()
+                            )
+                    }
+                    .padding(.trailing,10)
+                        
+                    
                 }
                 .padding(.horizontal, 20)
 
-                ProgressCard(config: homeViewModel.createProgressCard(
-                    dailyTasks: dailyViewModel.todaysDailys(dailyTasks),
-                    routineTasks: routineViewModel.todaysRoutines(routineTasks),
-                    type: .allTasks))
+                ProgressCard(config: homeViewModel.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .allTasks))
                     .padding(.horizontal, 30)
                     .padding(.top, 10)
 
@@ -98,11 +106,24 @@ struct MainPage: View {
 
             }
 
+            
+            // ✅ VStack + Spacer ile aşağıya it
+             VStack {
+                 Spacer()
+                 HStack {
+                     Spacer()
+                     NewTaskButton(mode: .daily, onTap: { showNewDailySheet = true })
+                         .padding(.trailing, 20)
+                         .padding(.bottom, 75) // tab bar yüksekliği kadar boşluk
+                 }
+             }
+            
+            
             if showNamePopUp {
                 Color.clear
                     .background(.ultraThinMaterial)
                     .ignoresSafeArea()
-
+                
                 welcomePopUp
                     .padding(.vertical)
                     .background(
@@ -114,6 +135,7 @@ struct MainPage: View {
                             .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                     )
                     .padding(25)
+                
             }
         }
         .sheet(isPresented: $showNewDailySheet) {
