@@ -39,14 +39,15 @@ struct RoutinesView: View {
 
                     Spacer()
 
-                    NewTaskButton(mode: .routine) { showNewRoutineSheet.toggle() }
+                 
                 }
-
-                ProgressCard(config: homeViewModel.createProgressCard(
-                    dailyTasks: [],
-                    routineTasks: routineTasks,
-                    type: .routineTasks
-                ))
+                
+                weekRow()
+                    .padding(.vertical,10)
+                    .background(GradientSectionBackground(viewStyle: .calendar))
+                    
+                    
+                    
 
                 HStack {
                     Image(systemName: "magnifyingglass")
@@ -77,15 +78,12 @@ struct RoutinesView: View {
                     LazyVStack {
                         Section {
                             ForEach(filtredRoutines) { task in
-                                RoutineRow(routine: task,context: context)
+                                routineRow(routine: task)
+                                    .padding(.bottom,5)
                             }
                         }
                     }
                 }
-                .padding()
-                .background(GradientSectionBackground(viewStyle: .routinePage))
-                .padding(.bottom, 50)
-
                 Spacer()
             }
             .padding(.horizontal, 20)
@@ -95,7 +93,7 @@ struct RoutinesView: View {
         }
     }
 
-    var filtredRoutines: [RoutineTask] {
+    private var filtredRoutines: [RoutineTask] {
         let searchFiltred = routineTasks.filter { task in
             searchText.isEmpty ? true : task.title.localizedCaseInsensitiveContains(searchText)
         }
@@ -107,6 +105,78 @@ struct RoutinesView: View {
             return searchFiltred
         }
     }
+    
+    @ViewBuilder
+    private func routineRow(routine: RoutineTask) -> some View{
+        HStack {
+            NavigationLink(destination: EmptyView()) {
+                VStack(alignment: .leading, spacing: 0){
+                    Text(routine.title)
+                        .foregroundColor(AppColors.cardText)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(12)
+                
+                    Text("\(routineViewModel.todaysRoutineCompletionCount(routine)) / \(routine.maxCount)")
+                        .font(.subheadline)
+                        .italic()
+                        .foregroundStyle(AppColors.secondaryText)
+                        .padding(.leading,12)
+                        .padding(.bottom, 10)
+                }
+                
+                VStack(spacing: 0){
+                    
+                    
+                }
+            }
+        }
+            .background(routine.isCompletedToday ?
+                        ComponentBackgrounds(component: .toDoCellCompleted) :
+                            ComponentBackgrounds(component: .toDoCellNotComplited))
+            .cornerRadius(16)
+            .shadow(color: .gray.opacity(0.25), radius: 2, x: 0, y: 2)
+        
+    }
+    
+    //MARK: - WeekRow
+    
+    @ViewBuilder
+    private func weekRow() -> some View {
+        HStack(spacing: 0){
+            ForEach(weekDays, id: \.self){ date in
+                
+                DayCell(
+                    date: date,
+                    isSelected: calendar.isDate(date, inSameDayAs: selectedDate),
+                    isToday: calendar.isDateInToday(date),
+                    mode: .routine
+                )
+                .padding(.horizontal,5)
+                .onTapGesture {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)){
+                        selectedDate = date
+                    }
+                }
+            }
+        }
+    }
+    
+    @State private var selectedDate : Date = Date()
+    private let calendar = Calendar.current
+    
+    private var weekDays:[Date]{
+        let today = Date()
+        
+        var components = calendar.dateComponents([.yearForWeekOfYear,.weekOfYear],from: today)
+        components.weekday = 2 // pazartesi
+        let startOfWeek = calendar.date(from: components) ?? today
+        
+        return (0..<7).compactMap{
+            calendar.date(byAdding: .day,value: $0, to: startOfWeek)
+        }
+    }
+    
+
 }
 
 #Preview {

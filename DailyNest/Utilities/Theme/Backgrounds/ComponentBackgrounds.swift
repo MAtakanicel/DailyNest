@@ -38,6 +38,7 @@ struct ComponentBackgrounds: View {
             } else {
                 Color.white.opacity(0.085)
             }
+            
         }
     }
 }

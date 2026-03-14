@@ -52,7 +52,7 @@ struct TabBar: View {
             .safeAreaInset(edge: .bottom) {
                 Color.clear.frame(height: 80) // TabBar yüksekliği kadar boşluk
             }
-
+            
             // Floating Tab Bar
             HStack(spacing: 0) {
                 tabButton(.home)
@@ -62,11 +62,18 @@ struct TabBar: View {
                 tabButton(.settings)
             }
             .padding(.top, 10)
-            .padding(.bottom, 10) // Alt boşluk
-            .background(.ultraThinMaterial) // Blur efekt
+            .padding(.bottom, 10)
+            .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
             .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 6)
             .padding(.horizontal, 30)
+           /* .overlay(alignment: .topTrailing){
+                NewTaskButton(mode: .daily, onTap: { })
+                    .offset(x: -20 , y: -60)
+            }
+           */
+            
+     
         }
         .ignoresSafeArea(.keyboard)
         .onAppear {

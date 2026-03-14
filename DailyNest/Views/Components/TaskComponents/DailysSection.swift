@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct DailysSections: View {
     let header : String
@@ -42,10 +43,19 @@ struct DailysSections: View {
         }
         .frame(maxWidth:.infinity)
         .padding(10)
-        .background(GradientSectionBackground(viewStyle: .mainPage) )
+        .background(
+            GradientSectionBackground(viewStyle: .mainPage)
+                .overlay(RoundedRectangle(cornerRadius: 30)
+                    .stroke(Color.gray.opacity(0.25),lineWidth: 1)
+                )
+        )
     }
 }
 
 #Preview {
-    
+    TabBar()
+        .modelContainer(MockData.previewContainer)
+        .environment(HomeViewModel())
+        .environment(DailyViewModel())
+        .environment(RoutineViewModel())
 }
