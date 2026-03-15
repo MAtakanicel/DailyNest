@@ -62,3 +62,11 @@ enum WeekDay: Int, Codable, CaseIterable {
         }
     }
 }
+
+protocol TimerLinkable{
+    var title: String { get }
+}
+
+extension DailyTask : TimerLinkable{ }
+extension RoutineTask : TimerLinkable{ }
+

@@ -71,6 +71,7 @@ final class RoutineViewModel {
          updateRoutine(routine, context: context,method: "toggleRoutineCompletion")
     }
     
+    //Günlük ilerleme reset
     func routineCompetionResetToday(_ routine: RoutineTask, context: ModelContext) {
         
         let today = routine.completionHistory.first(where: { Calendar.current.isDateInToday($0.date) })
@@ -90,13 +91,44 @@ final class RoutineViewModel {
         return routines.filter { $0.routineDays.contains(today) }
     }
     
-    func routineCompletionSeries(_ routine: RoutineTask) -> Int {
-        if routine.isCompletedToday{
-            
-            
-            
+    func routineSortedByPriority(_ routines: [RoutineTask]) -> [RoutineTask] {
+        return routines.sorted { $0.priority.rawValue < $1.priority.rawValue }
+    }
+    
+    //haftanın günlerine göre filtreli routine
+    func calendarFilterRoutine(_ routines: [RoutineTask],selectDay: Date, isActive: TaskFilter) -> [RoutineTask] {
+        let todayIndex = Calendar.current.component(.weekday, from: selectDay)
+        guard let today = WeekDay(rawValue: todayIndex) else { return [] }
+
+        if isActive == .all {
+            return routines.filter { $0.routineDays.contains(today) }
         } else {
-            
+            return routines.filter { $0.routineDays.contains(today) && !$0.isCompletedToday }
         }
+        
+    }
+    
+    //Tamamlama serisi
+    func routineCompletionSeries(_ routine: RoutineTask) -> Int {
+        var count : Int = 0
+        var currentDate = routine.isCompletedToday ? Date() : Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let list = routine.completionHistory
+            while(true){
+                let todayIndex = WeekDay(rawValue: Calendar.current.component(.weekday, from: currentDate))
+                guard let today = todayIndex else { return 0 }
+                if routine.routineDays.contains(today){
+                    if list.contains(where: { Calendar.current.isDate($0.date, inSameDayAs: currentDate)
+                        && ($0.todaysCompletionCount >= routine.maxCount) }){
+                        count += 1
+                        currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
+                    }
+                    else{
+                        return count
+                    }
+                }else {
+                    currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
+                }
+            }
+
     }
 }

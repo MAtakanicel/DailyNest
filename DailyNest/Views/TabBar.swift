@@ -22,7 +22,7 @@ struct TabBar: View {
     @Query private var dailyTasks: [DailyTask]
     @Query private var routineTasks: [RoutineTask]
 
-    @State private var selectedTab: FloatingTab = .home
+    @State var selectedTab: FloatingTab = .home
 
     @Namespace private var tabBarAnimation
 
@@ -41,10 +41,10 @@ struct TabBar: View {
                         Agenda()
                     }
                 case .settings: NavigationStack {
-                        Settings()
+                        SettingsView()
                     }
                 case .priority: NavigationStack {
-                        EmptyView()
+                        PriorityMatrixView()
                     }
                 }
             }

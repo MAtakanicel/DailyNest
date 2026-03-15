@@ -34,6 +34,13 @@ enum CellMode{
         func letterColor(isSelected: Bool) -> Color {
             isSelected ? accentColor : Color(.secondaryLabel)
         }
+    
+        func dateFormat() -> String {
+        switch self {
+        case .routine: return "EEEEEEEE"
+        case .regular: return "dd"
+        }
+    }
 }
 
 struct DayCell: View {
@@ -47,7 +54,7 @@ struct DayCell: View {
     
     private var dayLetter : String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "EEEEE"
+        formatter.dateFormat = mode.dateFormat()
         return formatter.string(from: date).uppercased()
     }
     

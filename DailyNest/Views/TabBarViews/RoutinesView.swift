@@ -21,7 +21,9 @@ struct RoutinesView: View {
 
     @State private var selectFilter: TaskFilter = .all
     @State private var searchText: String = ""
+    @State private var newRoutineSheet : Bool = false
 
+    @State private var selectedDate : Date = Date()
 
     @Environment(\.modelContext) private var context
     @State private var showNewRoutineSheet: Bool = false
@@ -77,7 +79,13 @@ struct RoutinesView: View {
                 ScrollView {
                     LazyVStack {
                         Section {
-                            ForEach(filtredRoutines) { task in
+                            ForEach(
+                                routineViewModel.routineSortedByPriority(
+                                    routineViewModel.calendarFilterRoutine(
+                                        routineTasks, selectDay: selectedDate, isActive: selectFilter
+                                    )
+                                ),
+                                id: \.self) { task in
                                 routineRow(routine: task)
                                     .padding(.bottom,5)
                             }
@@ -87,10 +95,23 @@ struct RoutinesView: View {
                 Spacer()
             }
             .padding(.horizontal, 20)
+            
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    NewTaskButton(mode: .routine, onTap: { newRoutineSheet.toggle() })
+                        .padding(.trailing, 20)
+                        .padding(.bottom, 75) // tab bar yüksekliği kadar boşluk
+                }
+            }
+            
         }
         .sheet(isPresented: $showNewRoutineSheet) {
             NewRoutineSheetView()
         }
+    
+       
     }
 
     private var filtredRoutines: [RoutineTask] {
@@ -109,13 +130,21 @@ struct RoutinesView: View {
     @ViewBuilder
     private func routineRow(routine: RoutineTask) -> some View{
         HStack {
+            
+          
+            
             NavigationLink(destination: EmptyView()) {
+                
+                Circle()
+                    .fill(routine.priority.color)
+                    .frame(width: 10)
+                    .padding(.leading, 10)
                 VStack(alignment: .leading, spacing: 0){
                     Text(routine.title)
                         .foregroundColor(AppColors.cardText)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(12)
-                
+                        .padding(.vertical,12)
+                        
                     Text("\(routineViewModel.todaysRoutineCompletionCount(routine)) / \(routine.maxCount)")
                         .font(.subheadline)
                         .italic()
@@ -124,11 +153,26 @@ struct RoutinesView: View {
                         .padding(.bottom, 10)
                 }
                 
-                VStack(spacing: 0){
-                    
+                VStack(alignment: .trailing ,spacing: 0){
+                    HStack(spacing: 0){
+                        Text("\(routineViewModel.routineCompletionSeries(routine))")
+                            .bold()
+                            .foregroundColor(AppColors.primaryText)
+                        
+                        Text(" days")
+                            .foregroundColor(AppColors.secondaryText)
+                            .font(.footnote)
+                            .offset(y: 3)
+                    }
+                    .padding(.bottom, 8)
+                    Text("Current Series")
+                        .foregroundColor(AppColors.secondaryText.opacity(0.85))
+                        .font(.caption)
                     
                 }
+                .padding(.trailing,10)
             }
+            
         }
             .background(routine.isCompletedToday ?
                         ComponentBackgrounds(component: .toDoCellCompleted) :
@@ -161,14 +205,14 @@ struct RoutinesView: View {
         }
     }
     
-    @State private var selectedDate : Date = Date()
+
     private let calendar = Calendar.current
     
     private var weekDays:[Date]{
         let today = Date()
         
         var components = calendar.dateComponents([.yearForWeekOfYear,.weekOfYear],from: today)
-        components.weekday = 2 // pazartesi
+        components.weekday = 1 // pazar
         let startOfWeek = calendar.date(from: components) ?? today
         
         return (0..<7).compactMap{
@@ -180,8 +224,9 @@ struct RoutinesView: View {
 }
 
 #Preview {
-    RoutinesView()
-        .modelContainer(MockData.previewContainer)
-        .environment(HomeViewModel())
-        .environment(RoutineViewModel())
+    TabBar(selectedTab: .routine)
+            .modelContainer(MockData.previewContainer)
+            .environment(HomeViewModel())
+            .environment(DailyViewModel())
+            .environment(RoutineViewModel())
 }
