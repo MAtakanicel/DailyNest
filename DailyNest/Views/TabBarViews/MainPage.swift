@@ -107,12 +107,12 @@ struct MainPage: View {
             }
 
             
-            // ✅ VStack + Spacer ile aşağıya it
+         
              VStack {
                  Spacer()
                  HStack {
                      Spacer()
-                     NewTaskButton(mode: .daily, onTap: { showNewDailySheet = true })
+                     NewTaskButton(mode: .daily, onTap: { showNewDailySheet.toggle() })
                          .padding(.trailing, 20)
                          .padding(.bottom, 75) // tab bar yüksekliği kadar boşluk
                  }
@@ -154,6 +154,7 @@ struct MainPage: View {
             Text(homeViewModel.formattedDate())
                 .font(.subheadline)
                 .padding(.bottom, 1)
+                .padding(.leading, 15)
         }
     }
 
@@ -203,9 +204,10 @@ struct MainPage: View {
 } // Struct
 
 #Preview {
-    TabBar()
+    TabBar(selectedTab: .home)
         .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
         .environment(DailyViewModel())
         .environment(RoutineViewModel())
 }
+
