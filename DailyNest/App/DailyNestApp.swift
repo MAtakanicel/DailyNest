@@ -32,6 +32,7 @@ struct DailyNestApp: App {
             fatalError("Veritabanı Hatası : \(error.localizedDescription)")
         }
     }
+
     @State private var homeViewModel = HomeViewModel()
     @State private var dailyViewModel = DailyViewModel()
     @State private var routineViewModel = RoutineViewModel()

@@ -5,8 +5,8 @@
 //  Created by Atakan on 30.01.2026.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct SettingsView: View {
     var body: some View {
@@ -16,8 +16,8 @@ struct SettingsView: View {
 
 #Preview {
     TabBar(selectedTab: .settings)
-            .modelContainer(MockData.previewContainer)
-            .environment(HomeViewModel())
-            .environment(DailyViewModel())
-            .environment(RoutineViewModel())
+        .modelContainer(MockData.previewContainer)
+        .environment(HomeViewModel())
+        .environment(DailyViewModel())
+        .environment(RoutineViewModel())
 }

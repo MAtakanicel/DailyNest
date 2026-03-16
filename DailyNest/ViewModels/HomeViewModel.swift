@@ -5,15 +5,12 @@
 //  Created by Atakan on 30.01.2026.
 //
 
-
 import Foundation
-import SwiftUI
 import Observation
+import SwiftUI
 
 @Observable @MainActor
 final class HomeViewModel {
-  
-    
     func createProgressCard(dailyTasks: [DailyTask], routineTasks: [RoutineTask], type: ProgressDataType) -> ProgressCardConfig {
         let todayIndex = Calendar.current.component(.weekday, from: Date()) // Bu gününün indexi
         let todayWeekDay = WeekDay(rawValue: todayIndex)

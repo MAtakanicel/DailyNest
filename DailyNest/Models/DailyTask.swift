@@ -30,8 +30,7 @@ final class DailyTask {
          isReminderOn: Bool = false,
          reminderDate: Date? = nil,
          isCompleted: Bool = false,
-         completedAt: Date? = nil
-    )
+         completedAt: Date? = nil)
     {
         self.title = title
         self.details = details

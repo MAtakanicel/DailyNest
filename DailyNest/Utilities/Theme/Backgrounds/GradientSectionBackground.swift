@@ -18,9 +18,9 @@ struct GradientSectionBackground: View {
 
                 RoundedRectangle(cornerRadius: 30)
                     .fill(backgroundFill)
-                    //.shadow(color: shadowColor, radius: 6, x: 0, y: 3)
+                // .shadow(color: shadowColor, radius: 6, x: 0, y: 3)
 
-                //Üstten gelen soft light vurgusu (dark mod)
+                // Üstten gelen soft light vurgusu (dark mod)
 
                 if colorScheme == .dark {
                     RoundedRectangle(cornerRadius: 30)
@@ -37,7 +37,7 @@ struct GradientSectionBackground: View {
                         .blendMode(.softLight)
                 }
 
-                //Kenar vurgusu (dark modda zar zor fark edilir)
+                // Kenar vurgusu (dark modda zar zor fark edilir)
                 RoundedRectangle(cornerRadius: 30)
                     .strokeBorder(
                         colorScheme == .dark
@@ -46,7 +46,9 @@ struct GradientSectionBackground: View {
                         lineWidth: 1.5
                     )
                     .blur(radius: 0.5)
-//MARK: - Routine Section
+
+            // MARK: - Routine Section
+
             case .routinePage:
                 if colorScheme == .light {
                     RoundedRectangle(cornerRadius: 30)
@@ -70,40 +72,41 @@ struct GradientSectionBackground: View {
                                 .stroke(Color.white.opacity(0.1), lineWidth: 0.3)
                         )
                 }
-                
-                //MARK: - Calendar Components
+
+            // MARK: - Calendar Components
+
             case .calendar:
                 RoundedRectangle(cornerRadius: 16)
                     .fill(calendarBackgroundFill)
                     .stroke(
-                        colorScheme == .dark ?  Color.white.opacity(0.1)  :  Color.black.opacity(0.1),
+                        colorScheme == .dark ? Color.white.opacity(0.1) : Color.black.opacity(0.1),
                         lineWidth: 1
                     )
-                
             }
         }
     }
 
     // MARK: - Dynamic fill
 
-    private var calendarBackgroundFill : AnyShapeStyle {
+    private var calendarBackgroundFill: AnyShapeStyle {
         if colorScheme == .light {
             return AnyShapeStyle(
                 LinearGradient(
                     colors: [
                         Color.gray.opacity(0.1),
-                        Color.gray.opacity(0.05)],
+                        Color.gray.opacity(0.05),
+                    ],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
             )
-            
+
         } else {
             return AnyShapeStyle(
                 LinearGradient(
                     colors: [
                         Color.gray.opacity(0.15),
-                        Color.gray.opacity(0.2)
+                        Color.gray.opacity(0.2),
                     ],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
@@ -111,7 +114,7 @@ struct GradientSectionBackground: View {
             )
         }
     }
-    
+
     private var backgroundFill: AnyShapeStyle {
         if colorScheme == .dark {
             return AnyShapeStyle(

@@ -12,13 +12,13 @@ enum AppColors {
     static let success: Color = .dynamic(lightHex: "#34C759", darkHex: "#32D74B")
     static let warning: Color = .dynamic(lightHex: "#FF9500", darkHex: "#FF9F0A")
     static let icon: Color = .dynamic(lightHex: "#8E8E93", darkHex: "#98989E")
-    
+
     static let button: Color = .dynamic(lightHex: "#F59E0B", darkHex: "#FBB024")
     static let buttonTapped: Color = .dynamic(lightHex: "#D97706", darkHex: "#E8920A")
-    
+
     static let routine: Color = .dynamic(lightHex: "#10B981", darkHex: "#34D399")
     static let routineTapped: Color = .dynamic(lightHex: "#059669", darkHex: "#10B981")
-    
+
     static let cardBackGround: Color = .dynamic(lightHex: "#FFFFFF", darkHex: "#2C2C2E")
     static let cardText: Color = .dynamic(lightHex: "#1C1C1E", darkHex: "#F2F2F7")
 
@@ -39,7 +39,7 @@ enum AppColors {
     // Apple button
     static let appleSignInText: Color = .dynamic(lightHex: "#FFFFFF", darkHex: "#000000")
     static let appleSignInBackground: Color = .dynamic(lightHex: "#000000", darkHex: "#FFFFFF")
-    
+
     static let overlayStroke: Color = .dynamic(lightHex: "#000000", darkHex: "#FFFFFF")
 }
 
