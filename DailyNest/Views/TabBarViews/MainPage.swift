@@ -154,6 +154,7 @@ struct MainPage: View {
             Text(homeViewModel.formattedDate())
                 .font(.subheadline)
                 .padding(.bottom, 1)
+                .padding(.leading, 15)
         }
     }
 
