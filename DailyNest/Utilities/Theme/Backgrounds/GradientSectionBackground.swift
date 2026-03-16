@@ -1,32 +1,34 @@
 import SwiftUI
 
-enum ViewStyle{
+enum ViewStyle {
     case mainPage
     case routinePage
+    case calendar
 }
 
 struct GradientSectionBackground: View {
     let viewStyle: ViewStyle
     @Environment(\.colorScheme) private var colorScheme
-    
-    
+
     var body: some View {
         ZStack {
             switch viewStyle {
             case .mainPage:
                 // MARK: - Ana yüzey
+
                 RoundedRectangle(cornerRadius: 30)
                     .fill(backgroundFill)
-                    .shadow(color: shadowColor, radius: 6, x: 0, y: 3)
-                
-                // MARK: - Üstten gelen soft light vurgusu (dark mod)
+                    //.shadow(color: shadowColor, radius: 6, x: 0, y: 3)
+
+                //Üstten gelen soft light vurgusu (dark mod)
+
                 if colorScheme == .dark {
                     RoundedRectangle(cornerRadius: 30)
                         .fill(
                             LinearGradient(
                                 colors: [
                                     Color.white.opacity(0.04),
-                                    Color.clear
+                                    Color.clear,
                                 ],
                                 startPoint: .top,
                                 endPoint: .bottom
@@ -34,50 +36,86 @@ struct GradientSectionBackground: View {
                         )
                         .blendMode(.softLight)
                 }
-                
-                // MARK: - Kenar vurgusu (dark modda zar zor fark edilir)
+
+                //Kenar vurgusu (dark modda zar zor fark edilir)
                 RoundedRectangle(cornerRadius: 30)
                     .strokeBorder(
                         colorScheme == .dark
-                        ? Color.white.opacity(0.05)
-                        : Color.white.opacity(0.4),
+                            ? Color.white.opacity(0.05)
+                            : Color.white.opacity(0.4),
                         lineWidth: 1.5
                     )
                     .blur(radius: 0.5)
-                
+//MARK: - Routine Section
             case .routinePage:
                 if colorScheme == .light {
                     RoundedRectangle(cornerRadius: 30)
                         .fill(
-                            LinearGradient(colors: [.green.opacity(0.1),.mint.opacity(0.1)],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing)
+                            LinearGradient(colors: [.green.opacity(0.1), .mint.opacity(0.1)],
+                                           startPoint: .topLeading,
+                                           endPoint: .bottomTrailing)
                         )
                         .shadow(color: .black.opacity(0.2), radius: 5)
                         .background(.ultraThinMaterial)
                         .clipShape(RoundedRectangle(cornerRadius: 30))
-                }else{
+                } else {
                     RoundedRectangle(cornerRadius: 30)
                         .fill(
-                            LinearGradient(colors: [.green.opacity(0.06),.mint.opacity(0.04) ],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing)
+                            LinearGradient(colors: [.green.opacity(0.06), .mint.opacity(0.04)],
+                                           startPoint: .topLeading,
+                                           endPoint: .bottomTrailing)
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color.white.opacity(0.1),lineWidth: 0.3)
+                                .stroke(Color.white.opacity(0.1), lineWidth: 0.3)
                         )
                 }
+                
+                //MARK: - Calendar Components
+            case .calendar:
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(calendarBackgroundFill)
+                    .stroke(
+                        colorScheme == .dark ?  Color.white.opacity(0.1)  :  Color.black.opacity(0.1),
+                        lineWidth: 1
+                    )
                 
             }
         }
     }
 
     // MARK: - Dynamic fill
+
+    private var calendarBackgroundFill : AnyShapeStyle {
+        if colorScheme == .light {
+            return AnyShapeStyle(
+                LinearGradient(
+                    colors: [
+                        Color.gray.opacity(0.1),
+                        Color.gray.opacity(0.05)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            
+        } else {
+            return AnyShapeStyle(
+                LinearGradient(
+                    colors: [
+                        Color.gray.opacity(0.15),
+                        Color.gray.opacity(0.2)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+        }
+    }
+    
     private var backgroundFill: AnyShapeStyle {
         if colorScheme == .dark {
             return AnyShapeStyle(
-                Color(red: 28/255, green: 28/255, blue: 30/255)
+                Color(red: 28 / 255, green: 28 / 255, blue: 30 / 255)
             )
         } else {
             return AnyShapeStyle(
@@ -85,7 +123,7 @@ struct GradientSectionBackground: View {
                     colors: [
                         AppColors.sectionBackgroundEnd.opacity(0.9),
                         AppColors.sectionBackgroundStart.opacity(0.5),
-                        Color.white.opacity(0.9)
+                        Color.white.opacity(0.9),
                     ],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
@@ -96,10 +134,9 @@ struct GradientSectionBackground: View {
 
     private var shadowColor: Color {
         colorScheme == .dark
-        ? Color.black.opacity(0.5)
-        : Color.gray.opacity(0.25)
+            ? Color.black.opacity(0.5)
+            : Color.gray.opacity(0.25)
     }
 }
-#Preview {
-    
-}
+
+#Preview {}

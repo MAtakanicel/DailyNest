@@ -9,26 +9,25 @@ import Foundation
 import SwiftData
 
 @MainActor
-class MockData{
+class MockData {
     static let shared = MockData()
 
-    static var previewContainer : ModelContainer = {
+    static var previewContainer: ModelContainer = {
         let schema = Schema([
             DailyTask.self,
-            RoutineTask.self
+            RoutineTask.self,
         ])
-        
-        let config = ModelConfiguration(isStoredInMemoryOnly: true) //Disk kaydı yapmasın.
+
+        let config = ModelConfiguration(isStoredInMemoryOnly: true) // Disk kaydı yapmasın.
         let container = try! ModelContainer(for: schema, configurations: [config])
-        
+
         MockData.shared.insertSampleData(modelContext: container.mainContext)
-        
+
         return container
     }()
-    
-    func insertSampleData(modelContext: ModelContext){
-        
-        let routineTasks : [RoutineTask] = [
+
+    func insertSampleData(modelContext: ModelContext) {
+        let routineTasks: [RoutineTask] = [
             RoutineTask(
                 title: "Sabah Yürüyüşü 🏃🏻‍♂️",
                 details: "Günde en az 30 dakika tempolu yürüyüş.",
@@ -39,18 +38,19 @@ class MockData{
             RoutineTask(
                 title: "Kitap Oku 📚",
                 details: "Yatmadan önce 20 sayfa.",
-                routineDays: WeekDay.allCases, 
-                isReminderOn: false,
-                
+                routineDays: WeekDay.allCases,
+                isReminderOn: false
+
             ),
             RoutineTask(
                 title: "Su İçmeyi Unutma 💧",
+                maxCount: 5,
                 details: "Günde 2.5 Litre hedef.",
                 routineDays: WeekDay.allCases
-            )
+            ),
         ]
-        
-        let dailyTasks : [DailyTask] = [
+
+        let dailyTasks: [DailyTask] = [
             DailyTask(
                 title: "Market Alışverişi",
                 details: "Süt, Yumurta, Ekmek ve Kahve alınacak.",
@@ -63,7 +63,8 @@ class MockData{
                 date: Date(), // Bugün
                 priority: .high,
                 isReminderOn: true,
-                reminderDate: Calendar.current.date(byAdding: .hour, value: 2, to: Date())
+                reminderDate: Calendar.current.date(byAdding: .hour, value: 2, to: Date()),
+                isCompleted: true
             ),
             DailyTask(
                 title: "SwiftUI Projesini Bitir",
@@ -74,23 +75,27 @@ class MockData{
             DailyTask(
                 title: "Kediyi Veterinere Götür 🐈",
                 date: Calendar.current.date(byAdding: .day, value: 2, to: Date())!, // 2 gün sonra
-                priority: .low,
-                
-            )
+                priority: .low
+            ),
+            DailyTask(
+                title: "Köpeği Veterinere Götür 🐈",
+                date: Calendar.current.date(byAdding: .day, value: -2, to: Date())!, // 2 gün önce
+                priority: .low
+            ),
         ]
-        
+
         for routineTask in routineTasks {
             modelContext.insert(routineTask)
         }
-        
+
         for dailyTask in dailyTasks {
             modelContext.insert(dailyTask)
         }
-    
-        do{
+
+        do {
             try modelContext.save()
             print("Mock Data yüklemesi başarılı")
-        }catch{
+        } catch {
             print("Mock Data Yüklenemedi: \(error.localizedDescription)")
         }
     }
