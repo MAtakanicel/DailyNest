@@ -51,4 +51,7 @@ fastlane/test_output
 *.dSYM.zip
 *.dSYM
 
+*.xcuserstate
+
+
 DeveloperLog.md
