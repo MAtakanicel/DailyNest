@@ -10,21 +10,23 @@ import SwiftUI
 
 struct MainPage: View {
     @AppStorage("userName") private var userName: String = ""
-    
+
     @AppStorage("pastSectionExpanded") private var pastSectionExpanded = false
     @AppStorage("todaySectionExpanded") private var todaySectionExpanded = false
     @AppStorage("routineSectionExpanded") private var routineSectionExpanded = false
     @AppStorage("completedSectionExpanded") private var completedSectionExpanded = false
-    
+
     @Environment(HomeViewModel.self) private var homeViewModel
     @Environment(DailyViewModel.self) private var dailyViewModel
     @Environment(RoutineViewModel.self) private var routineViewModel
-    
+
     @Environment(\.modelContext) private var context
     @Query private var dailyTasks: [DailyTask]
     @Query private var routineTasks: [RoutineTask]
 
     @State private var showNamePopUp: Bool
+    @State private var showDaily: DailyTask? = nil
+    @State private var showRoutine: RoutineTask? = nil
 
     init() {
         let savedName = UserDefaults.standard.string(forKey: "userName") ?? ""
@@ -33,7 +35,7 @@ struct MainPage: View {
 
     @State private var showNewDailySheet: Bool = false
     var body: some View {
-        ZStack() {
+        ZStack {
             AppColors.background.ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 10) {
@@ -41,19 +43,17 @@ struct MainPage: View {
                     greetings
 
                     Spacer()
-                    
-                    Button{ }label:{
+
+                    Button {} label: {
                         Image(systemName: "line.horizontal.3")
                             .resizable()
-                            .frame(width: 18,height: 18)
+                            .frame(width: 18, height: 18)
                             .padding(15)
                             .background(
                                 Circle()
                             )
                     }
-                    .padding(.trailing,10)
-                        
-                    
+                    .padding(.trailing, 10)
                 }
                 .padding(.horizontal, 20)
 
@@ -62,68 +62,75 @@ struct MainPage: View {
                     .padding(.top, 10)
 
                 // Görevlerim Kısımı
-                ScrollView{
-                    LazyVStack(spacing:0){
-                        
-                        if !dailyViewModel.overdueDailys(dailyTasks).isEmpty{
-                            
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        if !dailyViewModel.overdueDailys(dailyTasks).isEmpty {
                             DailysSections(
                                 header: "Geçmiş Görevler",
                                 items: dailyViewModel.overdueDailys(dailyTasks),
-                                isExpanded: $pastSectionExpanded
+                                isExpanded: $pastSectionExpanded,
+                                context: context,
+                                selectedTask: $showDaily
                             )
-                            .padding(.bottom,20)
+                            .padding(.bottom, 20)
                         }
-                        
+
                         DailysSections(
                             header: "Today",
                             items: dailyViewModel.todaysDailys(dailyTasks),
-                            isExpanded: $todaySectionExpanded
+                            isExpanded: $todaySectionExpanded,
+                            context: context,
+                            selectedTask: $showDaily
                         )
-                           
-                            .padding(.bottom,20)
-                        
+
+                        .padding(.bottom, 20)
+
                         RoutineSection(
                             items: routineViewModel.todaysRoutines(routineTasks),
                             context: context,
-                            isExpanded: $routineSectionExpanded
+                            isExpanded: $routineSectionExpanded,
+                            selectedTask: $showRoutine
                         )
-                        
-                            .padding(.bottom,20)
-                        
+
+                        .padding(.bottom, 20)
+
                         if !dailyViewModel.todayCompletedDailys(dailyTasks).isEmpty {
-                         
                             DailysSections(
                                 header: "Completed",
                                 items: dailyViewModel.todayCompletedDailys(dailyTasks),
-                                isExpanded: $completedSectionExpanded
+                                isExpanded: $completedSectionExpanded,
+                                context: context,
+                                selectedTask: $showDaily
                             )
                             .opacity(0.75)
                         }
                     }
                 }
-                .padding(.horizontal,20)
-
+                .padding(.horizontal, 20)
             }
 
-            
-         
-             VStack {
-                 Spacer()
-                 HStack {
-                     Spacer()
-                     NewTaskButton(mode: .daily, onTap: { showNewDailySheet.toggle() })
-                         .padding(.trailing, 20)
-                         .padding(.bottom, 75) // tab bar yüksekliği kadar boşluk
-                 }
-             }
-            
-            
+            .sheet(item: $showDaily) { _ in
+                EmptyView()
+            }
+            .sheet(item: $showRoutine) { _ in
+                EmptyView()
+            }
+
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    NewTaskButton(mode: .daily, onTap: { showNewDailySheet.toggle() })
+                        .padding(.trailing, 20)
+                        .padding(.bottom, 75) // tab bar yüksekliği kadar boşluk
+                }
+            }
+
             if showNamePopUp {
                 Color.clear
                     .background(.ultraThinMaterial)
                     .ignoresSafeArea()
-                
+
                 welcomePopUp
                     .padding(.vertical)
                     .background(
@@ -135,7 +142,6 @@ struct MainPage: View {
                             .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                     )
                     .padding(25)
-                
             }
         }
         .sheet(isPresented: $showNewDailySheet) {
@@ -197,7 +203,7 @@ struct MainPage: View {
             .disabled(trimmeduserName.isEmpty)
         }
     }
-    
+
     private var trimmeduserName: String {
         userName.trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -210,4 +216,3 @@ struct MainPage: View {
         .environment(DailyViewModel())
         .environment(RoutineViewModel())
 }
-

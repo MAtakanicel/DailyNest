@@ -28,7 +28,7 @@ struct NewTaskButton: View {
                     Group {
                         switch mode {
                         case .daily:
-                          Circle()
+                            Circle()
                                 .fill(AppColors.button)
                                 .overlay(
                                     Circle()
@@ -42,7 +42,6 @@ struct NewTaskButton: View {
                                     Circle()
                                         .stroke(AppColors.overlayStroke.opacity(0.1), lineWidth: 1)
                                 )
-                                
                         }
                     }
                 )

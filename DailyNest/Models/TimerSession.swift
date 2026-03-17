@@ -10,13 +10,12 @@ import SwiftData
 
 @Model
 final class TimerSession {
-    
     var startTime: Date
     var duration: Int
-    
+
     var linkedDaily: DailyTask?
     var linkedRoutine: RoutineTask?
-    
+
     init(
         startTime: Date,
         duration: Int = 0,
@@ -28,8 +27,4 @@ final class TimerSession {
         self.linkedDaily = linkedDaily
         self.linkedRoutine = linkedRoutine
     }
-    
 }
-
-
-

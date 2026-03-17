@@ -14,9 +14,9 @@ final class RoutineTask {
     var details: String? // Description
 
     var routineDays: [WeekDay]
-    
+
     var maxCount: Int = 1
-    
+
     @Relationship(deleteRule: .cascade)
     var completionHistory: [DailyLog]
 
@@ -30,7 +30,7 @@ final class RoutineTask {
     var tintColor: String = "blue"
 
     var priority: TaskPriority
-    
+
     init(title: String,
          maxCount: Int = 1,
          details: String? = nil,
@@ -47,26 +47,25 @@ final class RoutineTask {
         self.reminderTime = reminderTime
         self.priority = priority
 
-        
         createdAt = .now
         completionHistory = []
     }
 
     /// Bugün yapıldı mı kontrolü
     var isCompletedToday: Bool {
-        let today = completionHistory.first(where: {Calendar.current.isDateInToday($0.date) })
+        let today = completionHistory.first(where: { Calendar.current.isDateInToday($0.date) })
         guard let completion = today else { return false }
-        
+
         return completion.todaysCompletionCount == maxCount
     }
 }
 
 @Model
-final class DailyLog{
+final class DailyLog {
     var date: Date
-    var todaysCompletionCount : Int
-    
-    init(date: Date, todaysCompletionCount: Int = 0){
+    var todaysCompletionCount: Int
+
+    init(date: Date, todaysCompletionCount: Int = 0) {
         self.date = date
         self.todaysCompletionCount = todaysCompletionCount
     }
