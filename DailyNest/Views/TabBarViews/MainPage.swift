@@ -19,108 +19,95 @@ struct MainPage: View {
     @Environment(HomeViewModel.self) private var homeViewModel
     @Environment(DailyViewModel.self) private var dailyViewModel
     @Environment(RoutineViewModel.self) private var routineViewModel
+    @Environment(SheetRouter.self) private var sheetRouter
 
     @Environment(\.modelContext) private var context
     @Query private var dailyTasks: [DailyTask]
-    @Query private var routineTasks: [RoutineTask]
+    @Query(sort: \RoutineTask.createdAt, order: .reverse) private var routineTasks: [RoutineTask]
 
     @State private var showNamePopUp: Bool
-    @State private var showDaily: DailyTask? = nil
-    @State private var showRoutine: RoutineTask? = nil
+    
+    @AppStorage("pastSectionShow") private var pastSectionShow: Bool = true
+    @AppStorage("completedSectionShow") private var completedSectionShow: Bool = true
+    @AppStorage("todaySectionShow") private var todaySectionShow: Bool = true
+    @AppStorage("routineSectionShow") private var routineSectionShow: Bool = true
 
     init() {
         let savedName = UserDefaults.standard.string(forKey: "userName") ?? ""
         _showNamePopUp = State(initialValue: savedName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
     }
 
-    @State private var showNewDailySheet: Bool = false
+   
     var body: some View {
         ZStack {
             AppColors.background.ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 10) {
-                HStack(spacing: 0) {
+               HStack(spacing: 0) {
                     greetings
 
                     Spacer()
 
-                    Button {} label: {
-                        Image(systemName: "line.horizontal.3")
-                            .resizable()
-                            .frame(width: 18, height: 18)
-                            .padding(15)
-                            .background(
-                                Circle()
-                            )
-                    }
+                    topMenu
                     .padding(.trailing, 10)
                 }
                 .padding(.horizontal, 20)
 
                 ProgressCard(config: homeViewModel.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .allTasks))
                     .padding(.horizontal, 30)
-                    .padding(.top, 10)
+                    .padding(.vertical, 10)
+                
 
                 // Görevlerim Kısımı
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        if !dailyViewModel.overdueDailys(dailyTasks).isEmpty {
                             DailysSections(
                                 header: "Geçmiş Görevler",
                                 items: dailyViewModel.overdueDailys(dailyTasks),
                                 isExpanded: $pastSectionExpanded,
-                                context: context,
-                                selectedTask: $showDaily
+                                context: context
                             )
                             .padding(.bottom, 20)
-                        }
+                            .visible(!dailyViewModel.overdueDailys(dailyTasks).isEmpty && pastSectionShow)
 
                         DailysSections(
                             header: "Today",
                             items: dailyViewModel.todaysDailys(dailyTasks),
                             isExpanded: $todaySectionExpanded,
-                            context: context,
-                            selectedTask: $showDaily
+                            context: context
                         )
-
                         .padding(.bottom, 20)
+                        .visible(todaySectionShow)
 
                         RoutineSection(
                             items: routineViewModel.todaysRoutines(routineTasks),
                             context: context,
-                            isExpanded: $routineSectionExpanded,
-                            selectedTask: $showRoutine
+                            isExpanded: $routineSectionExpanded
                         )
-
                         .padding(.bottom, 20)
-
-                        if !dailyViewModel.todayCompletedDailys(dailyTasks).isEmpty {
+                        .visible(routineSectionShow)
+                        
                             DailysSections(
                                 header: "Completed",
                                 items: dailyViewModel.todayCompletedDailys(dailyTasks),
                                 isExpanded: $completedSectionExpanded,
-                                context: context,
-                                selectedTask: $showDaily
+                                context: context
                             )
                             .opacity(0.75)
-                        }
+                            .visible(!dailyViewModel.todayCompletedDailys(dailyTasks).isEmpty && completedSectionShow)
                     }
                 }
                 .padding(.horizontal, 20)
             }
 
-            .sheet(item: $showDaily) { _ in
-                EmptyView()
-            }
-            .sheet(item: $showRoutine) { _ in
-                EmptyView()
-            }
 
             VStack {
                 Spacer()
                 HStack {
                     Spacer()
-                    NewTaskButton(mode: .daily, onTap: { showNewDailySheet.toggle() })
+                    NewTaskButton(mode: .daily, onTap: {
+                        sheetRouter.activeSheet = .newDaily
+                    })
                         .padding(.trailing, 20)
                         .padding(.bottom, 75) // tab bar yüksekliği kadar boşluk
                 }
@@ -144,9 +131,6 @@ struct MainPage: View {
                     .padding(25)
             }
         }
-        .sheet(isPresented: $showNewDailySheet) {
-            NewDailySheetView()
-        }
     } // Body
 
     private var greetings: some View {
@@ -161,6 +145,53 @@ struct MainPage: View {
                 .font(.subheadline)
                 .padding(.bottom, 1)
                 .padding(.leading, 15)
+        }
+    }
+    
+    private var topMenu: some View {
+        Menu {
+            menuVisibilityButton(
+                pastSectionShow ? "Hide past task section" :"show Past Task Section",
+                image: pastSectionShow ? "eye.slash" : "eye"
+            ){
+                pastSectionShow.toggle()
+            }
+            
+            menuVisibilityButton(
+                completedSectionShow ? "Hide completed section" : "Show Completed Section",
+                image: completedSectionShow ? "eye.slash" : "eye"
+            ){
+                completedSectionShow.toggle()
+            }
+            
+            menuVisibilityButton(
+                todaySectionShow ? "Hide todays Section" : "Show Todays Section",
+                image: todaySectionShow ? "eye.slash" : "eye"
+            ){
+                todaySectionShow.toggle()
+            }
+            
+            menuVisibilityButton(
+                routineSectionShow ? "Hide Routine Section" :  "show Routine Section",
+                image: routineSectionShow ? "eye.slash" : "eye"
+            ){
+                routineSectionShow.toggle()
+            }
+            
+        } label: {
+            Image(systemName: "slider.horizontal.3")
+                .resizable()
+                .foregroundColor(AppColors.primaryText)
+                .frame(width: 26, height: 22)
+                .padding(15)
+        }
+    }
+    
+    @ViewBuilder
+    private func menuVisibilityButton(_ title: String, image: String, tap:@escaping () -> ())-> some View {
+        Button{ tap() } label: {
+            Label("\(title)", systemImage: "\(image)")
+                .foregroundColor(AppColors.primaryText)
         }
     }
 
@@ -215,4 +246,5 @@ struct MainPage: View {
         .environment(HomeViewModel())
         .environment(DailyViewModel())
         .environment(RoutineViewModel())
+        .environment(SheetRouter())
 }

@@ -18,6 +18,7 @@ enum FloatingTab: String, CaseIterable {
 
 struct TabBar: View {
     @Environment(\.modelContext) private var context
+    @Environment(SheetRouter.self) private var sheetRouter
 
     @Query private var dailyTasks: [DailyTask]
     @Query private var routineTasks: [RoutineTask]
@@ -27,6 +28,8 @@ struct TabBar: View {
     @Namespace private var tabBarAnimation
 
     var body: some View {
+        @Bindable var router = sheetRouter
+        
         ZStack(alignment: .bottom) {
             // İçerik Alanı
             Group {
@@ -52,7 +55,14 @@ struct TabBar: View {
             .safeAreaInset(edge: .bottom) {
                 Color.clear.frame(height: 80) // TabBar yüksekliği kadar boşluk
             }
-
+            .sheet(item: $router.activeSheet){ sheet in
+                switch sheet{
+                case .taskDetail(_): EmptyView()
+                case .routineDetail(_): EmptyView()
+                case .newDaily: EmptyView()
+                case .newRoutine: EmptyView()
+                }
+            }
             // Floating Tab Bar
             HStack(spacing: 0) {
                 tabButton(.home)
@@ -119,4 +129,5 @@ struct TabBar: View {
         .environment(HomeViewModel())
         .environment(DailyViewModel())
         .environment(RoutineViewModel())
+        .environment(SheetRouter())
 }

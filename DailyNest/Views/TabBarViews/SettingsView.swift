@@ -20,4 +20,5 @@ struct SettingsView: View {
         .environment(HomeViewModel())
         .environment(DailyViewModel())
         .environment(RoutineViewModel())
+        .environment(SheetRouter())
 }

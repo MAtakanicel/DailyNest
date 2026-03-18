@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct Agenda: View {
     var body: some View {
@@ -14,5 +15,10 @@ struct Agenda: View {
 }
 
 #Preview {
-    Agenda()
+    TabBar(selectedTab: .agenda)
+        .modelContainer(MockData.previewContainer)
+        .environment(HomeViewModel())
+        .environment(DailyViewModel())
+        .environment(RoutineViewModel())
+        .environment(SheetRouter())
 }

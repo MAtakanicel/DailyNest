@@ -36,12 +36,15 @@ struct DailyNestApp: App {
     @State private var homeViewModel = HomeViewModel()
     @State private var dailyViewModel = DailyViewModel()
     @State private var routineViewModel = RoutineViewModel()
+    @State private var sheetRouter = SheetRouter()
     var body: some Scene {
         WindowGroup {
             TabBar()
-        }.modelContainer(container) // Veri tabanı DI
-            .environment(homeViewModel)
-            .environment(dailyViewModel)
-            .environment(routineViewModel)
+        }
+        .modelContainer(container) // Veri tabanı DI
+        .environment(homeViewModel)
+        .environment(dailyViewModel)
+        .environment(routineViewModel)
+        .environment(sheetRouter)
     }
 }

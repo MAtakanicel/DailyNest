@@ -13,7 +13,7 @@ struct DailysSections: View {
     let items: [DailyTask]
     @Binding var isExpanded: Bool
     let context: ModelContext
-    @Binding var selectedTask: DailyTask?
+    @Environment(SheetRouter.self) private var sheetRouter
 
     var body: some View {
         VStack(spacing: 0) {
@@ -21,7 +21,7 @@ struct DailysSections: View {
                 if isExpanded {
                     ForEach(items) { item in
                         DailyRow(task: item, context: context) { item in
-                            selectedTask = item
+                            sheetRouter.activeSheet = .taskDetail(item)
                         }
                         .padding(2)
                     }

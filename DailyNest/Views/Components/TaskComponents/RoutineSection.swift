@@ -12,7 +12,7 @@ struct RoutineSection: View {
     let items: [RoutineTask]
     let context: ModelContext
     @Binding var isExpanded: Bool
-    @Binding var selectedTask: RoutineTask?
+    @Environment(SheetRouter.self) private var sheetRouter
 
     var body: some View {
         VStack(spacing: 0) {
@@ -20,7 +20,7 @@ struct RoutineSection: View {
                 if isExpanded {
                     ForEach(items) { item in
                         RoutineRow(routine: item, context: context) { item in
-                            selectedTask = item
+                            sheetRouter.activeSheet = .routineDetail(item)
                         }
                         .padding(2)
                     }

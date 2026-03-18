@@ -18,30 +18,18 @@ struct RoutinesView: View {
 
     @Environment(RoutineViewModel.self) private var routineViewModel
     @Environment(HomeViewModel.self) private var homeViewModel
+    @Environment(SheetRouter.self) private var sheetRouter
+    @Environment(\.modelContext) private var context
 
     @State private var selectFilter: TaskFilter = .all
     @State private var searchText: String = ""
-    @State private var newRoutineSheet: Bool = false
-
     @State private var selectedDate: Date = .init()
 
-    @Environment(\.modelContext) private var context
-    @State private var showNewRoutineSheet: Bool = false
     var body: some View {
         ZStack {
             AppColors.background.ignoresSafeArea()
 
             VStack(spacing: 16) {
-                HStack(spacing: 0) {
-                    Text("My Routines")
-                        .font(.title2.bold())
-                        .foregroundColor(AppColors.primaryText)
-                        .padding(.bottom, 2)
-                        .padding(.top, 15)
-
-                    Spacer()
-                }
-
                 weekRow()
                     .padding(.vertical, 10)
                     .background(GradientSectionBackground(viewStyle: .calendar))
@@ -96,15 +84,14 @@ struct RoutinesView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    NewTaskButton(mode: .routine, onTap: { newRoutineSheet.toggle() })
+                    NewTaskButton(mode: .routine, onTap: { sheetRouter.activeSheet = .newRoutine })
                         .padding(.trailing, 20)
                         .padding(.bottom, 75) // tab bar yüksekliği kadar boşluk
                 }
             }
         }
-        .sheet(isPresented: $showNewRoutineSheet) {
-            NewRoutineSheetView()
-        }
+        .navigationTitle("MyRoutines")
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private var filtredRoutines: [RoutineTask] {
@@ -122,7 +109,7 @@ struct RoutinesView: View {
 
     private func routineRow(routine: RoutineTask) -> some View {
         HStack {
-            NavigationLink(destination: EmptyView()) {
+            Button{ sheetRouter.activeSheet = .routineDetail(routine) } label: {
                 Circle()
                     .fill(routine.priority.color)
                     .frame(width: 10)
@@ -168,7 +155,6 @@ struct RoutinesView: View {
     }
 
     // MARK: - WeekRow
-
     private func weekRow() -> some View {
         HStack(spacing: 0) {
             ForEach(weekDays, id: \.self) { date in
@@ -209,4 +195,5 @@ struct RoutinesView: View {
         .environment(HomeViewModel())
         .environment(DailyViewModel())
         .environment(RoutineViewModel())
+        .environment(SheetRouter())
 }

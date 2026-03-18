@@ -10,6 +10,8 @@ import SwiftData
 
 @Model
 final class RoutineTask {
+    var id : UUID = UUID()
+    
     var title: String
     var details: String? // Description
 
