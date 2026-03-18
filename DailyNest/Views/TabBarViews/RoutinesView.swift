@@ -67,8 +67,8 @@ struct RoutinesView: View {
                                     routineViewModel.calendarFilterRoutine(
                                         routineTasks, selectDay: selectedDate, isActive: selectFilter
                                     )
-                                ),
-                                id: \.self
+                                )
+
                             ) { task in
                                 routineRow(routine: task)
                                     .padding(.bottom, 5)
@@ -109,7 +109,7 @@ struct RoutinesView: View {
 
     private func routineRow(routine: RoutineTask) -> some View {
         HStack {
-            Button{ sheetRouter.activeSheet = .routineDetail(routine) } label: {
+            Button { sheetRouter.activeSheet = .routineDetail(routine) } label: {
                 Circle()
                     .fill(routine.priority.color)
                     .frame(width: 10)
@@ -155,6 +155,7 @@ struct RoutinesView: View {
     }
 
     // MARK: - WeekRow
+
     private func weekRow() -> some View {
         HStack(spacing: 0) {
             ForEach(weekDays, id: \.self) { date in

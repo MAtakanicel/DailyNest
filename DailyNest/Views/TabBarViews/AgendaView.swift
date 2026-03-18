@@ -5,8 +5,8 @@
 //  Created by Atakan on 30.01.2026.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct Agenda: View {
     var body: some View {

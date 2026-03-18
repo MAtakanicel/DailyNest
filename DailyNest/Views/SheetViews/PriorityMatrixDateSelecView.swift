@@ -8,17 +8,10 @@
 import Foundation
 import SwiftUI
 
-
 struct PrioritySheets: View {
-    
-    var body: some View{
-        
-        
-        
-    }
+    var body: some View {}
 }
 
 #Preview {
     PrioritySheets()
-    
 }

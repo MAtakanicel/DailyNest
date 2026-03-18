@@ -28,8 +28,7 @@ enum MatrixTimeFilter: Int {
     case daily, weekly, monthly, custom
 }
 
-enum ActiveSheet{
-
+enum ActiveSheet {
     case taskDetails
     case customDateFilter
 }
@@ -39,22 +38,24 @@ struct PriorityMatrixView: View {
     @Environment(DailyViewModel.self) private var dailyViewModel
     @Environment(\.modelContext) private var context
     @Environment(SheetRouter.self) private var sheetRouter
-    
+
     @Query(sort: \DailyTask.date, order: .reverse) private var dailyTasks: [DailyTask]
     @Query private var routines: [RoutineTask]
-    
+
     @AppStorage("matrixTimeFilter") private var timeFilterState: MatrixTimeFilter = .daily
-    
+
+    // Kadranların başlığı
     @AppStorage("quadrantTitle_VeryHigh") private var veryHighTitle: String = "Very High Priority"
     @AppStorage("quadrantTitle_High") private var highTitle: String = "High Priority"
     @AppStorage("quadrantTitle_Medium") private var mediumTitle: String = "Medium Priorty"
     @AppStorage("quadrantTitle_Low") private var lowTitle: String = "Low Priority"
-    
+
+    // Kadran ikonu
     @AppStorage("quadrantIcon_VeryHigh") private var veryHighIcon: String = "🔴"
     @AppStorage("quadrantIcon_High") private var highIcon: String = "🟠"
     @AppStorage("quadrantIcon_Medium") private var mediumIcon: String = "🟡"
     @AppStorage("quadrantIcon_Low") private var lowIcon: String = "🟢"
-    
+
     @State private var timeFilterStartDate: Date = .init()
     @State private var timeFilterEndDate: Date = .init()
     @State private var isShowCompletedTasks: Bool = true
@@ -63,7 +64,7 @@ struct PriorityMatrixView: View {
     var body: some View {
         ZStack {
             AppColors.background.ignoresSafeArea()
-            
+
             VStack(spacing: 10) {
                 HStack(spacing: 10) {
                     quadrant(
@@ -72,7 +73,7 @@ struct PriorityMatrixView: View {
                         title: veryHighTitle,
                         icon: veryHighIcon
                     )
-                    
+
                     quadrant(
                         priority: .high,
                         corner: .topTrailing,
@@ -80,7 +81,7 @@ struct PriorityMatrixView: View {
                         icon: highIcon
                     )
                 }
-                
+
                 HStack(spacing: 10) {
                     quadrant(
                         priority: .medium,
@@ -88,7 +89,7 @@ struct PriorityMatrixView: View {
                         title: mediumTitle,
                         icon: mediumIcon
                     )
-                    
+
                     quadrant(
                         priority: .low,
                         corner: .bottomTrailing,
@@ -108,31 +109,31 @@ struct PriorityMatrixView: View {
                     Button { isShowCompletedTasks.toggle() } label: {
                         Text(
                             isShowCompletedTasks ?
-                            "Hide completed tasks" :
+                                "Hide completed tasks" :
                                 "Show completed tasks"
                         )
-                        
+
                         Image(systemName: isShowCompletedTasks ? "eye.slash" : "eye")
                     }
-                    
+
                     Button {} label: {
                         Label("Priority Matrix Settings", systemImage: "gearshape")
                     }
-                    
+
                     Menu {
                         timeFilterButton("Todays Tasks", .daily)
-                        
+
                         timeFilterButton("Weekly Tasks", .weekly)
-                        
+
                         timeFilterButton("Monthly Tasks", .monthly)
-                        
+
                         Button {
                             timeFilterState = .custom
                             showCustomFilterSheet.toggle()
                         } label: {
                             Text("Custom Filter")
                                 .foregroundColor(AppColors.primaryText)
-                            
+
                             timeFilterState == .custom ? Image(systemName: "checkmark") : nil
                         }
                     }
@@ -140,7 +141,7 @@ struct PriorityMatrixView: View {
                         Label("Time Filter", systemImage: "calendar")
                             .foregroundColor(AppColors.primaryText)
                     }
-                    
+
                 } label: {
                     Image(systemName: "slider.horizontal.3")
                         .foregroundColor(AppColors.primaryText)
@@ -162,7 +163,7 @@ struct PriorityMatrixView: View {
                             displayedComponents: .date
                         )
                         .datePickerStyle(.compact)
-                        
+
                         DatePicker(
                             "End Time",
                             selection: $timeFilterEndDate,
@@ -177,45 +178,55 @@ struct PriorityMatrixView: View {
             .presentationDetents([.fraction(0.3)])
         }
     }
-    
+
     private func quadrant(priority: TaskPriority, corner: RoundedCorner, title: String, icon: String) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
+        var quadrantTasks: [DailyTask] {
+            dailyViewModel.priorityFilter(
+                dailyViewModel.timeFilter(
+                    isShowCompletedTasks ? dailyTasks : dailyViewModel.activeDailys(dailyTasks),
+                    filter: timeFilterState,
+                    date: Date(),
+                    startDate: timeFilterStartDate,
+                    endDate: timeFilterEndDate
+                ),
+                priority: priority
+            )
+        }
+        return VStack(alignment: .leading, spacing: 0) {
             Text("\(icon) \(title)")
                 .foregroundColor(AppColors.primaryText)
                 .lineLimit(1)
                 .padding(.top, 10)
                 .padding(.leading, 10)
                 .padding(.bottom, 5)
-            
+
             Divider()
                 .overlay(priority.color.opacity(0.1))
                 .padding(.bottom, 5)
-            
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 0) {
-                    ForEach(
-                        dailyViewModel.priorityFilter(
-                            dailyViewModel.timeFilter(
-                                isShowCompletedTasks ? dailyTasks : dailyViewModel.activeDailys(dailyTasks),
-                                filter: timeFilterState,
-                                date: Date(),
-                                startDate: timeFilterStartDate,
-                                endDate: timeFilterEndDate
-                            ),
-                            priority: priority
-                        )
-                    ) { task in
-                        DailyRow(task: task, context: context, rowStyle: .matrix) { item in
-                            sheetRouter.activeSheet = .taskDetail(task)
+
+            if !quadrantTasks.isEmpty {
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 0) {
+                        ForEach(quadrantTasks) { task in
+                            DailyRow(task: task, context: context, rowStyle: .matrix) { _ in
+                                sheetRouter.activeSheet = .taskDetail(task)
+                            }
+                            .padding(.bottom, 5)
                         }
-                        .padding(.bottom, 5)
                     }
+                    .padding(.horizontal, 10)
                 }
-                .padding(.horizontal, 10)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                VStack {
+                    Text("Task not found")
+                        .font(.subheadline)
+                        .foregroundColor(AppColors.secondaryText.opacity(0.8))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        
+
         .background {
             corner.backGroundShape()
                 .fill(AppColors.overlayStroke.opacity(0.05))
@@ -225,16 +236,14 @@ struct PriorityMatrixView: View {
                 )
         }
     }
-   
 
-    private func timeFilterButton(_ title: String, _ filter: MatrixTimeFilter) -> some View{
-       Button{ timeFilterState = filter } label:{
+    private func timeFilterButton(_ title: String, _ filter: MatrixTimeFilter) -> some View {
+        Button { timeFilterState = filter } label: {
             Text(title)
                 .foregroundColor(AppColors.primaryText)
-            
+
             timeFilterState == filter ? Image(systemName: "checkmark") : nil
         }
-        
     }
 }
 

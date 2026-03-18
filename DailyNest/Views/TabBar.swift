@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 enum FloatingTab: String, CaseIterable {
-    case home = "house.fill"
+    case main = "house.fill"
     case routine = "repeat"
     case agenda = "calendar"
     case settings = "gear"
@@ -23,18 +23,18 @@ struct TabBar: View {
     @Query private var dailyTasks: [DailyTask]
     @Query private var routineTasks: [RoutineTask]
 
-    @State var selectedTab: FloatingTab = .home
+    @State var selectedTab: FloatingTab = .main
 
     @Namespace private var tabBarAnimation
 
     var body: some View {
         @Bindable var router = sheetRouter
-        
+
         ZStack(alignment: .bottom) {
             // İçerik Alanı
             Group {
                 switch selectedTab {
-                case .home: NavigationStack {
+                case .main: NavigationStack {
                         MainPage()
                     }
                 case .routine: NavigationStack {
@@ -55,17 +55,17 @@ struct TabBar: View {
             .safeAreaInset(edge: .bottom) {
                 Color.clear.frame(height: 80) // TabBar yüksekliği kadar boşluk
             }
-            .sheet(item: $router.activeSheet){ sheet in
-                switch sheet{
-                case .taskDetail(_): EmptyView()
-                case .routineDetail(_): EmptyView()
+            .sheet(item: $router.activeSheet) { sheet in
+                switch sheet {
+                case .taskDetail: EmptyView()
+                case .routineDetail: EmptyView()
                 case .newDaily: EmptyView()
                 case .newRoutine: EmptyView()
                 }
             }
             // Floating Tab Bar
             HStack(spacing: 0) {
-                tabButton(.home)
+                tabButton(.main)
                 tabButton(.routine)
                 tabButton(.agenda)
                 tabButton(.priority)

@@ -9,107 +9,105 @@ import SwiftData
 import SwiftUI
 
 struct MainPage: View {
-    @AppStorage("userName") private var userName: String = ""
-
-    @AppStorage("pastSectionExpanded") private var pastSectionExpanded = false
-    @AppStorage("todaySectionExpanded") private var todaySectionExpanded = false
-    @AppStorage("routineSectionExpanded") private var routineSectionExpanded = false
-    @AppStorage("completedSectionExpanded") private var completedSectionExpanded = false
-
     @Environment(HomeViewModel.self) private var homeViewModel
     @Environment(DailyViewModel.self) private var dailyViewModel
     @Environment(RoutineViewModel.self) private var routineViewModel
     @Environment(SheetRouter.self) private var sheetRouter
-
     @Environment(\.modelContext) private var context
+
     @Query private var dailyTasks: [DailyTask]
     @Query(sort: \RoutineTask.createdAt, order: .reverse) private var routineTasks: [RoutineTask]
 
+    // Section Açık mı Kapalı mı ?
+    @AppStorage("pastSectionIsCollapsed") private var pastSectionIsCollapsed = false
+    @AppStorage("todaySectionIsCollapsed") private var todaySectionIsCollapsed = false
+    @AppStorage("routineSectionIsCollapsed") private var routineSectionIsCollapsed = false
+    @AppStorage("completedSectionIsCollapsed") private var completedSectionIsCollapsed = false
+
+    // Section görünür mü ?
+    @AppStorage("pastSectionIsHidden") private var pastSectionIsHidden: Bool = false
+    @AppStorage("completedSectionIsHidden") private var completedSectionIsHidden: Bool = false
+    @AppStorage("todaySectionIsHidden") private var todaySectionIsHidden: Bool = false
+    @AppStorage("routineSectionIsHidden") private var routineSectionIsHidden: Bool = false
+
     @State private var showNamePopUp: Bool
-    
-    @AppStorage("pastSectionShow") private var pastSectionShow: Bool = true
-    @AppStorage("completedSectionShow") private var completedSectionShow: Bool = true
-    @AppStorage("todaySectionShow") private var todaySectionShow: Bool = true
-    @AppStorage("routineSectionShow") private var routineSectionShow: Bool = true
+    @AppStorage("userName") private var userName: String = ""
 
     init() {
         let savedName = UserDefaults.standard.string(forKey: "userName") ?? ""
         _showNamePopUp = State(initialValue: savedName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
     }
 
-   
     var body: some View {
         ZStack {
             AppColors.background.ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 10) {
-               HStack(spacing: 0) {
+                HStack(spacing: 0) {
                     greetings
 
                     Spacer()
 
                     topMenu
-                    .padding(.trailing, 10)
                 }
                 .padding(.horizontal, 20)
 
                 ProgressCard(config: homeViewModel.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .allTasks))
                     .padding(.horizontal, 30)
                     .padding(.vertical, 10)
-                
 
                 // Görevlerim Kısımı
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                            DailysSections(
-                                header: "Geçmiş Görevler",
-                                items: dailyViewModel.overdueDailys(dailyTasks),
-                                isExpanded: $pastSectionExpanded,
-                                context: context
-                            )
-                            .padding(.bottom, 20)
-                            .visible(!dailyViewModel.overdueDailys(dailyTasks).isEmpty && pastSectionShow)
+                        DailysSections(
+                            header: "Geçmiş Görevler",
+                            items: dailyViewModel.overdueDailys(dailyTasks),
+                            isExpanded: $pastSectionIsCollapsed,
+                            context: context
+                        )
+                        .padding(.bottom, 20)
+                        .visible(!dailyViewModel.overdueDailys(dailyTasks).isEmpty && !pastSectionIsHidden)
 
                         DailysSections(
                             header: "Today",
                             items: dailyViewModel.todaysDailys(dailyTasks),
-                            isExpanded: $todaySectionExpanded,
+                            isExpanded: $todaySectionIsCollapsed,
                             context: context
                         )
                         .padding(.bottom, 20)
-                        .visible(todaySectionShow)
+                        .visible(!todaySectionIsHidden)
 
                         RoutineSection(
                             items: routineViewModel.todaysRoutines(routineTasks),
                             context: context,
-                            isExpanded: $routineSectionExpanded
+                            isExpanded: $routineSectionIsCollapsed
                         )
                         .padding(.bottom, 20)
-                        .visible(routineSectionShow)
-                        
-                            DailysSections(
-                                header: "Completed",
-                                items: dailyViewModel.todayCompletedDailys(dailyTasks),
-                                isExpanded: $completedSectionExpanded,
-                                context: context
-                            )
-                            .opacity(0.75)
-                            .visible(!dailyViewModel.todayCompletedDailys(dailyTasks).isEmpty && completedSectionShow)
+                        .visible(!routineSectionIsHidden)
+
+                        DailysSections(
+                            header: "Completed",
+                            items: dailyViewModel.todayCompletedDailys(dailyTasks),
+                            isExpanded: $completedSectionIsCollapsed,
+                            context: context
+                        )
+                        .opacity(0.75)
+                        .visible(!dailyViewModel.todayCompletedDailys(dailyTasks).isEmpty && !completedSectionIsHidden)
                     }
                 }
                 .padding(.horizontal, 20)
             }
 
-
             VStack {
                 Spacer()
+
                 HStack {
                     Spacer()
                     NewTaskButton(mode: .daily, onTap: {
                         sheetRouter.activeSheet = .newDaily
                     })
-                        .padding(.trailing, 20)
-                        .padding(.bottom, 75) // tab bar yüksekliği kadar boşluk
+                    .padding(.trailing, 20)
+                    .padding(.bottom, 75) // tab bar yüksekliği kadar boşluk
                 }
             }
 
@@ -131,7 +129,9 @@ struct MainPage: View {
                     .padding(25)
             }
         }
-    } // Body
+    }
+
+    // MARK: - Üst Bar
 
     private var greetings: some View {
         VStack(alignment: .leading) {
@@ -147,49 +147,48 @@ struct MainPage: View {
                 .padding(.leading, 15)
         }
     }
-    
+
     private var topMenu: some View {
         Menu {
             menuVisibilityButton(
-                pastSectionShow ? "Hide past task section" :"show Past Task Section",
-                image: pastSectionShow ? "eye.slash" : "eye"
-            ){
-                pastSectionShow.toggle()
+                pastSectionIsHidden ? "Hide past task section" : "show Past Task Section",
+                image: pastSectionIsHidden ? "eye.slash" : "eye"
+            ) {
+                pastSectionIsHidden.toggle()
             }
-            
+
             menuVisibilityButton(
-                completedSectionShow ? "Hide completed section" : "Show Completed Section",
-                image: completedSectionShow ? "eye.slash" : "eye"
-            ){
-                completedSectionShow.toggle()
+                completedSectionIsHidden ? "Hide completed section" : "Show Completed Section",
+                image: completedSectionIsHidden ? "eye.slash" : "eye"
+            ) {
+                completedSectionIsHidden.toggle()
             }
-            
+
             menuVisibilityButton(
-                todaySectionShow ? "Hide todays Section" : "Show Todays Section",
-                image: todaySectionShow ? "eye.slash" : "eye"
-            ){
-                todaySectionShow.toggle()
+                todaySectionIsHidden ? "Hide todays Section" : "Show Todays Section",
+                image: todaySectionIsHidden ? "eye.slash" : "eye"
+            ) {
+                todaySectionIsHidden.toggle()
             }
-            
+
             menuVisibilityButton(
-                routineSectionShow ? "Hide Routine Section" :  "show Routine Section",
-                image: routineSectionShow ? "eye.slash" : "eye"
-            ){
-                routineSectionShow.toggle()
+                routineSectionIsHidden ? "Hide Routine Section" : "show Routine Section",
+                image: routineSectionIsHidden ? "eye.slash" : "eye"
+            ) {
+                routineSectionIsHidden.toggle()
             }
-            
+
         } label: {
             Image(systemName: "slider.horizontal.3")
                 .resizable()
                 .foregroundColor(AppColors.primaryText)
                 .frame(width: 26, height: 22)
-                .padding(15)
+                .padding(10)
         }
     }
-    
-    @ViewBuilder
-    private func menuVisibilityButton(_ title: String, image: String, tap:@escaping () -> ())-> some View {
-        Button{ tap() } label: {
+
+    private func menuVisibilityButton(_ title: String, image: String, tap: @escaping () -> Void) -> some View {
+        Button { tap() } label: {
             Label("\(title)", systemImage: "\(image)")
                 .foregroundColor(AppColors.primaryText)
         }
@@ -238,10 +237,10 @@ struct MainPage: View {
     private var trimmeduserName: String {
         userName.trimmingCharacters(in: .whitespacesAndNewlines)
     }
-} // Struct
+}
 
 #Preview {
-    TabBar(selectedTab: .home)
+    TabBar(selectedTab: .main)
         .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
         .environment(DailyViewModel())

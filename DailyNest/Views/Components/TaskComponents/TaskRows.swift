@@ -17,7 +17,6 @@ struct RoutineRow: View {
     @Environment(RoutineViewModel.self) private var routineViewModel
     let context: ModelContext
     var onTap: ((RoutineTask) -> Void)? = nil
-    
 
     var body: some View {
         HStack {
@@ -43,7 +42,6 @@ struct RoutineRow: View {
                     routineViewModel.routineCompetionResetToday(routine, context: context)
                 }
             }
-          
 
             Button { onTap?(routine) } label: {
                 Text(routine.title)
@@ -51,7 +49,6 @@ struct RoutineRow: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(12)
             }
-    
 
             Spacer()
 
@@ -79,8 +76,7 @@ struct DailyRow: View {
     private var isToday: Bool {
         Calendar.current.isDate(task.date, inSameDayAs: Date())
     }
-    
-    
+
     var body: some View {
         switch rowStyle {
         case .matrix:
@@ -98,7 +94,7 @@ struct DailyRow: View {
                             .frame(width: 10, height: 10)
                     }
                 }
-                .padding(.trailing,2)
+                .padding(.trailing, 2)
                 .onTapGesture {
                     dailyViewModel.toggleDailyCompletion(task, context: context)
                 }

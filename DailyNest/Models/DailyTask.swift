@@ -10,8 +10,8 @@ import SwiftData
 
 @Model
 final class DailyTask {
-    var id : UUID = UUID()
-    
+    var id: UUID = UUID()
+
     var title: String
     var details: String? // Description
     var date: Date // Gerçekleştirilicek tarih
