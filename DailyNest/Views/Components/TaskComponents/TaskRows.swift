@@ -13,10 +13,10 @@ enum DailyRowStyle {
 }
 
 struct RoutineRow: View {
-    var routine: RoutineTask
+    var routine: Routine
     @Environment(RoutineViewModel.self) private var routineViewModel
     let context: ModelContext
-    var onTap: ((RoutineTask) -> Void)? = nil
+    var onTap: ((Routine) -> Void)? = nil
 
     var body: some View {
         HStack {

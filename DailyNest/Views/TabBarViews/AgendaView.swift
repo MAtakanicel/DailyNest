@@ -9,8 +9,21 @@ import SwiftData
 import SwiftUI
 
 struct Agenda: View {
+    @Environment(CalendarHelper.self) private var calendarHelper
+    @Environment(DailyViewModel.self) private var dailyViewModel
+    @Environment(SheetRouter.self) private var sheetRouter
+    @Environment(\.modelContext) private var context
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        
+    }
+    
+    private func calendar() -> some View {
+        HStack{
+            
+        }.gesture(){
+            
+        }
     }
 }
 
@@ -21,4 +34,5 @@ struct Agenda: View {
         .environment(DailyViewModel())
         .environment(RoutineViewModel())
         .environment(SheetRouter())
+        .environment(CalendarHelper())
 }

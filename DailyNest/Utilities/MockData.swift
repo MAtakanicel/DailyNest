@@ -15,7 +15,7 @@ class MockData {
     static var previewContainer: ModelContainer = {
         let schema = Schema([
             DailyTask.self,
-            RoutineTask.self,
+            Routine.self,
         ])
 
         let config = ModelConfiguration(isStoredInMemoryOnly: true) // Disk kaydı yapmasın.
@@ -27,22 +27,22 @@ class MockData {
     }()
 
     func insertSampleData(modelContext: ModelContext) {
-        let routineTasks: [RoutineTask] = [
-            RoutineTask(
+        let routineTasks: [Routine] = [
+            Routine(
                 title: "Sabah Yürüyüşü 🏃🏻‍♂️",
                 details: "Günde en az 30 dakika tempolu yürüyüş.",
                 routineDays: [.monday, .tuesday, .wednesday, .thursday, .friday], // Hafta içi
                 isReminderOn: true,
                 reminderTime: Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: Date())
             ),
-            RoutineTask(
+            Routine(
                 title: "Kitap Oku 📚",
                 details: "Yatmadan önce 20 sayfa.",
                 routineDays: WeekDay.allCases,
                 isReminderOn: false
 
             ),
-            RoutineTask(
+            Routine(
                 title: "Su İçmeyi Unutma 💧",
                 maxCount: 5,
                 details: "Günde 2.5 Litre hedef.",
@@ -84,8 +84,8 @@ class MockData {
             ),
         ]
 
-        for routineTask in routineTasks {
-            modelContext.insert(routineTask)
+        for Routine in routineTasks {
+            modelContext.insert(Routine)
         }
 
         for dailyTask in dailyTasks {

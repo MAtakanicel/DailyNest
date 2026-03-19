@@ -68,4 +68,12 @@ protocol TimerLinkable {
 }
 
 extension DailyTask: TimerLinkable {}
-extension RoutineTask: TimerLinkable {}
+extension Routine: TimerLinkable {}
+
+protocol Taskable {
+    var id: UUID { get }
+    var title: String { get }
+    var priority: TaskPriority { get }
+    var isCompleted: Bool { get }
+    var completedAt: Date? { get }
+}

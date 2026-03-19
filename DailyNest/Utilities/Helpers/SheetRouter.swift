@@ -10,7 +10,7 @@ import Observation
 
 enum AppSheet: Identifiable {
     case taskDetail(DailyTask)
-    case routineDetail(RoutineTask)
+    case routineDetail(Routine)
 
     case newDaily
     case newRoutine
@@ -28,4 +28,5 @@ enum AppSheet: Identifiable {
 @Observable
 class SheetRouter {
     var activeSheet: AppSheet?
+
 }

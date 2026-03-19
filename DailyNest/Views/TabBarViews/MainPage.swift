@@ -16,7 +16,7 @@ struct MainPage: View {
     @Environment(\.modelContext) private var context
 
     @Query private var dailyTasks: [DailyTask]
-    @Query(sort: \RoutineTask.createdAt, order: .reverse) private var routineTasks: [RoutineTask]
+    @Query(sort: \Routine.createdAt, order: .reverse) private var routineTasks: [Routine]
 
     // Section Açık mı Kapalı mı ?
     @AppStorage("pastSectionIsCollapsed") private var pastSectionIsCollapsed = false

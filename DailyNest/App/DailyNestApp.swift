@@ -17,7 +17,7 @@ struct DailyNestApp: App {
             // Şema Tanımlaması, Veritabanındaki modeller
             let schema = Schema([
                 DailyTask.self,
-                RoutineTask.self,
+                Routine.self,
             ])
 
             // 2. Konfigürasyon: CloudKit
@@ -37,6 +37,7 @@ struct DailyNestApp: App {
     @State private var dailyViewModel = DailyViewModel()
     @State private var routineViewModel = RoutineViewModel()
     @State private var sheetRouter = SheetRouter()
+    @State private var calendarHelper = CalendarHelper()
     var body: some Scene {
         WindowGroup {
             TabBar()
@@ -46,5 +47,6 @@ struct DailyNestApp: App {
         .environment(dailyViewModel)
         .environment(routineViewModel)
         .environment(sheetRouter)
+        .environment(calendarHelper)
     }
 }

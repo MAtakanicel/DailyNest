@@ -28,9 +28,16 @@ enum MatrixTimeFilter: Int {
     case daily, weekly, monthly, custom
 }
 
-enum ActiveSheet {
-    case taskDetails
-    case customDateFilter
+enum PriorityMatrixSheet: Identifiable {
+    case customDateFilterSheet
+    case matrixSettingsSheet
+    
+    var id :String{
+        switch self {
+        case .customDateFilterSheet: return "customDateFilter"
+        case .matrixSettingsSheet: return "matrixSettingsSheet"
+        }
+    }
 }
 
 struct PriorityMatrixView: View {
@@ -40,14 +47,14 @@ struct PriorityMatrixView: View {
     @Environment(SheetRouter.self) private var sheetRouter
 
     @Query(sort: \DailyTask.date, order: .reverse) private var dailyTasks: [DailyTask]
-    @Query private var routines: [RoutineTask]
+    @Query private var routines: [Routine]
 
     @AppStorage("matrixTimeFilter") private var timeFilterState: MatrixTimeFilter = .daily
 
     // Kadranların başlığı
     @AppStorage("quadrantTitle_VeryHigh") private var veryHighTitle: String = "Very High Priority"
     @AppStorage("quadrantTitle_High") private var highTitle: String = "High Priority"
-    @AppStorage("quadrantTitle_Medium") private var mediumTitle: String = "Medium Priorty"
+    @AppStorage("quadrantTitle_Medium") private var mediumTitle: String = "Medium Priority"
     @AppStorage("quadrantTitle_Low") private var lowTitle: String = "Low Priority"
 
     // Kadran ikonu
@@ -55,12 +62,14 @@ struct PriorityMatrixView: View {
     @AppStorage("quadrantIcon_High") private var highIcon: String = "🟠"
     @AppStorage("quadrantIcon_Medium") private var mediumIcon: String = "🟡"
     @AppStorage("quadrantIcon_Low") private var lowIcon: String = "🟢"
+    
+    @AppStorage("quadrantIsColorful") private var isColorful: Bool = true
 
     @State private var timeFilterStartDate: Date = .init()
     @State private var timeFilterEndDate: Date = .init()
     @State private var isShowCompletedTasks: Bool = true
-    @State private var showCustomFilterSheet: Bool = false
-
+    @State private var activeLocalSheet: PriorityMatrixSheet? = nil
+    
     var body: some View {
         ZStack {
             AppColors.background.ignoresSafeArea()
@@ -105,77 +114,24 @@ struct PriorityMatrixView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Menu {
-                    Button { isShowCompletedTasks.toggle() } label: {
-                        Text(
-                            isShowCompletedTasks ?
-                                "Hide completed tasks" :
-                                "Show completed tasks"
-                        )
-
-                        Image(systemName: isShowCompletedTasks ? "eye.slash" : "eye")
-                    }
-
-                    Button {} label: {
-                        Label("Priority Matrix Settings", systemImage: "gearshape")
-                    }
-
-                    Menu {
-                        timeFilterButton("Todays Tasks", .daily)
-
-                        timeFilterButton("Weekly Tasks", .weekly)
-
-                        timeFilterButton("Monthly Tasks", .monthly)
-
-                        Button {
-                            timeFilterState = .custom
-                            showCustomFilterSheet.toggle()
-                        } label: {
-                            Text("Custom Filter")
-                                .foregroundColor(AppColors.primaryText)
-
-                            timeFilterState == .custom ? Image(systemName: "checkmark") : nil
-                        }
-                    }
-                    label: {
-                        Label("Time Filter", systemImage: "calendar")
-                            .foregroundColor(AppColors.primaryText)
-                    }
-
-                } label: {
-                    Image(systemName: "slider.horizontal.3")
-                        .foregroundColor(AppColors.primaryText)
-                }
+                toolbarContent
             }
         }
-        .sheet(isPresented: $showCustomFilterSheet) {
-            ZStack {
-                AppColors.background.ignoresSafeArea()
-                VStack {
-                    Text("Time Filter")
-                        .font(.title.bold())
-                        .foregroundColor(AppColors.primaryText)
-                    VStack(spacing: 25) {
-                        DatePicker(
-                            "Start Time",
-                            selection: $timeFilterStartDate,
-                            in: ...Date(),
-                            displayedComponents: .date
-                        )
-                        .datePickerStyle(.compact)
+        .sheet(item: $activeLocalSheet) { sheet in
+            switch sheet {
+            case .customDateFilterSheet:
+                DatePickerSheet(
+                    timeFilterStartDate: $timeFilterStartDate,
+                    timeFilterEndDate: $timeFilterEndDate,
+                    setDate: $timeFilterState
+                )
+                .presentationDetents([.fraction(0.35)])
 
-                        DatePicker(
-                            "End Time",
-                            selection: $timeFilterEndDate,
-                            in: timeFilterStartDate...,
-                            displayedComponents: .date
-                        )
-                        .datePickerStyle(.compact)
-                    }
-                    .frame(maxWidth: 300)
-                }
+            case .matrixSettingsSheet:
+                MatrixSettingsSheet()
+                    .presentationDetents([.large])
+
             }
-            .presentationDetents([.fraction(0.3)])
         }
     }
 
@@ -232,7 +188,9 @@ struct PriorityMatrixView: View {
                 .fill(AppColors.overlayStroke.opacity(0.05))
                 .overlay(
                     corner.backGroundShape()
-                        .stroke(priority.color.opacity(0.25), lineWidth: 2.5)
+                        .stroke(
+                            isColorful ? priority.color.opacity(0.25) : AppColors.overlayStroke.opacity(0.1),
+                            lineWidth: 1)
                 )
         }
     }
@@ -244,6 +202,59 @@ struct PriorityMatrixView: View {
 
             timeFilterState == filter ? Image(systemName: "checkmark") : nil
         }
+    }
+    
+    private var toolbarContent : some View{
+            Menu {
+                Button { isShowCompletedTasks.toggle() } label: {
+                    Text(
+                        isShowCompletedTasks ?
+                            "Hide completed tasks" :
+                            "Show completed tasks"
+                    )
+
+                    Image(systemName: isShowCompletedTasks ? "eye.slash" : "eye")
+                }
+
+                Button{ isColorful.toggle() } label: {
+                    Label(
+                        isColorful ? "Priority Color disable" : "Priority Color enable",
+                        systemImage: isColorful ? "sun.min" : "sun.max")
+                        .foregroundColor(AppColors.primaryText)
+                }
+                
+                Button {
+                    activeLocalSheet = .matrixSettingsSheet
+                } label: {
+                    Label("Priority Matrix Settings", systemImage: "gearshape")
+                        .foregroundColor(AppColors.primaryText)
+                }
+                
+                Menu {
+                    timeFilterButton("Todays Tasks", .daily)
+
+                    timeFilterButton("Weekly Tasks", .weekly)
+
+                    timeFilterButton("Monthly Tasks", .monthly)
+
+                    Button {
+                        activeLocalSheet = .customDateFilterSheet
+                    } label: {
+                        Text("Custom Filter")
+                            .foregroundColor(AppColors.primaryText)
+
+                        timeFilterState == .custom ? Image(systemName: "checkmark") : nil
+                    }
+                }
+                label: {
+                    Label("Time Filter", systemImage: "calendar")
+                        .foregroundColor(AppColors.primaryText)
+                }
+
+            } label: {
+                Image(systemName: "slider.horizontal.3")
+                    .foregroundColor(AppColors.primaryText)
+            }
     }
 }
 

@@ -21,7 +21,7 @@ struct TabBar: View {
     @Environment(SheetRouter.self) private var sheetRouter
 
     @Query private var dailyTasks: [DailyTask]
-    @Query private var routineTasks: [RoutineTask]
+    @Query private var routineTasks: [Routine]
 
     @State var selectedTab: FloatingTab = .main
 

@@ -14,13 +14,13 @@ final class TimerSession {
     var duration: Int
 
     var linkedDaily: DailyTask?
-    var linkedRoutine: RoutineTask?
+    var linkedRoutine: Routine?
 
     init(
         startTime: Date,
         duration: Int = 0,
         linkedDaily: DailyTask? = nil,
-        linkedRoutine: RoutineTask? = nil
+        linkedRoutine: Routine? = nil
     ) {
         self.startTime = startTime
         self.duration = duration

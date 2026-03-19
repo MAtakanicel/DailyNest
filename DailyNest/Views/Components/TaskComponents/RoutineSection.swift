@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct RoutineSection: View {
-    let items: [RoutineTask]
+    let items: [Routine]
     let context: ModelContext
     @Binding var isExpanded: Bool
     @Environment(SheetRouter.self) private var sheetRouter

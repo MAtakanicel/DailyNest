@@ -21,7 +21,7 @@ final class RoutineViewModel {
         reminderTime: Date? = nil,
         context: ModelContext
     ) {
-        let routine = RoutineTask(
+        let routine = Routine(
             title: title,
             details: details,
             routineDays: routineDays,
@@ -34,13 +34,13 @@ final class RoutineViewModel {
         updateRoutine(routine, context: context, method: "create")
     }
 
-    func deleteRoutine(_ routine: RoutineTask, context: ModelContext) {
+    func deleteRoutine(_ routine: Routine, context: ModelContext) {
         context.delete(routine)
 
         updateRoutine(routine, context: context, method: "Delete")
     }
 
-    func updateRoutine(_ routine: RoutineTask, context: ModelContext, method: String = "update") {
+    func updateRoutine(_ routine: Routine, context: ModelContext, method: String = "update") {
         do {
             try context.save()
             print("Routine işlemi başarılı. (\(method)) Routine: \(routine.title)")
@@ -51,7 +51,7 @@ final class RoutineViewModel {
         }
     }
 
-    func toggleRoutineCompletion(_ routine: RoutineTask, context: ModelContext) {
+    func toggleRoutineCompletion(_ routine: Routine, context: ModelContext) {
         let today = routine.completionHistory.first(where: { Calendar.current.isDateInToday($0.date) })
 
         if let completion = today {
@@ -68,30 +68,30 @@ final class RoutineViewModel {
     }
 
     /// Günlük ilerleme reset
-    func routineCompetionResetToday(_ routine: RoutineTask, context: ModelContext) {
+    func routineCompetionResetToday(_ routine: Routine, context: ModelContext) {
         let today = routine.completionHistory.first(where: { Calendar.current.isDateInToday($0.date) })
         today?.todaysCompletionCount = 0
 
         updateRoutine(routine, context: context, method: "routineCompetionReset")
     }
 
-    func todaysRoutineCompletionCount(_ routine: RoutineTask) -> Int {
+    func todaysRoutineCompletionCount(_ routine: Routine) -> Int {
         let today = routine.completionHistory.first(where: { Calendar.current.isDateInToday($0.date) })
         return today?.todaysCompletionCount ?? 0
     }
 
-    func todaysRoutines(_ routines: [RoutineTask]) -> [RoutineTask] {
+    func todaysRoutines(_ routines: [Routine]) -> [Routine] {
         let todayIndex = Calendar.current.component(.weekday, from: Date())
         guard let today = WeekDay(rawValue: todayIndex) else { return [] }
         return routines.filter { $0.routineDays.contains(today) }
     }
 
-    func routineSortedByPriority(_ routines: [RoutineTask]) -> [RoutineTask] {
+    func routineSortedByPriority(_ routines: [Routine]) -> [Routine] {
         return routines.sorted { $0.priority.rawValue < $1.priority.rawValue }
     }
 
     /// haftanın günlerine göre filtreli routine
-    func calendarFilterRoutine(_ routines: [RoutineTask], selectDay: Date, isActive: TaskFilter) -> [RoutineTask] {
+    func calendarFilterRoutine(_ routines: [Routine], selectDay: Date, isActive: TaskFilter) -> [Routine] {
         let todayIndex = Calendar.current.component(.weekday, from: selectDay)
         guard let today = WeekDay(rawValue: todayIndex) else { return [] }
 
@@ -103,7 +103,7 @@ final class RoutineViewModel {
     }
 
     /// Tamamlama serisi
-    func routineCompletionSeries(_ routine: RoutineTask) -> Int {
+    func routineCompletionSeries(_ routine: Routine) -> Int {
         var count = 0
         var currentDate = routine.isCompletedToday ? Date() : Calendar.current.date(byAdding: .day, value: -1, to: Date())!
         let list = routine.completionHistory

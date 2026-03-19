@@ -1,5 +1,5 @@
 //
-//  RoutineTask.swift
+//  Routine.swift
 //  DailyNest
 //
 //  Created by Atakan on 30.01.2026.
@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class RoutineTask {
+final class Routine {
     var id: UUID = UUID()
 
     var title: String
@@ -33,14 +33,15 @@ final class RoutineTask {
 
     var priority: TaskPriority
 
-    init(title: String,
+    init(
+        title: String,
          maxCount: Int = 1,
          details: String? = nil,
          routineDays: [WeekDay] = [.monday, .tuesday, .wednesday, .thursday, .friday], // Varsayılan: Hafta içi
          priority: TaskPriority = .medium,
          isReminderOn: Bool = false,
-         reminderTime: Date? = nil)
-    {
+         reminderTime: Date? = nil
+    ){
         self.title = title
         self.maxCount = maxCount
         self.details = details
