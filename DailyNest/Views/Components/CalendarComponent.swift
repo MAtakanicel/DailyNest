@@ -62,15 +62,9 @@ struct CalendarComponent: View {
         let allWeeks = calendarHelper.weeksInMonth(for: date)
 
         VStack(spacing: 0) {
-            if isExpanded {
                 ForEach(allWeeks, id: \.first) { week in
                     weekRow(week, referenceMonth: date)
                 }
-            } else {
-                // Geçilen date'in ait olduğu haftayı göster
-                let currentWeek = calendarHelper.weekDays(for: date)
-                weekRow(currentWeek, referenceMonth: date)
-            }
         }
     }
     
