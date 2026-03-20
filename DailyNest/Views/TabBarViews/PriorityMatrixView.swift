@@ -259,7 +259,7 @@ struct PriorityMatrixView: View {
 }
 
 #Preview {
-    TabBar(selectedTab: .priority)
+    TabBar(selectedTab: .priorityMatrixView)
         .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
         .environment(DailyViewModel())

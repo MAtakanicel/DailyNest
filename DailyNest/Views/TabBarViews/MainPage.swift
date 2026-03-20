@@ -134,11 +134,10 @@ struct MainPage: View {
     // MARK: - Üst Bar
 
     private var greetings: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading,spacing: 0) {
             Text("\(homeViewModel.getDaytime())  \(userName) 👋")
                 .font(.title2.bold())
                 .foregroundColor(AppColors.primaryText)
-                .padding(.bottom, 2)
                 .padding(.top, 15)
 
             Text(homeViewModel.formattedDate())
@@ -240,7 +239,7 @@ struct MainPage: View {
 }
 
 #Preview {
-    TabBar(selectedTab: .main)
+    TabBar(selectedTab: .mainView)
         .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
         .environment(DailyViewModel())

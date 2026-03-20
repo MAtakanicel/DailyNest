@@ -64,12 +64,15 @@ struct RoutinesView: View {
                     LazyVStack {
                         Section {
                             ForEach(
-                                routineViewModel.routineSortedByPriority(
-                                    routineViewModel.calendarFilterRoutine(
-                                        routineTasks, selectDay: selectedDate, isActive: selectFilter
-                                    )
+                                routineViewModel.filteredRoutines(
+                                    routineViewModel.routineSortedByPriority(
+                                        routineViewModel.calendarFilterRoutine(
+                                            routineTasks, selectDay: selectedDate, isActive: selectFilter
+                                        )
+                                    ),
+                                    searchText: searchText,
+                                    selectFilter: selectFilter
                                 )
-                                
                             ) { task in
                                 routineRow(routine: task)
                                     .padding(.bottom, 5)
@@ -93,19 +96,6 @@ struct RoutinesView: View {
         }
         .navigationTitle("MyRoutines")
         .navigationBarTitleDisplayMode(.inline)
-    }
-    
-    private var filtredRoutines: [Routine] {
-        let searchFiltred = routineTasks.filter { task in
-            searchText.isEmpty ? true : task.title.localizedCaseInsensitiveContains(searchText)
-        }
-        
-        switch selectFilter {
-        case .active:
-            return searchFiltred.filter { !$0.isCompletedToday }
-        case .all:
-            return searchFiltred
-        }
     }
     
     private func routineRow(routine: Routine) -> some View {
@@ -156,14 +146,15 @@ struct RoutinesView: View {
     }
     
     // MARK: - WeekRow
-    
     private func weekRow() -> some View {
         HStack(spacing: 0) {
-            ForEach(calendarHelper.weekDays, id: \.self) { date in
+            ForEach(calendarHelper.weekDays(for: Date()), id: \.self) { date in
                 DayCell(
                     date: date,
                     isSelected: calendarHelper.calendar.isDate(date, inSameDayAs: selectedDate),
                     isToday: calendarHelper.calendar.isDateInToday(date),
+                    isCurrentMonth: false,
+                    hasDot: false,
                     mode: .routine
                 )
                 .padding(.horizontal, 5)
@@ -175,13 +166,10 @@ struct RoutinesView: View {
             }
         }
     }
-    
-
-    
 }
 
 #Preview {
-    TabBar(selectedTab: .routine)
+    TabBar(selectedTab: .routinesView)
         .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
         .environment(DailyViewModel())

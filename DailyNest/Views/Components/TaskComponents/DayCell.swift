@@ -47,6 +47,8 @@ struct DayCell: View {
     let date: Date
     let isSelected: Bool
     let isToday: Bool
+    let isCurrentMonth: Bool
+    let hasDot: Bool 
     let mode: CellMode
 
     private let calendar = Calendar.current
@@ -62,6 +64,16 @@ struct DayCell: View {
     }
 
     var body: some View {
+        switch mode {
+        case .routine:
+            routineModeCell
+        case .regular:
+            regularModeCell
+        }
+    
+    }
+    
+    private var routineModeCell : some View {
         VStack(spacing: 8) {
             Text(dayLetter)
                 .font(.system(size: 13, weight: .medium))
@@ -84,8 +96,24 @@ struct DayCell: View {
         }
         .frame(width: 40)
     }
+    
+    private var regularModeCell : some View {
+        VStack(spacing: 4) {
+                  Text(dayNumber)
+                      .font(.system(size: 15, weight: isToday ? .bold : .regular))
+                      .foregroundColor(mode.numberColor(isSelected: isSelected, isToday: isToday))
+                      .frame(width: 30, height: 30)
+                      .background(
+                          Circle()
+                              .fill(isSelected ? Color.blue : Color.clear)
+                      )
+                  
+                  // Görev noktası
+                  Circle()
+                      .fill(hasDot ? Color.blue.opacity(0.6) : Color.clear)
+                      .frame(width: 4, height: 4)
+              }
+        
+    }
 }
 
-#Preview {
-    DayCell(date: Date(), isSelected: true, isToday: true, mode: .routine)
-}

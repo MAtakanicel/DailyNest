@@ -8,13 +8,56 @@
 import Foundation
 import Observation
 
-class CalendarHelper : Observable{
-    var calendar = Calendar.current
+@Observable
+class CalendarHelper {  
+    var calendar: Calendar = {
+        var cal = Calendar.current
+        cal.firstWeekday = 1 // 1 = Pazar
+        return cal
+    }()
     
-    var weekDays: [Date] {
-        guard let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: Date())?.start else { return [] }
+    //Bulunduğumuz Hafta günleri.
+    func weekDays(for date: Date) -> [Date] {
+        guard let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: date)?.start else { return [] }
         return (0 ..< 7).compactMap {
             calendar.date(byAdding: .day, value: $0, to: startOfWeek)
         }
     }
+        //Belirli bir ayın tüm Haftaları
+        func weeksInMonth(for date: Date) -> [[Date]] {
+        guard let startOfMonth = calendar.dateInterval(of: .month, for: date)?.start else { return [] }
+        guard let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: startOfMonth)?.start else { return [] }
+
+        var weeks: [[Date]] = []
+        var current = startOfWeek
+        
+        while current < calendar.dateInterval(of: .month, for: date)!.end {
+            let week = (0..<7).compactMap{
+                calendar.date(byAdding: .day, value: $0, to:current)
+            }
+            weeks.append(week)
+            current = calendar.date(byAdding: .weekOfYear, value: 1, to: current)!
+        }
+        return weeks
+    }
+    
+    func monthTitle(for date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM"
+        return formatter.string(from: date).capitalized
+    }
+    
+    func isToday(_ date: Date) -> Bool {
+        calendar.isDateInToday(date)
+    }
+    
+    func isSameDay(_ date1: Date, _ date2: Date) -> Bool {
+        calendar.isDate(date1, inSameDayAs: date2)
+    }
+    
+    func isCurrentMonth(_ date: Date, reference: Date) -> Bool{
+        calendar.isDate(date, equalTo: reference, toGranularity: .month)
+    }
+    
+    
 }

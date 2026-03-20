@@ -66,6 +66,19 @@ final class RoutineViewModel {
         }
         updateRoutine(routine, context: context, method: "toggleRoutineCompletion")
     }
+    
+    func filteredRoutines(_ routines: [Routine],searchText: String, selectFilter : TaskFilter ) -> [Routine] {
+        let searchFiltred = routines.filter { task in
+            searchText.isEmpty ? true : task.title.localizedCaseInsensitiveContains(searchText)
+        }
+        
+        switch selectFilter {
+        case .active:
+            return searchFiltred.filter { !$0.isCompletedToday }
+        case .all:
+            return searchFiltred
+        }
+    }
 
     /// Günlük ilerleme reset
     func routineCompetionResetToday(_ routine: Routine, context: ModelContext) {

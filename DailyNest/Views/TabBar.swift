@@ -9,11 +9,11 @@ import SwiftData
 import SwiftUI
 
 enum FloatingTab: String, CaseIterable {
-    case main = "house.fill"
-    case routine = "repeat"
-    case agenda = "calendar"
-    case settings = "gear"
-    case priority = "star.fill"
+    case mainView = "house.fill"
+    case routinesView = "repeat"
+    case agendaView = "calendar"
+    case settingsView = "gear"
+    case priorityMatrixView = "star.fill"
 }
 
 struct TabBar: View {
@@ -23,7 +23,7 @@ struct TabBar: View {
     @Query private var dailyTasks: [DailyTask]
     @Query private var routineTasks: [Routine]
 
-    @State var selectedTab: FloatingTab = .main
+    @State var selectedTab: FloatingTab = .mainView
 
     @Namespace private var tabBarAnimation
 
@@ -34,19 +34,19 @@ struct TabBar: View {
             // İçerik Alanı
             Group {
                 switch selectedTab {
-                case .main: NavigationStack {
+                case .mainView: NavigationStack {
                         MainPage()
                     }
-                case .routine: NavigationStack {
+                case .routinesView: NavigationStack {
                         RoutinesView()
                     }
-                case .agenda: NavigationStack {
-                        Agenda()
+                case .agendaView: NavigationStack {
+                        AgendaView()
                     }
-                case .settings: NavigationStack {
+                case .settingsView: NavigationStack {
                         SettingsView()
                     }
-                case .priority: NavigationStack {
+                case .priorityMatrixView: NavigationStack {
                         PriorityMatrixView()
                     }
                 }
@@ -65,11 +65,11 @@ struct TabBar: View {
             }
             // Floating Tab Bar
             HStack(spacing: 0) {
-                tabButton(.main)
-                tabButton(.routine)
-                tabButton(.agenda)
-                tabButton(.priority)
-                tabButton(.settings)
+                tabButton(.mainView)
+                tabButton(.routinesView)
+                tabButton(.agendaView)
+                tabButton(.priorityMatrixView)
+                tabButton(.settingsView)
             }
             .padding(.top, 10)
             .padding(.bottom, 10)
