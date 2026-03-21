@@ -36,21 +36,23 @@ struct CalendarComponent: View {
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .frame(height: isExpanded
-               ? CGFloat(weeks.count) * rowHeight
+               ? CGFloat(CGFloat(6)) * rowHeight
                : rowHeight
         )
+        .clipped()
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: isExpanded)
         .onChange(of: pageIndex) { _, newValue in
             guard newValue != 1 else { return }
             let direction = newValue == 0 ? -1 : 1
-            withAnimation {
-                if isExpanded {
-                    displayedMonth = Calendar.current.date(byAdding: .month, value: direction, to: displayedMonth)!
-                } else {
-                    displayedMonth = Calendar.current.date(byAdding: .weekOfYear, value: direction, to: displayedMonth)!
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                withAnimation {
+                    displayedMonth = Calendar.current.date(
+                        byAdding: isExpanded ? .month : .weekOfYear,
+                        value: direction,
+                        to: displayedMonth
+                    )!
                 }
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 pageIndex = 1
             }
         }
@@ -62,9 +64,15 @@ struct CalendarComponent: View {
         let allWeeks = calendarHelper.weeksInMonth(for: date)
 
         VStack(spacing: 0) {
-                ForEach(allWeeks, id: \.first) { week in
-                    weekRow(week, referenceMonth: date)
-                }
+            if isExpanded {
+                          ForEach(allWeeks, id: \.first) { week in
+                              weekRow(week, referenceMonth: date)
+                          }
+                      } else {
+                          // Geçilen date'in ait olduğu haftayı göster
+                          let currentWeek = calendarHelper.weekDays(for: date)
+                          weekRow(currentWeek, referenceMonth: date)
+                      }
         }
     }
     
