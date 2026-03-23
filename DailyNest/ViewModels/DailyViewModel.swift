@@ -60,8 +60,16 @@ final class DailyViewModel {
 
         updateDaily(task, context: context, method: "Toggle")
     }
-
+    
+    func dailysForDate(_ tasks: [DailyTask], date : Date) -> [DailyTask] {
+        return tasks.filter{ Calendar.current.isDate($0.date, inSameDayAs: date) }
+    }
+    
     func todaysDailys(_ dailys: [DailyTask]) -> [DailyTask] {
+        return dailys.filter { Calendar.current.isDate($0.date, inSameDayAs: Date()) }
+    }
+
+    func todaysActiveDailys(_ dailys: [DailyTask]) -> [DailyTask] {
         return dailys.filter { !$0.isCompleted && Calendar.current.isDate($0.date, inSameDayAs: Date()) }
     }
 

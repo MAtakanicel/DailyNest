@@ -13,7 +13,7 @@ enum FloatingTab: String, CaseIterable {
     case routinesView = "repeat"
     case agendaView = "calendar"
     case settingsView = "gear"
-    case priorityMatrixView = "star.fill"
+    case priorityMatrixView = "square.grid.2x2"
 }
 
 struct TabBar: View {
@@ -57,10 +57,10 @@ struct TabBar: View {
             }
             .sheet(item: $router.activeSheet) { sheet in
                 switch sheet {
-                case .taskDetail: EmptyView()
-                case .routineDetail: EmptyView()
-                case .newDaily: EmptyView()
-                case .newRoutine: EmptyView()
+                case .taskDetail: DailySheetView(dailyTask: sheetRouter.activeSheet?.task)
+                case .routineDetail: RoutineSheetView()
+                case .newDaily: DailySheetView(dailyTask: nil)
+                case .newRoutine: RoutineSheetView()
                 }
             }
             // Floating Tab Bar
@@ -77,11 +77,8 @@ struct TabBar: View {
             .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
             .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 6)
             .padding(.horizontal, 30)
-            /* .overlay(alignment: .topTrailing){
-                  NewTaskButton(mode: .daily, onTap: { })
-                      .offset(x: -20 , y: -60)
-              }
-             */
+            
+
         }
         .ignoresSafeArea(.keyboard)
         .onAppear {
@@ -130,4 +127,5 @@ struct TabBar: View {
         .environment(DailyViewModel())
         .environment(RoutineViewModel())
         .environment(SheetRouter())
+        .environment(CalendarHelper())
 }

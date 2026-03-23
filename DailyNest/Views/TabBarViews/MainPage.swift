@@ -70,7 +70,7 @@ struct MainPage: View {
 
                         DailysSections(
                             header: "Today",
-                            items: dailyViewModel.todaysDailys(dailyTasks),
+                            items: dailyViewModel.todaysActiveDailys(dailyTasks),
                             isExpanded: $todaySectionIsCollapsed,
                             context: context
                         )
@@ -245,4 +245,5 @@ struct MainPage: View {
         .environment(DailyViewModel())
         .environment(RoutineViewModel())
         .environment(SheetRouter())
+        .environment(CalendarHelper())
 }

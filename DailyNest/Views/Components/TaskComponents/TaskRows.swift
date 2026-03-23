@@ -176,10 +176,11 @@ struct DailyRow: View {
 }
 
 #Preview {
-    TabBar(selectedTab: .priorityMatrixView)
+    TabBar(selectedTab: .agendaView)
         .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
         .environment(DailyViewModel())
         .environment(RoutineViewModel())
         .environment(SheetRouter())
+        .environment(CalendarHelper())
 }

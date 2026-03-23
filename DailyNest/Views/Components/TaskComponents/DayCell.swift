@@ -99,21 +99,27 @@ struct DayCell: View {
     
     private var regularModeCell : some View {
         VStack(spacing: 4) {
-                  Text(dayNumber)
-                      .font(.system(size: 15, weight: isToday ? .bold : .regular))
-                      .foregroundColor(mode.numberColor(isSelected: isSelected, isToday: isToday))
-                      .frame(width: 30, height: 30)
-                      .background(
-                          Circle()
-                              .fill(isSelected ? Color.blue : Color.clear)
-                      )
-                  
-                  // Görev noktası
-                  Circle()
-                      .fill(hasDot ? Color.blue.opacity(0.6) : Color.clear)
-                      .frame(width: 4, height: 4)
-              }
-        
+            ZStack{
+                Circle()
+                    .fill(mode.circleColor(isSelected: isSelected, isToday: isToday))
+                    .frame(width: 30, height: 30)
+                    .shadow(
+                        color: isToday && !isSelected ?
+                            .black.opacity(0.1) : .clear,
+                        radius: 4, x: 0, y: 2
+                    )
+
+                Text(dayNumber)
+                    .font(.system(size: 15, weight: isToday ? .bold : .regular))
+                    .foregroundColor(mode.numberColor(isSelected: isSelected, isToday: isToday))
+                    
+
+            }
+            // Görev noktası
+            Circle()
+                .fill(hasDot ? Color.blue.opacity(0.6) : Color.clear)
+                .frame(width: 4, height: 4)
+        }
     }
 }
 

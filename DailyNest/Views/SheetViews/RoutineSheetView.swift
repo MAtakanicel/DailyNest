@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NewRoutineSheetView: View {
+struct RoutineSheetView: View {
     @Environment(RoutineViewModel.self) private var routineViewModel
 
     var body: some View {
@@ -16,6 +16,6 @@ struct NewRoutineSheetView: View {
 }
 
 #Preview {
-    NewRoutineSheetView()
+    RoutineSheetView()
         .environment(RoutineViewModel())
 }

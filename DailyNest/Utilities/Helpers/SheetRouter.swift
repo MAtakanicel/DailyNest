@@ -8,7 +8,7 @@
 import Foundation
 import Observation
 
-enum AppSheet: Identifiable {
+enum AppSheet: Identifiable,Equatable {
     case taskDetail(DailyTask)
     case routineDetail(Routine)
 
@@ -17,11 +17,25 @@ enum AppSheet: Identifiable {
 
     var id: String {
         switch self {
-        case let .taskDetail(task): return "task_\(task.id)"
-        case let .routineDetail(routine): return "routine_\(routine.id)"
-        case .newDaily: return "newDaily"
-        case .newRoutine: return "newRoutine"
+        case let .taskDetail(task): return "\(task.title)"
+        case let .routineDetail(routine): return "\(routine.title)"
+        case .newDaily: return "create new Daily Task"
+        case .newRoutine: return "create new Routine"
         }
+    }
+    
+    var task: DailyTask? {
+        if case let .taskDetail(task) = self {
+            return task
+        }
+        return nil
+    }
+    
+    var routine: Routine? {
+        if case let .routineDetail(routine) = self {
+            return routine
+        }
+        return nil
     }
 }
 

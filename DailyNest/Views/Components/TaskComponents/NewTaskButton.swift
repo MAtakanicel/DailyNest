@@ -32,7 +32,7 @@ struct NewTaskButton: View {
                                 .fill(AppColors.button)
                                 .overlay(
                                     Circle()
-                                        .stroke(AppColors.overlayStroke.opacity(0.1), lineWidth: 1)
+                                        .stroke(AppColors.overlayStroke.opacity(0.1), lineWidth: 0.5)
                                 )
 
                         case .routine:
@@ -40,7 +40,7 @@ struct NewTaskButton: View {
                                 .fill(AppColors.routine)
                                 .overlay(
                                     Circle()
-                                        .stroke(AppColors.overlayStroke.opacity(0.1), lineWidth: 1)
+                                        .stroke(AppColors.overlayStroke.opacity(0.1), lineWidth: 0.5)
                                 )
                         }
                     }
