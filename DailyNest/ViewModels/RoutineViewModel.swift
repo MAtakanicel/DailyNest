@@ -13,6 +13,10 @@ import SwiftData
 final class RoutineViewModel {
     var alertMessage: String?
 
+    func newRoutineValid(title: String) -> Bool {
+        !title.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+    
     func createRoutine(
         title: String,
         details: String? = nil,

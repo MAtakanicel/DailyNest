@@ -12,6 +12,10 @@ import SwiftData
 @Observable @MainActor
 final class DailyViewModel {
     var alertMessage: String?
+    
+    func newDailyValid(title: String) -> Bool {
+        !title.trimmingCharacters(in: .whitespaces).isEmpty
+    }
 
     func createDaily(
         title: String,
