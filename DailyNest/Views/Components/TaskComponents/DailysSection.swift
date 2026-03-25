@@ -17,15 +17,13 @@ struct DailysSections: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Section {
-                if isExpanded {
+            Section(isExpanded: $isExpanded) {
                     ForEach(items) { item in
                         DailyRow(task: item, context: context) { item in
                             sheetRouter.activeSheet = .taskDetail(item)
                         }
                         .padding(2)
                     }
-                }
             } header: {
                 HStack(alignment: .firstTextBaseline) {
                     Text(header)
@@ -39,7 +37,9 @@ struct DailysSections: View {
                 .padding(.bottom, 5)
                 .contentShape(RoundedRectangle(cornerRadius: 8))
                 .onTapGesture {
-                    isExpanded.toggle()
+                    withAnimation(.spring(.bouncy)){
+                        isExpanded.toggle()
+                    }
                 }
             }
         }
@@ -54,9 +54,12 @@ struct DailysSections: View {
 }
 
 #Preview {
-    TabBar()
+    TabBar(selectedTab: .mainView)
         .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
         .environment(DailyViewModel())
         .environment(RoutineViewModel())
+        .environment(SheetRouter())
+        .environment(CalendarHelper())
+        .environment(AppSettings())
 }

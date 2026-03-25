@@ -14,24 +14,17 @@ struct MainPage: View {
     @Environment(RoutineViewModel.self) private var routineViewModel
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(\.modelContext) private var context
-
+    @Environment(AppSettings.self) private var appSettings
+    
     @Query private var dailyTasks: [DailyTask]
     @Query(sort: \Routine.createdAt, order: .reverse) private var routineTasks: [Routine]
 
-    // Section Açık mı Kapalı mı ?
-    @AppStorage("pastSectionIsCollapsed") private var pastSectionIsCollapsed = false
-    @AppStorage("todaySectionIsCollapsed") private var todaySectionIsCollapsed = false
-    @AppStorage("routineSectionIsCollapsed") private var routineSectionIsCollapsed = false
-    @AppStorage("completedSectionIsCollapsed") private var completedSectionIsCollapsed = false
-
-    // Section görünür mü ?
-    @AppStorage("pastSectionIsHidden") private var pastSectionIsHidden: Bool = false
-    @AppStorage("completedSectionIsHidden") private var completedSectionIsHidden: Bool = false
-    @AppStorage("todaySectionIsHidden") private var todaySectionIsHidden: Bool = false
-    @AppStorage("routineSectionIsHidden") private var routineSectionIsHidden: Bool = false
-
     @State private var showNamePopUp: Bool
     @AppStorage("userName") private var userName: String = ""
+    
+    private var trimmeduserName: String {
+        userName.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 
     init() {
         let savedName = UserDefaults.standard.string(forKey: "userName") ?? ""
@@ -39,9 +32,11 @@ struct MainPage: View {
     }
 
     var body: some View {
+        @Bindable var settings = appSettings
         ZStack {
             AppColors.background.ignoresSafeArea()
-
+            
+            /// Top Bar
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 0) {
                     greetings
@@ -56,48 +51,49 @@ struct MainPage: View {
                     .padding(.horizontal, 30)
                     .padding(.vertical, 10)
 
-                // Görevlerim Kısımı
+                /// Sections
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         DailysSections(
                             header: "Geçmiş Görevler",
                             items: dailyViewModel.overdueDailys(dailyTasks),
-                            isExpanded: $pastSectionIsCollapsed,
+                            isExpanded: $settings.pastSectionIsExpanded,
                             context: context
                         )
                         .padding(.bottom, 20)
-                        .visible(!dailyViewModel.overdueDailys(dailyTasks).isEmpty && !pastSectionIsHidden)
+                        .visible(!dailyViewModel.overdueDailys(dailyTasks).isEmpty && !settings.pastSectionIsHidden)
 
                         DailysSections(
                             header: "Today",
                             items: dailyViewModel.todaysActiveDailys(dailyTasks),
-                            isExpanded: $todaySectionIsCollapsed,
+                            isExpanded: $settings.todaySectionIsExpanded,
                             context: context
                         )
                         .padding(.bottom, 20)
-                        .visible(!todaySectionIsHidden)
+                        .visible(!settings.todaySectionIsHidden)
 
                         RoutineSection(
                             items: routineViewModel.todaysRoutines(routineTasks),
                             context: context,
-                            isExpanded: $routineSectionIsCollapsed
+                            isExpanded: $settings.routineSectionIsExpanded
                         )
                         .padding(.bottom, 20)
-                        .visible(!routineSectionIsHidden)
+                        .visible(!settings.routineSectionIsHidden)
 
                         DailysSections(
                             header: "Completed",
                             items: dailyViewModel.todayCompletedDailys(dailyTasks),
-                            isExpanded: $completedSectionIsCollapsed,
+                            isExpanded: $settings.completedSectionIsExpanded,
                             context: context
                         )
                         .opacity(0.75)
-                        .visible(!dailyViewModel.todayCompletedDailys(dailyTasks).isEmpty && !completedSectionIsHidden)
+                        .visible(!dailyViewModel.todayCompletedDailys(dailyTasks).isEmpty && !settings.completedSectionIsHidden)
                     }
                 }
                 .padding(.horizontal, 20)
             }
-
+            
+            /// New Task Button
             VStack {
                 Spacer()
 
@@ -131,8 +127,7 @@ struct MainPage: View {
         }
     }
 
-    // MARK: - Üst Bar
-
+    // MARK: - Top Bar
     private var greetings: some View {
         VStack(alignment: .leading,spacing: 0) {
             Text("\(homeViewModel.getDaytime())  \(userName) 👋")
@@ -150,31 +145,31 @@ struct MainPage: View {
     private var topMenu: some View {
         Menu {
             menuVisibilityButton(
-                pastSectionIsHidden ? "Hide past task section" : "show Past Task Section",
-                image: pastSectionIsHidden ? "eye.slash" : "eye"
+                appSettings.pastSectionIsHidden ? "Show past task section" : "Hide Past Task Section",
+                image: appSettings.pastSectionIsHidden  ? "eye" : "eye.slash"
             ) {
-                pastSectionIsHidden.toggle()
+                withAnimation{ appSettings.pastSectionIsHidden.toggle() }
             }
 
             menuVisibilityButton(
-                completedSectionIsHidden ? "Hide completed section" : "Show Completed Section",
-                image: completedSectionIsHidden ? "eye.slash" : "eye"
+                appSettings.todaySectionIsHidden ?  "Show Todays Section" :  "Hide todays Section",
+                image: appSettings.todaySectionIsHidden ? "eye" : "eye.slash"
             ) {
-                completedSectionIsHidden.toggle()
+                withAnimation{ appSettings.todaySectionIsHidden.toggle() }
             }
 
             menuVisibilityButton(
-                todaySectionIsHidden ? "Hide todays Section" : "Show Todays Section",
-                image: todaySectionIsHidden ? "eye.slash" : "eye"
+                appSettings.routineSectionIsHidden ? "show Routine Section": "Hide Routine Section" ,
+                image: appSettings.routineSectionIsHidden ? "eye" : "eye.slash"
             ) {
-                todaySectionIsHidden.toggle()
+                withAnimation{ appSettings.routineSectionIsHidden.toggle() }
             }
-
+            
             menuVisibilityButton(
-                routineSectionIsHidden ? "Hide Routine Section" : "show Routine Section",
-                image: routineSectionIsHidden ? "eye.slash" : "eye"
+                appSettings.completedSectionIsHidden ? "Show completed section" : "Hide Completed Section",
+                image: appSettings.completedSectionIsHidden ? "eye" : "eye.slash"
             ) {
-                routineSectionIsHidden.toggle()
+                withAnimation{ appSettings.completedSectionIsHidden.toggle() }
             }
 
         } label: {
@@ -185,7 +180,8 @@ struct MainPage: View {
                 .padding(10)
         }
     }
-
+    
+    /// Top Bar Buttons ( Visibility )
     private func menuVisibilityButton(_ title: String, image: String, tap: @escaping () -> Void) -> some View {
         Button { tap() } label: {
             Label("\(title)", systemImage: "\(image)")
@@ -233,9 +229,6 @@ struct MainPage: View {
         }
     }
 
-    private var trimmeduserName: String {
-        userName.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
 }
 
 #Preview {
@@ -246,4 +239,6 @@ struct MainPage: View {
         .environment(RoutineViewModel())
         .environment(SheetRouter())
         .environment(CalendarHelper())
+        .environment(AppSettings())
+        .environment(MatrixSettings())
 }

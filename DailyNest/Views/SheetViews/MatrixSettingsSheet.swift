@@ -9,18 +9,6 @@ import Foundation
 import SwiftUI
 
 struct MatrixSettingsSheet: View {
-    // Kadranların başlığı
-    @AppStorage("quadrantTitle_VeryHigh") private var savedVeryHighTitle: String = "Very High Priority"
-    @AppStorage("quadrantTitle_High") private var savedHighTitle: String = "High Priority"
-    @AppStorage("quadrantTitle_Medium") private var savedMediumTitle: String = "Medium Priority"
-    @AppStorage("quadrantTitle_Low") private var savedLowTitle: String = "Low Priority"
-
-    // Kadran ikonu
-    @AppStorage("quadrantIcon_VeryHigh") private var savedVeryHighIcon: String = "🔴"
-    @AppStorage("quadrantIcon_High") private var savedHighIcon: String = "🟠"
-    @AppStorage("quadrantIcon_Medium") private var savedMediumIcon: String = "🟡"
-    @AppStorage("quadrantIcon_Low") private var savedLowIcon: String = "🟢"
-    
     @State private var veryHighTitle: String
     @State private var veryHighIcon: String
     
@@ -34,16 +22,17 @@ struct MatrixSettingsSheet: View {
     @State private var lowIcon: String
     
     @Environment(\.dismiss) private var dismiss
+    @Environment(MatrixSettings.self) private var matrixSettings
     
     init() {
-        _veryHighTitle = State(initialValue: UserDefaults.standard.string(forKey: "quadrantTitle_VeryHigh") ?? "Very High Priority")
-        _veryHighIcon = State(initialValue: UserDefaults.standard.string(forKey: "quadrantIcon_VeryHigh") ?? "🔴")
-        _highTitle = State(initialValue: UserDefaults.standard.string(forKey: "quadrantTitle_High") ?? "High Priority")
-        _highIcon = State(initialValue: UserDefaults.standard.string(forKey: "quadrantIcon_High") ?? "🟠")
-        _mediumTitle = State(initialValue: UserDefaults.standard.string(forKey: "quadrantTitle_Medium") ?? "Medium Priorty")
-        _mediumIcon = State(initialValue: UserDefaults.standard.string(forKey: "quadrantIcon_Medium") ?? "🟡")
-        _lowTitle = State(initialValue: UserDefaults.standard.string(forKey: "quadrantTitle_Low") ?? "Low Priority")
-        _lowIcon = State(initialValue: UserDefaults.standard.string(forKey: "quadrantIcon_Low") ?? "🟢")
+        _veryHighTitle = State(initialValue: UserDefaults.standard.string(forKey: MatrixSettingsKeys.quadrantVeryHighTitle) ?? "Very High")
+        _veryHighIcon = State(initialValue: UserDefaults.standard.string(forKey: MatrixSettingsKeys.quadrantVeryHighIcon) ?? "🔴")
+        _highTitle = State(initialValue: UserDefaults.standard.string(forKey: MatrixSettingsKeys.quadrantHighTitle) ?? "High")
+        _highIcon = State(initialValue: UserDefaults.standard.string(forKey: MatrixSettingsKeys.quadrantHighIcon) ?? "🟠")
+        _mediumTitle = State(initialValue: UserDefaults.standard.string(forKey: MatrixSettingsKeys.quadrantMediumTitle) ?? "Medium")
+        _mediumIcon = State(initialValue: UserDefaults.standard.string(forKey: MatrixSettingsKeys.quadrantMediumIcon) ?? "🟡")
+        _lowTitle = State(initialValue: UserDefaults.standard.string(forKey: MatrixSettingsKeys.quadrantLowTitle) ?? "Low")
+        _lowIcon = State(initialValue: UserDefaults.standard.string(forKey: MatrixSettingsKeys.quadrantLowIcon) ?? "🟢")
     }
     
     var body: some View {
@@ -55,25 +44,25 @@ struct MatrixSettingsSheet: View {
                     priorityTextField(
                         title: $veryHighTitle,
                         icon: $veryHighIcon,
-                        labelTitle: savedVeryHighTitle
+                        labelTitle: matrixSettings.quadrantVeryHighTitle
                     )
                     
                     priorityTextField(
                         title: $highTitle,
                         icon: $highIcon,
-                        labelTitle: savedHighTitle
+                        labelTitle: matrixSettings.quadrantHighTitle
                     )
                     
                     priorityTextField(
                         title: $mediumTitle,
                         icon: $mediumIcon,
-                        labelTitle: savedMediumTitle
+                        labelTitle: matrixSettings.quadrantMediumTitle
                     )
                     
                     priorityTextField(
                         title: $lowTitle,
                         icon: $lowIcon,
-                        labelTitle: savedLowTitle
+                        labelTitle: matrixSettings.quadrantLowTitle
                     )
                     
                   
@@ -93,14 +82,14 @@ struct MatrixSettingsSheet: View {
             .toolbar{
                 ToolbarItem(placement: .confirmationAction){
                     Button{
-                        savedVeryHighIcon = veryHighIcon
-                        savedVeryHighTitle = veryHighTitle
-                        savedHighIcon = highIcon
-                        savedHighTitle = highTitle
-                        savedMediumIcon = mediumIcon
-                        savedMediumTitle = mediumTitle
-                        savedLowTitle = lowTitle
-                        savedLowIcon = lowIcon
+                        matrixSettings.quadrantVeryHighIcon = veryHighIcon
+                        matrixSettings.quadrantVeryHighTitle = veryHighTitle
+                        matrixSettings.quadrantHighIcon = highIcon
+                        matrixSettings.quadrantHighTitle = highTitle
+                        matrixSettings.quadrantMediumIcon = mediumIcon
+                        matrixSettings.quadrantMediumTitle = mediumTitle
+                        matrixSettings.quadrantLowTitle = lowTitle
+                        matrixSettings.quadrantLowIcon = lowIcon
                         
                         dismiss()
                     }label:{
@@ -153,5 +142,6 @@ struct MatrixSettingsSheet: View {
 #Preview {
     NavigationStack{
         MatrixSettingsSheet()
+            .environment(MatrixSettings())
     }
 }

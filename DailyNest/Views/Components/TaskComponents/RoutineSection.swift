@@ -16,16 +16,14 @@ struct RoutineSection: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Section {
-                if isExpanded {
-                    ForEach(items) { item in
-                        RoutineRow(routine: item, context: context) { item in
-                            sheetRouter.activeSheet = .routineDetail(item)
+                Section(isExpanded: $isExpanded) {
+                        ForEach(items) { item in
+                            RoutineRow(routine: item, context: context) { item in
+                                sheetRouter.activeSheet = .routineDetail(item)
+                            }
+                            .padding(2)
                         }
-                        .padding(2)
-                    }
-                }
-            } header: {
+                } header: {
                 HStack(alignment: .firstTextBaseline) {
                     Text("Routines")
 
@@ -38,9 +36,12 @@ struct RoutineSection: View {
                 .padding(.bottom, 5)
                 .contentShape(RoundedRectangle(cornerRadius: 8))
                 .onTapGesture {
-                    isExpanded.toggle()
+                    withAnimation(.spring(.bouncy)){
+                        isExpanded.toggle()
+                    }
                 }
             }
+            .disclosureGroupStyle(.automatic)
         }
         .frame(maxWidth: .infinity)
         .padding(10)
@@ -52,4 +53,13 @@ struct RoutineSection: View {
     }
 }
 
-#Preview {}
+#Preview {
+    TabBar(selectedTab: .mainView)
+        .modelContainer(MockData.previewContainer)
+        .environment(HomeViewModel())
+        .environment(DailyViewModel())
+        .environment(RoutineViewModel())
+        .environment(SheetRouter())
+        .environment(CalendarHelper())
+        .environment(AppSettings())
+}

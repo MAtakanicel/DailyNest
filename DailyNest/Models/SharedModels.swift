@@ -14,16 +14,16 @@ enum TaskPriority: Int, Codable, CaseIterable {
     case high = 2
     case veryHigh = 3
 
-    var title: String {
+    func title(settings: MatrixSettings) -> String {
         switch self {
         case .low:
-            return "Low"
+            return settings.quadrantLowTitle
         case .medium:
-            return "Medium"
+            return settings.quadrantMediumTitle
         case .high:
-            return "High"
+            return settings.quadrantHighTitle
         case .veryHigh:
-            return "Very High"
+            return settings.quadrantVeryHighTitle
         }
     }
 
@@ -37,6 +37,19 @@ enum TaskPriority: Int, Codable, CaseIterable {
             return .orange
         case .veryHigh:
             return .red
+        }
+    }
+    
+    func icon(settings: MatrixSettings) -> String {
+        switch self {
+        case .low:
+            return settings.quadrantLowIcon
+        case .medium:
+            return settings.quadrantMediumIcon
+        case .high:
+            return settings.quadrantHighIcon
+        case .veryHigh:
+            return settings.quadrantVeryHighIcon
         }
     }
 }

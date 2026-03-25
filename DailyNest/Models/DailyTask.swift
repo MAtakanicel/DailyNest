@@ -35,12 +35,15 @@ final class DailyTask :Taskable {
          isCompleted: Bool = false,
          completedAt: Date? = nil
     ){
+        //Alınacak veriler
         self.title = title
         self.details = details
-        self.date = date
         self.priority = priority
+        self.date = date
         self.isReminderOn = isReminderOn
         self.reminderDate = reminderDate
+        
+        // UI'da yok
         self.isCompleted = isCompleted
         self.completedAt = completedAt
 

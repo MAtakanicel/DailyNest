@@ -38,6 +38,9 @@ struct DailyNestApp: App {
     @State private var routineViewModel = RoutineViewModel()
     @State private var sheetRouter = SheetRouter()
     @State private var calendarHelper = CalendarHelper()
+    @State private var appSettings = AppSettings()
+    @State private var matrixSettings : MatrixSettings = MatrixSettings()
+    
     var body: some Scene {
         WindowGroup {
             TabBar()
@@ -48,5 +51,7 @@ struct DailyNestApp: App {
         .environment(routineViewModel)
         .environment(sheetRouter)
         .environment(calendarHelper)
+        .environment(appSettings)
+        .environment(matrixSettings)
     }
 }

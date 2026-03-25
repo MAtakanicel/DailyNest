@@ -45,30 +45,17 @@ struct PriorityMatrixView: View {
     @Environment(DailyViewModel.self) private var dailyViewModel
     @Environment(\.modelContext) private var context
     @Environment(SheetRouter.self) private var sheetRouter
+    @Environment(MatrixSettings.self) private var matrixSettings
+   
 
     @Query(sort: \DailyTask.date, order: .reverse) private var dailyTasks: [DailyTask]
     @Query private var routines: [Routine]
-
-    @AppStorage("matrixTimeFilter") private var timeFilterState: MatrixTimeFilter = .daily
-
-    // Kadranların başlığı
-    @AppStorage("quadrantTitle_VeryHigh") private var veryHighTitle: String = "Very High Priority"
-    @AppStorage("quadrantTitle_High") private var highTitle: String = "High Priority"
-    @AppStorage("quadrantTitle_Medium") private var mediumTitle: String = "Medium Priority"
-    @AppStorage("quadrantTitle_Low") private var lowTitle: String = "Low Priority"
-
-    // Kadran ikonu
-    @AppStorage("quadrantIcon_VeryHigh") private var veryHighIcon: String = "🔴"
-    @AppStorage("quadrantIcon_High") private var highIcon: String = "🟠"
-    @AppStorage("quadrantIcon_Medium") private var mediumIcon: String = "🟡"
-    @AppStorage("quadrantIcon_Low") private var lowIcon: String = "🟢"
-    
-    @AppStorage("quadrantIsColorful") private var isColorful: Bool = true
 
     @State private var timeFilterStartDate: Date = .init()
     @State private var timeFilterEndDate: Date = .init()
     @State private var isShowCompletedTasks: Bool = true
     @State private var activeLocalSheet: PriorityMatrixSheet? = nil
+    @AppStorage(MatrixSettingsKeys.quadrantTimefilterState) private var timeFilterState: MatrixTimeFilter = .daily
     
     var body: some View {
         ZStack {
@@ -78,32 +65,24 @@ struct PriorityMatrixView: View {
                 HStack(spacing: 10) {
                     quadrant(
                         priority: .veryHigh,
-                        corner: .topLeading,
-                        title: veryHighTitle,
-                        icon: veryHighIcon
+                        corner: .topLeading
                     )
 
                     quadrant(
                         priority: .high,
-                        corner: .topTrailing,
-                        title: highTitle,
-                        icon: highIcon
+                        corner: .topTrailing
                     )
                 }
 
                 HStack(spacing: 10) {
                     quadrant(
                         priority: .medium,
-                        corner: .bottomLeading,
-                        title: mediumTitle,
-                        icon: mediumIcon
+                        corner: .bottomLeading
                     )
 
                     quadrant(
                         priority: .low,
-                        corner: .bottomTrailing,
-                        title: lowTitle,
-                        icon: lowIcon
+                        corner: .bottomTrailing
                     )
                 }
             }
@@ -135,7 +114,7 @@ struct PriorityMatrixView: View {
         }
     }
 
-    private func quadrant(priority: TaskPriority, corner: RoundedCorner, title: String, icon: String) -> some View {
+    private func quadrant(priority: TaskPriority, corner: RoundedCorner) -> some View {
         var quadrantTasks: [DailyTask] {
             dailyViewModel.priorityFilter(
                 dailyViewModel.timeFilter(
@@ -149,8 +128,9 @@ struct PriorityMatrixView: View {
             )
         }
         return VStack(alignment: .leading, spacing: 0) {
-            Text("\(icon) \(title)")
+            Text("\(priority.icon(settings: matrixSettings)) \(priority.title(settings: matrixSettings))")
                 .foregroundColor(AppColors.primaryText)
+                .font(.footnote.bold())
                 .lineLimit(1)
                 .padding(.top, 10)
                 .padding(.leading, 10)
@@ -189,7 +169,7 @@ struct PriorityMatrixView: View {
                 .overlay(
                     corner.backGroundShape()
                         .stroke(
-                            isColorful ? priority.color.opacity(0.25) : AppColors.overlayStroke.opacity(0.1),
+                            matrixSettings.quadrantMatrixColorIsShown ? priority.color.opacity(0.25) : AppColors.overlayStroke.opacity(0.1),
                             lineWidth: 1)
                 )
         }
@@ -216,10 +196,10 @@ struct PriorityMatrixView: View {
                     Image(systemName: isShowCompletedTasks ? "eye.slash" : "eye")
                 }
 
-                Button{ isColorful.toggle() } label: {
+                Button{ matrixSettings.quadrantMatrixColorIsShown.toggle() } label: {
                     Label(
-                        isColorful ? "Priority Color disable" : "Priority Color enable",
-                        systemImage: isColorful ? "sun.min" : "sun.max")
+                        matrixSettings.quadrantMatrixColorIsShown ? "Priority Color disable" : "Priority Color enable",
+                        systemImage: matrixSettings.quadrantMatrixColorIsShown ? "sun.min" : "sun.max")
                         .foregroundColor(AppColors.primaryText)
                 }
                 
@@ -265,4 +245,5 @@ struct PriorityMatrixView: View {
         .environment(DailyViewModel())
         .environment(RoutineViewModel())
         .environment(SheetRouter())
+        .environment(MatrixSettings())
 }
