@@ -16,15 +16,14 @@ struct DatePickerSheet: View {
         ZStack {
             AppColors.background.ignoresSafeArea()
             VStack {
-                
                 Spacer()
-                
+
                 Text("Time Filter")
                     .font(.title.bold())
                     .foregroundColor(AppColors.primaryText)
-                
+
                 Spacer()
-                
+
                 VStack(spacing: 25) {
                     DatePicker(
                         "Start Time",
@@ -34,7 +33,6 @@ struct DatePickerSheet: View {
                     )
                     .datePickerStyle(.compact)
                     .id(timeFilterStartDate)
-                    
 
                     DatePicker(
                         "End Time",
@@ -45,17 +43,17 @@ struct DatePickerSheet: View {
                     .datePickerStyle(.compact)
                     .id(timeFilterEndDate)
                 }
-                .padding(.horizontal,30)
-                
+                .padding(.horizontal, 30)
+
                 Spacer()
-                
-                Button{
+
+                Button {
                     setDate = .custom
                     dismiss()
-                } label:{
+                } label: {
                     Text("Done")
                         .foregroundColor(AppColors.primaryText).bold()
-                        .padding(.vertical,10)
+                        .padding(.vertical, 10)
                         .padding(.horizontal)
                 }
                 .background(
@@ -67,4 +65,3 @@ struct DatePickerSheet: View {
         }
     }
 }
-

@@ -39,7 +39,7 @@ enum TaskPriority: Int, Codable, CaseIterable {
             return .red
         }
     }
-    
+
     func icon(settings: MatrixSettings) -> String {
         switch self {
         case .low:

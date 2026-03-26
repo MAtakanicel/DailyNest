@@ -15,13 +15,13 @@ struct MainPage: View {
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(\.modelContext) private var context
     @Environment(AppSettings.self) private var appSettings
-    
+
     @Query private var dailyTasks: [DailyTask]
     @Query(sort: \Routine.createdAt, order: .reverse) private var routineTasks: [Routine]
 
     @State private var showNamePopUp: Bool
     @AppStorage("userName") private var userName: String = ""
-    
+
     private var trimmeduserName: String {
         userName.trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -35,8 +35,8 @@ struct MainPage: View {
         @Bindable var settings = appSettings
         ZStack {
             AppColors.background.ignoresSafeArea()
-            
-            /// Top Bar
+
+            // Top Bar
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 0) {
                     greetings
@@ -51,7 +51,7 @@ struct MainPage: View {
                     .padding(.horizontal, 30)
                     .padding(.vertical, 10)
 
-                /// Sections
+                // Sections
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         DailysSections(
@@ -92,8 +92,8 @@ struct MainPage: View {
                 }
                 .padding(.horizontal, 20)
             }
-            
-            /// New Task Button
+
+            // New Task Button
             VStack {
                 Spacer()
 
@@ -128,8 +128,9 @@ struct MainPage: View {
     }
 
     // MARK: - Top Bar
+
     private var greetings: some View {
-        VStack(alignment: .leading,spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
             Text("\(homeViewModel.getDaytime())  \(userName) 👋")
                 .font(.title2.bold())
                 .foregroundColor(AppColors.primaryText)
@@ -146,30 +147,30 @@ struct MainPage: View {
         Menu {
             menuVisibilityButton(
                 appSettings.pastSectionIsHidden ? "Show past task section" : "Hide Past Task Section",
-                image: appSettings.pastSectionIsHidden  ? "eye" : "eye.slash"
+                image: appSettings.pastSectionIsHidden ? "eye" : "eye.slash"
             ) {
-                withAnimation{ appSettings.pastSectionIsHidden.toggle() }
+                withAnimation { appSettings.pastSectionIsHidden.toggle() }
             }
 
             menuVisibilityButton(
-                appSettings.todaySectionIsHidden ?  "Show Todays Section" :  "Hide todays Section",
+                appSettings.todaySectionIsHidden ? "Show Todays Section" : "Hide todays Section",
                 image: appSettings.todaySectionIsHidden ? "eye" : "eye.slash"
             ) {
-                withAnimation{ appSettings.todaySectionIsHidden.toggle() }
+                withAnimation { appSettings.todaySectionIsHidden.toggle() }
             }
 
             menuVisibilityButton(
-                appSettings.routineSectionIsHidden ? "show Routine Section": "Hide Routine Section" ,
+                appSettings.routineSectionIsHidden ? "show Routine Section" : "Hide Routine Section",
                 image: appSettings.routineSectionIsHidden ? "eye" : "eye.slash"
             ) {
-                withAnimation{ appSettings.routineSectionIsHidden.toggle() }
+                withAnimation { appSettings.routineSectionIsHidden.toggle() }
             }
-            
+
             menuVisibilityButton(
                 appSettings.completedSectionIsHidden ? "Show completed section" : "Hide Completed Section",
                 image: appSettings.completedSectionIsHidden ? "eye" : "eye.slash"
             ) {
-                withAnimation{ appSettings.completedSectionIsHidden.toggle() }
+                withAnimation { appSettings.completedSectionIsHidden.toggle() }
             }
 
         } label: {
@@ -180,7 +181,7 @@ struct MainPage: View {
                 .padding(10)
         }
     }
-    
+
     /// Top Bar Buttons ( Visibility )
     private func menuVisibilityButton(_ title: String, image: String, tap: @escaping () -> Void) -> some View {
         Button { tap() } label: {
@@ -228,7 +229,6 @@ struct MainPage: View {
             .disabled(trimmeduserName.isEmpty)
         }
     }
-
 }
 
 #Preview {

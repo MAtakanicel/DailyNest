@@ -10,7 +10,7 @@ import SwiftUI
 struct DailyTitleField: View {
     @Binding var task: DailyTask
     var body: some View {
-        TextField("Task title", text: $task.title )
+        TextField("Task title", text: $task.title)
             .foregroundColor(AppColors.primaryText)
             .lineLimit(1)
             .padding(10)
@@ -19,8 +19,5 @@ struct DailyTitleField: View {
                     .fill(.gray.opacity(0.1))
                     .stroke(AppColors.overlayStroke.opacity(0.15), lineWidth: 0.5)
             )
-
     }
 }
-
-

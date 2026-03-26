@@ -57,7 +57,7 @@ struct TabBar: View {
             }
             .sheet(item: $router.activeSheet) { sheet in
                 switch sheet {
-                case .taskDetail: DailySheetView(dailyTask: (sheetRouter.activeSheet?.task)! , mode: .detail)
+                case .taskDetail: DailySheetView(dailyTask: (sheetRouter.activeSheet?.task)!, mode: .detail)
                 case .routineDetail: RoutineSheetView()
                 case .newDaily: DailySheetView(dailyTask: DailyTask(), mode: .create)
                 case .newRoutine: RoutineSheetView()
@@ -77,8 +77,6 @@ struct TabBar: View {
             .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
             .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 6)
             .padding(.horizontal, 30)
-            
-
         }
         .ignoresSafeArea(.keyboard)
         .onAppear {

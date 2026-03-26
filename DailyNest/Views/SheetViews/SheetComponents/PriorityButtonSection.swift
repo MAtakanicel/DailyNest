@@ -16,10 +16,10 @@ struct PrioritySection: View {
             Text("Priority:")
                 .font(.headline.bold())
                 .foregroundColor(AppColors.primaryText)
-            
-            Picker("", selection: $selected){
-                ForEach(TaskPriority.allCases, id: \.self){ buttonPriority in
-                    priorityButton(priority: buttonPriority,isSelected: selected == buttonPriority){
+
+            Picker("", selection: $selected) {
+                ForEach(TaskPriority.allCases, id: \.self) { buttonPriority in
+                    priorityButton(priority: buttonPriority, isSelected: selected == buttonPriority) {
                         selected = buttonPriority
                     }
                     .padding(5)
@@ -31,15 +31,15 @@ struct PrioritySection: View {
             .background(
                 Capsule()
                     .fill(.clear)
-                    .stroke( selected.color, lineWidth:2)
+                    .stroke(selected.color, lineWidth: 2)
             )
-            
+
             Spacer()
         }
     }
-    
-    private func priorityButton(priority: TaskPriority, isSelected: Bool, action: @escaping () -> Void) ->  some View {
-        Button(action: action){
+
+    private func priorityButton(priority: TaskPriority, isSelected _: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
             Text("\(priority.icon(settings: matrixSettings)) \(priority.title(settings: matrixSettings))")
                 .lineLimit(1)
                 .foregroundColor(AppColors.primaryText)
@@ -48,5 +48,3 @@ struct PrioritySection: View {
         .buttonStyle(.plain)
     }
 }
-
-

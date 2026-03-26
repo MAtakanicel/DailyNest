@@ -15,26 +15,26 @@ enum TaskFilter: String, CaseIterable, Hashable {
 
 struct RoutinesView: View {
     @Query(sort: \Routine.createdAt, order: .reverse) private var routineTasks: [Routine]
-    
+
     @Environment(RoutineViewModel.self) private var routineViewModel
     @Environment(HomeViewModel.self) private var homeViewModel
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(\.modelContext) private var context
     @Environment(CalendarHelper.self) private var calendarHelper
-    
+
     @State private var selectFilter: TaskFilter = .all
     @State private var searchText: String = ""
     @State private var selectedDate: Date = .init()
-    
+
     var body: some View {
         ZStack {
             AppColors.background.ignoresSafeArea()
-            
+
             VStack(spacing: 16) {
                 weekRow()
                     .padding(.vertical, 10)
                     .background(GradientSectionBackground(viewStyle: .calendar))
-                
+
                 HStack {
                     Image(systemName: "magnifyingglass")
                         .foregroundColor(AppColors.primaryText)
@@ -49,7 +49,7 @@ struct RoutinesView: View {
                 )
                 .cornerRadius(12)
                 .padding(.horizontal, 20)
-                
+
                 Picker("Filtre", selection: $selectFilter) {
                     ForEach(TaskFilter.allCases, id: \.self) { filter in
                         Text(filter.rawValue)
@@ -59,7 +59,7 @@ struct RoutinesView: View {
                 .pickerStyle(.segmented)
                 .padding(.bottom, 5)
                 .padding(.horizontal, 40)
-                
+
                 ScrollView {
                     LazyVStack {
                         Section {
@@ -83,7 +83,7 @@ struct RoutinesView: View {
                 Spacer()
             }
             .padding(.horizontal, 20)
-            
+
             VStack {
                 Spacer()
                 HStack {
@@ -97,7 +97,7 @@ struct RoutinesView: View {
         .navigationTitle("MyRoutines")
         .navigationBarTitleDisplayMode(.inline)
     }
-    
+
     private func routineRow(routine: Routine) -> some View {
         HStack {
             Button { sheetRouter.activeSheet = .routineDetail(routine) } label: {
@@ -110,7 +110,7 @@ struct RoutinesView: View {
                         .foregroundColor(AppColors.cardText)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.vertical, 12)
-                    
+
                     Text("\(routineViewModel.todaysRoutineCompletionCount(routine)) / \(routine.maxCount)")
                         .font(.subheadline)
                         .italic()
@@ -118,13 +118,13 @@ struct RoutinesView: View {
                         .padding(.leading, 12)
                         .padding(.bottom, 10)
                 }
-                
+
                 VStack(alignment: .trailing, spacing: 0) {
                     HStack(spacing: 0) {
                         Text("\(routineViewModel.routineCompletionSeries(routine))")
                             .bold()
                             .foregroundColor(AppColors.primaryText)
-                        
+
                         Text(" days")
                             .foregroundColor(AppColors.secondaryText)
                             .font(.footnote)
@@ -139,13 +139,14 @@ struct RoutinesView: View {
             }
         }
         .background(routine.isCompletedToday ?
-                    ComponentBackgrounds(component: .toDoCellCompleted) :
-                        ComponentBackgrounds(component: .toDoCellNotComplited))
+            ComponentBackgrounds(component: .toDoCellCompleted) :
+            ComponentBackgrounds(component: .toDoCellNotComplited))
         .cornerRadius(16)
         .shadow(color: .gray.opacity(0.25), radius: 2, x: 0, y: 2)
     }
-    
+
     // MARK: - WeekRow
+
     private func weekRow() -> some View {
         HStack(spacing: 0) {
             ForEach(calendarHelper.weekDays(for: Date()), id: \.self) { date in

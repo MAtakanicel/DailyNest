@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class DailyTask :Taskable {
+final class DailyTask: Taskable {
     var id: UUID = UUID()
 
     var title: String
@@ -25,25 +25,24 @@ final class DailyTask :Taskable {
     var isCompleted: Bool
     var completedAt: Date?
 
-    
     init(
         title: String = "",
-         details: String = "",
-         date: Date = .now,
-         priority: TaskPriority = .medium,
-         isReminderOn: Bool = false,
+        details: String = "",
+        date: Date = .now,
+        priority: TaskPriority = .medium,
+        isReminderOn: Bool = false,
         reminderDate: Date = .now,
-         isCompleted: Bool = false,
-         completedAt: Date? = nil
-    ){
-        //Alınacak veriler
+        isCompleted: Bool = false,
+        completedAt: Date? = nil
+    ) {
+        // Alınacak veriler
         self.title = title
         self.details = details
         self.priority = priority
         self.date = date
         self.isReminderOn = isReminderOn
         self.reminderDate = reminderDate
-        
+
         // UI'da yok
         self.isCompleted = isCompleted
         self.completedAt = completedAt

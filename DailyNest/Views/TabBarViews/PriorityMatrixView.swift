@@ -31,8 +31,8 @@ enum MatrixTimeFilter: Int {
 enum PriorityMatrixSheet: Identifiable {
     case customDateFilterSheet
     case matrixSettingsSheet
-    
-    var id :String{
+
+    var id: String {
         switch self {
         case .customDateFilterSheet: return "customDateFilter"
         case .matrixSettingsSheet: return "matrixSettingsSheet"
@@ -46,7 +46,6 @@ struct PriorityMatrixView: View {
     @Environment(\.modelContext) private var context
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(MatrixSettings.self) private var matrixSettings
-   
 
     @Query(sort: \DailyTask.date, order: .reverse) private var dailyTasks: [DailyTask]
     @Query private var routines: [Routine]
@@ -56,7 +55,7 @@ struct PriorityMatrixView: View {
     @State private var isShowCompletedTasks: Bool = true
     @State private var activeLocalSheet: PriorityMatrixSheet? = nil
     @AppStorage(MatrixSettingsKeys.quadrantTimefilterState) private var timeFilterState: MatrixTimeFilter = .daily
-    
+
     var body: some View {
         ZStack {
             AppColors.background.ignoresSafeArea()
@@ -109,7 +108,6 @@ struct PriorityMatrixView: View {
             case .matrixSettingsSheet:
                 MatrixSettingsSheet()
                     .presentationDetents([.large])
-
             }
         }
     }
@@ -170,7 +168,8 @@ struct PriorityMatrixView: View {
                     corner.backGroundShape()
                         .stroke(
                             matrixSettings.quadrantMatrixColorIsShown ? priority.color.opacity(0.25) : AppColors.overlayStroke.opacity(0.1),
-                            lineWidth: 1)
+                            lineWidth: 1
+                        )
                 )
         }
     }
@@ -183,58 +182,59 @@ struct PriorityMatrixView: View {
             timeFilterState == filter ? Image(systemName: "checkmark") : nil
         }
     }
-    
-    private var toolbarContent : some View{
-            Menu {
-                Button { isShowCompletedTasks.toggle() } label: {
-                    Text(
-                        isShowCompletedTasks ?
-                            "Hide completed tasks" :
-                            "Show completed tasks"
-                    )
 
-                    Image(systemName: isShowCompletedTasks ? "eye.slash" : "eye")
-                }
+    private var toolbarContent: some View {
+        Menu {
+            Button { isShowCompletedTasks.toggle() } label: {
+                Text(
+                    isShowCompletedTasks ?
+                        "Hide completed tasks" :
+                        "Show completed tasks"
+                )
 
-                Button{ matrixSettings.quadrantMatrixColorIsShown.toggle() } label: {
-                    Label(
-                        matrixSettings.quadrantMatrixColorIsShown ? "Priority Color disable" : "Priority Color enable",
-                        systemImage: matrixSettings.quadrantMatrixColorIsShown ? "sun.min" : "sun.max")
-                        .foregroundColor(AppColors.primaryText)
-                }
-                
-                Button {
-                    activeLocalSheet = .matrixSettingsSheet
-                } label: {
-                    Label("Priority Matrix Settings", systemImage: "gearshape")
-                        .foregroundColor(AppColors.primaryText)
-                }
-                
-                Menu {
-                    timeFilterButton("Todays Tasks", .daily)
+                Image(systemName: isShowCompletedTasks ? "eye.slash" : "eye")
+            }
 
-                    timeFilterButton("Weekly Tasks", .weekly)
+            Button { matrixSettings.quadrantMatrixColorIsShown.toggle() } label: {
+                Label(
+                    matrixSettings.quadrantMatrixColorIsShown ? "Priority Color disable" : "Priority Color enable",
+                    systemImage: matrixSettings.quadrantMatrixColorIsShown ? "sun.min" : "sun.max"
+                )
+                .foregroundColor(AppColors.primaryText)
+            }
 
-                    timeFilterButton("Monthly Tasks", .monthly)
-
-                    Button {
-                        activeLocalSheet = .customDateFilterSheet
-                    } label: {
-                        Text("Custom Filter")
-                            .foregroundColor(AppColors.primaryText)
-
-                        timeFilterState == .custom ? Image(systemName: "checkmark") : nil
-                    }
-                }
-                label: {
-                    Label("Time Filter", systemImage: "calendar")
-                        .foregroundColor(AppColors.primaryText)
-                }
-
+            Button {
+                activeLocalSheet = .matrixSettingsSheet
             } label: {
-                Image(systemName: "slider.horizontal.3")
+                Label("Priority Matrix Settings", systemImage: "gearshape")
                     .foregroundColor(AppColors.primaryText)
             }
+
+            Menu {
+                timeFilterButton("Todays Tasks", .daily)
+
+                timeFilterButton("Weekly Tasks", .weekly)
+
+                timeFilterButton("Monthly Tasks", .monthly)
+
+                Button {
+                    activeLocalSheet = .customDateFilterSheet
+                } label: {
+                    Text("Custom Filter")
+                        .foregroundColor(AppColors.primaryText)
+
+                    timeFilterState == .custom ? Image(systemName: "checkmark") : nil
+                }
+            }
+            label: {
+                Label("Time Filter", systemImage: "calendar")
+                    .foregroundColor(AppColors.primaryText)
+            }
+
+        } label: {
+            Image(systemName: "slider.horizontal.3")
+                .foregroundColor(AppColors.primaryText)
+        }
     }
 }
 

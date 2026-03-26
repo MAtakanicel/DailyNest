@@ -12,7 +12,7 @@ import SwiftData
 @Observable @MainActor
 final class DailyViewModel {
     var alertMessage: String?
-    
+
     func newDailyValid(title: String) -> Bool {
         !title.trimmingCharacters(in: .whitespaces).isEmpty
     }
@@ -20,25 +20,25 @@ final class DailyViewModel {
     func createDaily(
         task: DailyTask,
         /*
-        title: String,
-        details: String = "",
-        date: Date = .now,
-        priority: TaskPriority = .medium,
-        isReminderOn: Bool = false,
-        reminderDate: Date = .now,
-         */
+            title: String,
+            details: String = "",
+            date: Date = .now,
+            priority: TaskPriority = .medium,
+            isReminderOn: Bool = false,
+            reminderDate: Date = .now,
+             */
         context: ModelContext
 
     ) {
-    /*    let task = DailyTask(
-            title: title,
-            details: details,
-            date: date,
-            priority: priority,
-            isReminderOn: isReminderOn,
-            reminderDate: reminderDate
-        )
-*/
+        /*    let task = DailyTask(
+             title: title,
+             details: details,
+             date: date,
+             priority: priority,
+             isReminderOn: isReminderOn,
+             reminderDate: reminderDate
+         )
+         */
         context.insert(task)
 
         updateDaily(task, context: context, method: "Create")
@@ -52,12 +52,12 @@ final class DailyViewModel {
 
     func updateDaily(_ task: DailyTask, context: ModelContext, method: String = "Update") {
         do {
-            if method != "Delete"{
+            if method != "Delete" {
                 guard newDailyValid(title: task.title) else { return }
-                
+
                 task.date = Calendar.current.startOfDay(for: task.date)
             }
-            
+
             try context.save()
             print("Daily işlemi başarılı. (\(method)) Task: \(task.title)")
 
@@ -74,11 +74,11 @@ final class DailyViewModel {
 
         updateDaily(task, context: context, method: "Toggle")
     }
-    
-    func dailysForDate(_ tasks: [DailyTask], date : Date) -> [DailyTask] {
-        return tasks.filter{ Calendar.current.isDate($0.date, inSameDayAs: date) }
+
+    func dailysForDate(_ tasks: [DailyTask], date: Date) -> [DailyTask] {
+        return tasks.filter { Calendar.current.isDate($0.date, inSameDayAs: date) }
     }
-    
+
     func todaysDailys(_ dailys: [DailyTask]) -> [DailyTask] {
         return dailys.filter { Calendar.current.isDate($0.date, inSameDayAs: Date()) }
     }

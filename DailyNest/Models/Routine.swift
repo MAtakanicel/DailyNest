@@ -35,13 +35,13 @@ final class Routine {
 
     init(
         title: String,
-         maxCount: Int = 1,
-         details: String? = nil,
-         routineDays: [WeekDay] = [.monday, .tuesday, .wednesday, .thursday, .friday], // Varsayılan: Hafta içi
-         priority: TaskPriority = .medium,
-         isReminderOn: Bool = false,
-         reminderTime: Date? = nil
-    ){
+        maxCount: Int = 1,
+        details: String? = nil,
+        routineDays: [WeekDay] = [.monday, .tuesday, .wednesday, .thursday, .friday], // Varsayılan: Hafta içi
+        priority: TaskPriority = .medium,
+        isReminderOn: Bool = false,
+        reminderTime: Date? = nil
+    ) {
         self.title = title
         self.maxCount = maxCount
         self.details = details

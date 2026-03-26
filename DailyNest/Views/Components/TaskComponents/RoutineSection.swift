@@ -16,24 +16,24 @@ struct RoutineSection: View {
 
     var body: some View {
         VStack(spacing: 0) {
-                Section(isExpanded: $isExpanded) {
-                        ForEach(items) { item in
-                            RoutineRow(routine: item, context: context) { item in
-                                sheetRouter.activeSheet = .routineDetail(item)
-                            }
-                            .padding(2)
-                        }
-                } header: {
+            Section(isExpanded: $isExpanded) {
+                ForEach(items) { item in
+                    RoutineRow(routine: item, context: context) { item in
+                        sheetRouter.activeSheet = .routineDetail(item)
+                    }
+                    .padding(2)
+                }
+            } header: {
                 HStack(alignment: .firstTextBaseline) {
                     Text("Routines")
 
                     Spacer()
 
                     Text("\(items.count)")
-                        .padding(.trailing,5)
+                        .padding(.trailing, 5)
                         .foregroundColor(AppColors.secondaryText.opacity(0.85))
                         .font(.callout)
-                    
+
                     Image(systemName: isExpanded ? "chevron.left" : "chevron.down")
                         .foregroundColor(AppColors.secondaryText.opacity(0.65))
                 }
@@ -41,7 +41,7 @@ struct RoutineSection: View {
                 .padding(.bottom, 5)
                 .contentShape(RoundedRectangle(cornerRadius: 8))
                 .onTapGesture {
-                    withAnimation(.spring(.bouncy)){
+                    withAnimation(.spring(.bouncy)) {
                         isExpanded.toggle()
                     }
                 }

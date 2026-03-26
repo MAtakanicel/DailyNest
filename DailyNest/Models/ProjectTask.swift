@@ -8,7 +8,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class ProjectTask :Taskable {
+final class ProjectTask: Taskable {
     var id: UUID = UUID()
 
     var title: String
@@ -25,7 +25,7 @@ final class ProjectTask :Taskable {
 
     var startDate: Date?
     var deadline: Date?
-    
+
     init(
         title: String,
         details: String? = nil,
@@ -36,7 +36,7 @@ final class ProjectTask :Taskable {
         reminderDate: Date? = nil,
         isCompleted: Bool = false,
         completedAt: Date? = nil
-    ){
+    ) {
         self.title = title
         self.details = details
         self.priority = priority

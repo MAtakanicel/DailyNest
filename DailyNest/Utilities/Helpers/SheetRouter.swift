@@ -8,7 +8,7 @@
 import Foundation
 import Observation
 
-enum AppSheet: Identifiable,Equatable {
+enum AppSheet: Identifiable, Equatable {
     case taskDetail(DailyTask)
     case routineDetail(Routine)
 
@@ -23,14 +23,14 @@ enum AppSheet: Identifiable,Equatable {
         case .newRoutine: return "create new Routine"
         }
     }
-    
+
     var task: DailyTask? {
         if case let .taskDetail(task) = self {
             return task
         }
         return nil
     }
-    
+
     var routine: Routine? {
         if case let .routineDetail(routine) = self {
             return routine
@@ -42,5 +42,4 @@ enum AppSheet: Identifiable,Equatable {
 @Observable
 class SheetRouter {
     var activeSheet: AppSheet?
-
 }

@@ -18,23 +18,23 @@ struct DailysSections: View {
     var body: some View {
         VStack(spacing: 0) {
             Section(isExpanded: $isExpanded) {
-                    ForEach(items) { item in
-                        DailyRow(task: item, context: context) { item in
-                            sheetRouter.activeSheet = .taskDetail(item)
-                        }
-                        .padding(2)
+                ForEach(items) { item in
+                    DailyRow(task: item, context: context) { item in
+                        sheetRouter.activeSheet = .taskDetail(item)
                     }
+                    .padding(2)
+                }
             } header: {
                 HStack(alignment: .firstTextBaseline) {
                     Text(header)
 
                     Spacer()
-                        
+
                     Text("\(items.count)")
-                        .padding(.trailing,5)
+                        .padding(.trailing, 5)
                         .foregroundColor(AppColors.secondaryText.opacity(0.85))
                         .font(.callout)
-                        
+
                     Image(systemName: isExpanded ? "chevron.left" : "chevron.down")
                         .foregroundColor(AppColors.secondaryText.opacity(0.65))
                 }
@@ -42,7 +42,7 @@ struct DailysSections: View {
                 .padding(.bottom, 5)
                 .contentShape(RoundedRectangle(cornerRadius: 8))
                 .onTapGesture {
-                    withAnimation(.spring(.bouncy)){
+                    withAnimation(.spring(.bouncy)) {
                         isExpanded.toggle()
                     }
                 }

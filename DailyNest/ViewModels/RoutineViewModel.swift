@@ -16,7 +16,7 @@ final class RoutineViewModel {
     func newRoutineValid(title: String) -> Bool {
         !title.trimmingCharacters(in: .whitespaces).isEmpty
     }
-    
+
     func createRoutine(
         title: String,
         details: String? = nil,
@@ -70,12 +70,12 @@ final class RoutineViewModel {
         }
         updateRoutine(routine, context: context, method: "toggleRoutineCompletion")
     }
-    
-    func filteredRoutines(_ routines: [Routine],searchText: String, selectFilter : TaskFilter ) -> [Routine] {
+
+    func filteredRoutines(_ routines: [Routine], searchText: String, selectFilter: TaskFilter) -> [Routine] {
         let searchFiltred = routines.filter { task in
             searchText.isEmpty ? true : task.title.localizedCaseInsensitiveContains(searchText)
         }
-        
+
         switch selectFilter {
         case .active:
             return searchFiltred.filter { !$0.isCompletedToday }
