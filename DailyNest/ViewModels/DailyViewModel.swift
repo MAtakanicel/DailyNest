@@ -18,15 +18,19 @@ final class DailyViewModel {
     }
 
     func createDaily(
+        task: DailyTask,
+        /*
         title: String,
-        details: String? = nil,
+        details: String = "",
         date: Date = .now,
         priority: TaskPriority = .medium,
         isReminderOn: Bool = false,
-        reminderDate: Date? = nil,
+        reminderDate: Date = .now,
+         */
         context: ModelContext
+
     ) {
-        let task = DailyTask(
+    /*    let task = DailyTask(
             title: title,
             details: details,
             date: date,
@@ -34,7 +38,7 @@ final class DailyViewModel {
             isReminderOn: isReminderOn,
             reminderDate: reminderDate
         )
-
+*/
         context.insert(task)
 
         updateDaily(task, context: context, method: "Create")
@@ -46,8 +50,14 @@ final class DailyViewModel {
         updateDaily(task, context: context, method: "Delete")
     }
 
-    func updateDaily(_ task: DailyTask, context: ModelContext, method: String = "update") {
+    func updateDaily(_ task: DailyTask, context: ModelContext, method: String = "Update") {
         do {
+            if method != "Delete"{
+                guard newDailyValid(title: task.title) else { return }
+                
+                task.date = Calendar.current.startOfDay(for: task.date)
+            }
+            
             try context.save()
             print("Daily işlemi başarılı. (\(method)) Task: \(task.title)")
 

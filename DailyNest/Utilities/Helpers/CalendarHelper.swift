@@ -80,5 +80,16 @@ class CalendarHelper {
         calendar.isDate(date, equalTo: reference, toGranularity: .month)
     }
     
+    func formatDate(_ date: Date, _ style: DateFormatter.Style) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = style
+        return formatter.string(from: date)
+    }
+    
+    func formatDateTime(_ date : Date, _ style: DateFormatter.Style) -> String{
+        let formatter = DateFormatter()
+        formatter.timeStyle = style
+        return formatter.string(from: date)
+    }
     
 }

@@ -29,6 +29,11 @@ struct RoutineSection: View {
 
                     Spacer()
 
+                    Text("\(items.count)")
+                        .padding(.trailing,5)
+                        .foregroundColor(AppColors.secondaryText.opacity(0.85))
+                        .font(.callout)
+                    
                     Image(systemName: isExpanded ? "chevron.left" : "chevron.down")
                         .foregroundColor(AppColors.secondaryText.opacity(0.65))
                 }

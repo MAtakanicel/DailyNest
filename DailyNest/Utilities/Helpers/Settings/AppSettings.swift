@@ -38,16 +38,16 @@ class AppSettings {
     }
 
     // Section görünür mü ?
-    var routineSectionIsHidden: Bool = UserDefaults.standard.object(forKey: AppSettingsKeys.routineSectionHidden)as? Bool ?? true {
+    var routineSectionIsHidden: Bool = UserDefaults.standard.bool(forKey: AppSettingsKeys.routineSectionHidden) {
         didSet{ UserDefaults.standard.set(routineSectionIsHidden, forKey: AppSettingsKeys.routineSectionHidden) }
     }
-    var pastSectionIsHidden: Bool = UserDefaults.standard.object(forKey: AppSettingsKeys.pastSectionHidden) as? Bool ?? true{
+    var pastSectionIsHidden: Bool = UserDefaults.standard.bool(forKey: AppSettingsKeys.pastSectionHidden){
         didSet{ UserDefaults.standard.set(pastSectionIsHidden, forKey: AppSettingsKeys.pastSectionHidden) }
     }
-    var completedSectionIsHidden: Bool = UserDefaults.standard.object(forKey: AppSettingsKeys.completedSectionHidden) as? Bool ?? true{
+    var completedSectionIsHidden: Bool = UserDefaults.standard.bool(forKey: AppSettingsKeys.completedSectionHidden){
         didSet{ UserDefaults.standard.set(completedSectionIsHidden, forKey: AppSettingsKeys.completedSectionHidden) }
     }
-    var todaySectionIsHidden: Bool = UserDefaults.standard.object(forKey: AppSettingsKeys.todaySectionHidden) as? Bool ?? true{
+    var todaySectionIsHidden: Bool = UserDefaults.standard.bool(forKey: AppSettingsKeys.todaySectionHidden){
         didSet{ UserDefaults.standard.set(todaySectionIsHidden, forKey: AppSettingsKeys.todaySectionHidden)  }
     }
  

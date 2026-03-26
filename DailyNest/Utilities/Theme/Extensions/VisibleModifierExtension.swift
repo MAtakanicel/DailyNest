@@ -12,7 +12,7 @@ extension View {
     @ViewBuilder
     func visible(_ state: Bool) -> some View {
         if state {
-            self
+            self 
         }
     }
 }

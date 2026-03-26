@@ -25,7 +25,7 @@ enum MatrixSettingsKeys{
 
 @Observable
 class MatrixSettings {
-    var quadrantMatrixColorIsShown: Bool = UserDefaults.standard.bool(forKey: MatrixSettingsKeys.quadrantColorIsShown){
+    var quadrantMatrixColorIsShown: Bool = UserDefaults.standard.object(forKey: MatrixSettingsKeys.quadrantColorIsShown)as? Bool ?? true{
         didSet{ UserDefaults.standard.set(quadrantMatrixColorIsShown, forKey: MatrixSettingsKeys.quadrantColorIsShown) }
     }
     

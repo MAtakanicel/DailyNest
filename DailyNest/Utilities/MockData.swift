@@ -63,7 +63,7 @@ class MockData {
                 date: Date(), // Bugün
                 priority: .high,
                 isReminderOn: true,
-                reminderDate: Calendar.current.date(byAdding: .hour, value: 2, to: Date()),
+                reminderDate: Calendar.current.date(byAdding: .hour, value: 2, to: Date()) ?? Date(),
                 isCompleted: true
             ),
             DailyTask(

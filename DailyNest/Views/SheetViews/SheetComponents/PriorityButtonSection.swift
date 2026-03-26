@@ -49,17 +49,4 @@ struct PrioritySection: View {
     }
 }
 
-#Preview {
-    NavigationStack {
-        DailySheetView(dailyTask: DailyTask(
-            title: "Buy groceries",
-            details: "Milk, eggs, bread",
-            date: .now,
-            priority: .medium
-        ))
-            .environment(DailyViewModel())
-            .environment(SheetRouter())
-            .environment(MatrixSettings())
-    }
-}
 
