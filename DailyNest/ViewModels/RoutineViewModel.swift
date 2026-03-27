@@ -17,21 +17,7 @@ final class RoutineViewModel {
         !title.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
-    func createRoutine(
-        title: String,
-        details: String? = nil,
-        routineDays: [WeekDay],
-        isReminderOn: Bool = false,
-        reminderTime: Date? = nil,
-        context: ModelContext
-    ) {
-        let routine = Routine(
-            title: title,
-            details: details,
-            routineDays: routineDays,
-            isReminderOn: isReminderOn,
-            reminderTime: reminderTime
-        )
+    func createRoutine(_ routine: Routine, context: ModelContext) {
 
         context.insert(routine)
 
@@ -44,8 +30,13 @@ final class RoutineViewModel {
         updateRoutine(routine, context: context, method: "Delete")
     }
 
-    func updateRoutine(_ routine: Routine, context: ModelContext, method: String = "update") {
+    func updateRoutine(_ routine: Routine, context: ModelContext, method: String = "Update") {
         do {
+            if method != "Delete" {
+                guard newRoutineValid(title: routine.title) else { return }
+
+            }
+            
             try context.save()
             print("Routine işlemi başarılı. (\(method)) Routine: \(routine.title)")
 

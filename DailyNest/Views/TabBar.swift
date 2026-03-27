@@ -58,9 +58,9 @@ struct TabBar: View {
             .sheet(item: $router.activeSheet) { sheet in
                 switch sheet {
                 case .taskDetail: DailySheetView(dailyTask: (sheetRouter.activeSheet?.task)!, mode: .detail)
-                case .routineDetail: RoutineSheetView()
+                case .routineDetail: RoutineSheetView(routine: (sheetRouter.activeSheet?.routine)!, mode: .detail)
                 case .newDaily: DailySheetView(dailyTask: DailyTask(), mode: .create)
-                case .newRoutine: RoutineSheetView()
+                case .newRoutine: RoutineSheetView(routine: Routine(), mode: .create)
                 }
             }
             // Floating Tab Bar

@@ -13,43 +13,45 @@ final class Routine {
     var id: UUID = UUID()
 
     var title: String
-    var details: String? // Description
-
+    var details: String // Description
+    var icon: String
+    
     var routineDays: [WeekDay]
-
     var maxCount: Int = 1
+  
+    var tintColor: RoutineColor
+    var priority: TaskPriority
+
+    var isReminderOn: Bool
+    var reminderTime: Date
 
     @Relationship(deleteRule: .cascade)
     var completionHistory: [DailyLog]
-
-    var isReminderOn: Bool
-    var reminderTime: Date?
-
     var createdAt: Date
 
-    var icon: String = "list.bullet"
-
-    var tintColor: String = "blue"
-
-    var priority: TaskPriority
-
     init(
-        title: String,
-        maxCount: Int = 1,
-        details: String? = nil,
+        title: String = "",
+        details: String = "",
+        icon: String = "list.bullet",
         routineDays: [WeekDay] = [.monday, .tuesday, .wednesday, .thursday, .friday], // Varsayılan: Hafta içi
+        maxCount: Int = 1,
+        tintColor: RoutineColor = .blue,
         priority: TaskPriority = .medium,
         isReminderOn: Bool = false,
-        reminderTime: Date? = nil
+        reminderTime: Date = .now
     ) {
         self.title = title
-        self.maxCount = maxCount
         self.details = details
+        self.icon = icon
         self.routineDays = routineDays
+        self.maxCount = maxCount
+        self.tintColor = tintColor
+        self.priority = priority
         self.isReminderOn = isReminderOn
         self.reminderTime = reminderTime
-        self.priority = priority
+ 
 
+        
         createdAt = .now
         completionHistory = []
     }

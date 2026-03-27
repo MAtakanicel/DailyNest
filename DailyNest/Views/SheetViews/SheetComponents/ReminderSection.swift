@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct DailyReminderSection: View {
-    @Binding var task: DailyTask
-
+struct ReminderSection: View {
+    @Binding var isReminderOn: Bool
+    @Binding var reminderDate: Date
+    
     var body: some View {
         HStack(spacing: 0) {
             Text("Reminder:")
@@ -18,10 +19,10 @@ struct DailyReminderSection: View {
                 .padding(.trailing, 10)
 
             Toggle("", isOn: Binding(
-                get: { task.isReminderOn },
+                get: { isReminderOn },
                 set: { newValue in
                     withAnimation(.smooth) {
-                        task.isReminderOn = newValue
+                        isReminderOn = newValue
                     }
                 }
             ))
@@ -31,12 +32,12 @@ struct DailyReminderSection: View {
 
         HStack {
             Spacer()
-            DatePicker("", selection: $task.reminderDate)
+            DatePicker("", selection: $reminderDate, in: Date.now...)
                 .labelsHidden()
                 .datePickerStyle(.wheel)
             Spacer()
         }
         .transition(.move(edge: .leading).combined(with: .opacity))
-        .visible(task.isReminderOn)
+        .visible(isReminderOn)
     }
 }

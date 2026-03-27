@@ -90,3 +90,20 @@ protocol Taskable {
     var isCompleted: Bool { get }
     var completedAt: Date? { get }
 }
+
+enum RoutineColor: String,CaseIterable, Codable{
+    case blue, red, green, orange, purple, pink, yellow, teal
+    
+    var color : Color {
+        switch self {
+        case .blue: return Color.blue
+        case .red: return Color.red
+        case .green: return Color.green
+        case .orange: return Color.orange
+        case .purple: return Color.purple
+        case .pink: return Color.pink
+        case .yellow: return Color.yellow
+        case .teal: return Color.teal
+        }
+    }
+}

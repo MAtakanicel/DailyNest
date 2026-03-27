@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct DailyDateSection: View {
-    @Binding var task: DailyTask
+struct DateSection: View {
+    @Binding var date: Date
     var body: some View {
         HStack(spacing: 0) {
             Text("Date: ")
@@ -16,7 +16,7 @@ struct DailyDateSection: View {
                 .foregroundColor(AppColors.primaryText)
                 .padding(.trailing, 5)
 
-            DatePicker("", selection: $task.date, displayedComponents: .date)
+            DatePicker("", selection: $date, displayedComponents: .date)
                 .datePickerStyle(.compact)
                 .labelsHidden()
         }

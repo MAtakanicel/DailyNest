@@ -17,8 +17,8 @@ enum AppSheet: Identifiable, Equatable {
 
     var id: String {
         switch self {
-        case let .taskDetail(task): return "\(task.title)"
-        case let .routineDetail(routine): return "\(routine.title)"
+        case let .taskDetail(task): return "\(task.id)"
+        case let .routineDetail(routine): return "\(routine.id)"
         case .newDaily: return "create new Daily Task"
         case .newRoutine: return "create new Routine"
         }

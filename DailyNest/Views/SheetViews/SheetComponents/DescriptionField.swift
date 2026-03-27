@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct DailyDescriptionField: View {
-    @Binding var task: DailyTask
+struct DescriptionField: View {
+    @Binding var details: String
     var body: some View {
         ZStack(alignment: .topLeading) {
             RoundedRectangle(cornerRadius: 16)
@@ -20,9 +20,9 @@ struct DailyDescriptionField: View {
                 .font(.caption)
                 .padding(8)
                 .padding(.top, 6)
-                .visible(task.details.isEmpty)
+                .visible(details.isEmpty)
 
-            TextEditor(text: $task.details)
+            TextEditor(text: $details)
                 .foregroundColor(AppColors.primaryText)
                 .font(.caption)
                 .padding(4)
