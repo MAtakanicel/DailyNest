@@ -11,49 +11,50 @@ import SwiftData
 @Model
 final class Routine {
     var id: UUID = UUID()
-
+    
+    var icon: String = ""
+    var motivation: String = ""
+    
     var title: String
     var details: String // Description
-    var icon: String
     
-    var routineDays: [WeekDay]
-    var maxCount: Int = 1
-  
+    @Relationship(deleteRule: .cascade)
+    var routineGoal: RoutineGoal
+    
     var tintColor: RoutineColor
     var priority: TaskPriority
-
+    
     var isReminderOn: Bool
     var reminderTime: Date
-
+    
     @Relationship(deleteRule: .cascade)
     var completionHistory: [DailyLog]
     var createdAt: Date
-
+    
+    @Relationship(deleteRule: .nullify)
+    var category: [ObjectCategory]
+    
     init(
         title: String = "",
         details: String = "",
-        icon: String = "list.bullet",
-        routineDays: [WeekDay] = [.monday, .tuesday, .wednesday, .thursday, .friday], // Varsayılan: Hafta içi
-        maxCount: Int = 1,
         tintColor: RoutineColor = .blue,
         priority: TaskPriority = .medium,
         isReminderOn: Bool = false,
-        reminderTime: Date = .now
+        reminderTime: Date = .now,
+        routineGoal : RoutineGoal,
     ) {
         self.title = title
         self.details = details
-        self.icon = icon
-        self.routineDays = routineDays
-        self.maxCount = maxCount
         self.tintColor = tintColor
         self.priority = priority
         self.isReminderOn = isReminderOn
         self.reminderTime = reminderTime
- 
-
+        
+        self.routineGoal = routineGoal
         
         createdAt = .now
         completionHistory = []
+        category = []
     }
 
     /// Bugün yapıldı mı kontrolü
@@ -61,7 +62,7 @@ final class Routine {
         let today = completionHistory.first(where: { Calendar.current.isDateInToday($0.date) })
         guard let completion = today else { return false }
 
-        return completion.todaysCompletionCount == maxCount
+        return completion.todaysCompletionCount == routineGoal.targetCount
     }
 }
 
@@ -73,5 +74,31 @@ final class DailyLog {
     init(date: Date, todaysCompletionCount: Int = 0) {
         self.date = date
         self.todaysCompletionCount = todaysCompletionCount
+    }
+}
+
+@Model
+final class RoutineGoal {
+    var targetCount: Int // Periyot içinde tamamlama sayısı ( görevin bitmesi için)
+    var routineDays: [WeekDay] //specific Days için hangi günler
+    var scheduleType: RoutineScheduleType // tamamlama tipleri
+    var goalDate: Date // hedeflenen zaman için
+    var periodValue: Int // kaç periyot olacağı (günde 2 kez, haftada 4 kez...)
+    var periodUnit: RoutinePeriodUnit // Adet birimi
+    
+    init(
+        targetCount: Int = 1,
+        routineDays: [WeekDay] = [.monday, .tuesday, .wednesday, .thursday, .friday],
+        scheduleType: RoutineScheduleType = .daily,
+        goalDate: Date = .now,
+        periodValue: Int = 1,
+        periodUnit: RoutinePeriodUnit = .day
+    ) {
+        self.targetCount = targetCount
+        self.routineDays = routineDays
+        self.scheduleType = scheduleType
+        self.goalDate = goalDate
+        self.periodValue = periodValue
+        self.periodUnit = periodUnit
     }
 }

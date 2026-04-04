@@ -12,7 +12,6 @@ struct AgendaView: View {
     @Environment(CalendarHelper.self) private var calendarHelper
     @Environment(DailyViewModel.self) private var dailyViewModel
     @Environment(SheetRouter.self) private var sheetRouter
-    @Environment(\.modelContext) private var context
 
     @Query(sort: \DailyTask.date, order: .reverse) private var dailyTasks: [DailyTask]
 
@@ -111,7 +110,7 @@ struct AgendaView: View {
                 ForEach(
                     isShowCompletedTasks ? dailyViewModel.dailysForDate(dailyTasks, date: selectedDate) : dailyViewModel.activeDailys(dailyViewModel.dailysForDate(dailyTasks, date: selectedDate))
                 ) { task in
-                    DailyRow(task: task, context: context) { item in
+                    DailyRow(task: task) { item in
                         sheetRouter.activeSheet = .taskDetail(item)
                     }
                 }
@@ -155,8 +154,8 @@ struct AgendaView: View {
     TabBar(selectedTab: .agendaView)
         .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
-        .environment(DailyViewModel())
-        .environment(RoutineViewModel())
+        .environment(MockData.previewDailyViewModel)
+        .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())
         .environment(CalendarHelper())
 }

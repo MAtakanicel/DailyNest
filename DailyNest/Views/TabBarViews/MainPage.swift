@@ -13,7 +13,6 @@ struct MainPage: View {
     @Environment(DailyViewModel.self) private var dailyViewModel
     @Environment(RoutineViewModel.self) private var routineViewModel
     @Environment(SheetRouter.self) private var sheetRouter
-    @Environment(\.modelContext) private var context
     @Environment(AppSettings.self) private var appSettings
 
     @Query private var dailyTasks: [DailyTask]
@@ -57,8 +56,7 @@ struct MainPage: View {
                         DailysSections(
                             header: "Geçmiş Görevler",
                             items: dailyViewModel.overdueDailys(dailyTasks),
-                            isExpanded: $settings.pastSectionIsExpanded,
-                            context: context
+                            isExpanded: $settings.pastSectionIsExpanded
                         )
                         .padding(.bottom, 20)
                         .visible(!dailyViewModel.overdueDailys(dailyTasks).isEmpty && !settings.pastSectionIsHidden)
@@ -67,14 +65,12 @@ struct MainPage: View {
                             header: "Today",
                             items: dailyViewModel.todaysActiveDailys(dailyTasks),
                             isExpanded: $settings.todaySectionIsExpanded,
-                            context: context
                         )
                         .padding(.bottom, 20)
                         .visible(!settings.todaySectionIsHidden)
 
                         RoutineSection(
                             items: routineViewModel.todaysRoutines(routineTasks),
-                            context: context,
                             isExpanded: $settings.routineSectionIsExpanded
                         )
                         .padding(.bottom, 20)
@@ -83,8 +79,7 @@ struct MainPage: View {
                         DailysSections(
                             header: "Completed",
                             items: dailyViewModel.todayCompletedDailys(dailyTasks),
-                            isExpanded: $settings.completedSectionIsExpanded,
-                            context: context
+                            isExpanded: $settings.completedSectionIsExpanded
                         )
                         .opacity(0.75)
                         .visible(!dailyViewModel.todayCompletedDailys(dailyTasks).isEmpty && !settings.completedSectionIsHidden)
@@ -235,8 +230,8 @@ struct MainPage: View {
     TabBar(selectedTab: .mainView)
         .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
-        .environment(DailyViewModel())
-        .environment(RoutineViewModel())
+        .environment(MockData.previewDailyViewModel)
+        .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())
         .environment(CalendarHelper())
         .environment(AppSettings())

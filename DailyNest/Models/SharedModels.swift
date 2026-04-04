@@ -54,7 +54,8 @@ enum TaskPriority: Int, Codable, CaseIterable {
     }
 }
 
-enum WeekDay: Int, Codable, CaseIterable {
+enum WeekDay: Int, Codable, CaseIterable, Identifiable {
+    
     case sunday = 1
     case monday = 2
     case tuesday = 3
@@ -63,7 +64,7 @@ enum WeekDay: Int, Codable, CaseIterable {
     case friday = 6
     case saturday = 7
 
-    var shortName: String {
+    var id: String {
         switch self {
         case .monday: "Mon"
         case .tuesday: "Tue"
@@ -92,6 +93,31 @@ protocol Taskable {
 }
 
 enum RoutineColor: String,CaseIterable, Codable{
+    case blue, red, green, orange, purple, pink, yellow, teal
+    
+    var color : Color {
+        switch self {
+        case .blue: return Color.blue
+        case .red: return Color.red
+        case .green: return Color.green
+        case .orange: return Color.orange
+        case .purple: return Color.purple
+        case .pink: return Color.pink
+        case .yellow: return Color.yellow
+        case .teal: return Color.teal
+        }
+    }
+}
+
+enum RoutineScheduleType: String, Codable, CaseIterable {
+    case daily, weekly, timed
+}
+
+enum RoutinePeriodUnit: String, Codable, CaseIterable {
+    case day, week, month
+}
+
+enum CategoryColor: String, CaseIterable, Codable {
     case blue, red, green, orange, purple, pink, yellow, teal
     
     var color : Color {

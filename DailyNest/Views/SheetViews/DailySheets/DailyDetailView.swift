@@ -14,7 +14,7 @@ struct DailyDetailView: View {
     @Environment(MatrixSettings.self) private var matrixSettings
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            sectionDivider
+            SectionDivider(deviderType: .top)
 
             Text(task.details.isEmpty ? "No Description" : task.details)
                 .foregroundColor(AppColors.primaryText)
@@ -23,11 +23,7 @@ struct DailyDetailView: View {
                 .padding(4)
                 .frame(maxWidth: .infinity, minHeight: 150, alignment: .topLeading)
 
-            Divider()
-                .opacity(0.5)
-                .padding(.top, 15)
-                .padding(.bottom, 8)
-                .padding(.horizontal, 30)
+            SectionDivider(deviderType: .regular)
 
             HStack(spacing: 0) {
                 Text("Date: ")
@@ -40,8 +36,8 @@ struct DailyDetailView: View {
                     .foregroundColor(AppColors.secondaryText)
             }
 
-            sectionDivider
-
+            SectionDivider(deviderType: .regular)
+            
             HStack(spacing: 0) {
                 Text("Priority: ")
                     .font(.headline.bold())
@@ -64,7 +60,7 @@ struct DailyDetailView: View {
                 )
             }
 
-            sectionDivider
+            SectionDivider(deviderType: .regular)
 
             HStack(spacing: 0) {
                 Text("Reminder:")
@@ -85,14 +81,8 @@ struct DailyDetailView: View {
             .visible(task.isReminderOn)
             .padding(.bottom, 10)
 
-            sectionDivider
+            SectionDivider(deviderType: .bottom)
         }
     }
 
-    private var sectionDivider: some View {
-        Divider()
-            .opacity(0.5)
-            .padding(.vertical, 15)
-            .padding(.horizontal, 30)
-    }
 }

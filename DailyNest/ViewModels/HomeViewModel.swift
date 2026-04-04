@@ -18,7 +18,7 @@ final class HomeViewModel {
         let todaysTasks = dailyTasks.filter { Calendar.current.isDateInToday($0.date) }
         let activeRoutineTasks = routineTasks.filter { routine in
             guard let today = todayWeekDay else { return false }
-            return routine.routineDays.contains(today)
+            return routine.routineGoal.routineDays.contains(today)
         }
 
         var completedCount: Int

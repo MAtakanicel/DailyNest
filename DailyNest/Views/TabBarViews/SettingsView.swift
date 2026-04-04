@@ -18,7 +18,7 @@ struct SettingsView: View {
     TabBar(selectedTab: .settingsView)
         .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
-        .environment(DailyViewModel())
-        .environment(RoutineViewModel())
+        .environment(MockData.previewDailyViewModel)
+        .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())
 }

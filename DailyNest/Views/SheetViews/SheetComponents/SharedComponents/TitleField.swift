@@ -10,7 +10,7 @@ import SwiftUI
 struct TitleField: View {
     @Binding var title: String
     var body: some View {
-        TextField("Task title", text: $title)
+        TextField("Title", text: $title)
             .foregroundColor(AppColors.primaryText)
             .lineLimit(1)
             .padding(10)

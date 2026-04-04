@@ -60,7 +60,7 @@ struct TabBar: View {
                 case .taskDetail: DailySheetView(dailyTask: (sheetRouter.activeSheet?.task)!, mode: .detail)
                 case .routineDetail: RoutineSheetView(routine: (sheetRouter.activeSheet?.routine)!, mode: .detail)
                 case .newDaily: DailySheetView(dailyTask: DailyTask(), mode: .create)
-                case .newRoutine: RoutineSheetView(routine: Routine(), mode: .create)
+                case .newRoutine: RoutineSheetView(routine: Routine(routineGoal: RoutineGoal()), mode: .create)
                 }
             }
             // Floating Tab Bar
@@ -122,8 +122,10 @@ struct TabBar: View {
     TabBar()
         .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
-        .environment(DailyViewModel())
-        .environment(RoutineViewModel())
+        .environment(MockData.previewDailyViewModel)
+        .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())
         .environment(CalendarHelper())
+        .environment(AppSettings())
+        .environment(MatrixSettings())
 }

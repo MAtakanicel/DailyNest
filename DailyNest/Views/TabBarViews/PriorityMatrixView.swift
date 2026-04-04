@@ -43,7 +43,6 @@ enum PriorityMatrixSheet: Identifiable {
 struct PriorityMatrixView: View {
     @Environment(RoutineViewModel.self) private var routineViewModel
     @Environment(DailyViewModel.self) private var dailyViewModel
-    @Environment(\.modelContext) private var context
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(MatrixSettings.self) private var matrixSettings
 
@@ -142,7 +141,7 @@ struct PriorityMatrixView: View {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 0) {
                         ForEach(quadrantTasks) { task in
-                            DailyRow(task: task, context: context, rowStyle: .matrix) { _ in
+                            DailyRow(task: task, rowStyle: .matrix) { _ in
                                 sheetRouter.activeSheet = .taskDetail(task)
                             }
                             .padding(.bottom, 5)
@@ -242,8 +241,8 @@ struct PriorityMatrixView: View {
     TabBar(selectedTab: .priorityMatrixView)
         .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
-        .environment(DailyViewModel())
-        .environment(RoutineViewModel())
+        .environment(MockData.previewDailyViewModel)
+        .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())
         .environment(MatrixSettings())
 }

@@ -15,7 +15,6 @@ enum DailyRowStyle {
 struct RoutineRow: View {
     var routine: Routine
     @Environment(RoutineViewModel.self) private var routineViewModel
-    let context: ModelContext
     var onTap: ((Routine) -> Void)? = nil
 
     var body: some View {
@@ -37,9 +36,9 @@ struct RoutineRow: View {
             }
             .onTapGesture {
                 if !routine.isCompletedToday {
-                    routineViewModel.toggleRoutineCompletion(routine, context: context)
+                    routineViewModel.toggleRoutineCompletion(routine)
                 } else {
-                    routineViewModel.routineCompetionResetToday(routine, context: context)
+                    routineViewModel.routineCompetionResetToday(routine)
                 }
             }
 
@@ -52,7 +51,7 @@ struct RoutineRow: View {
 
             Spacer()
 
-            Text("\(routineViewModel.todaysRoutineCompletionCount(routine)) / \(routine.maxCount)")
+            Text("\(routineViewModel.todaysRoutineCompletionCount(routine)) / \(routine.routineGoal.targetCount)")
                 .font(.subheadline)
                 .italic()
                 .foregroundStyle(AppColors.secondaryText)
@@ -68,7 +67,6 @@ struct RoutineRow: View {
 
 struct DailyRow: View {
     var task: DailyTask
-    let context: ModelContext
     var rowStyle: DailyRowStyle = .standart
     var onTap: ((DailyTask) -> Void)? = nil
 
@@ -96,7 +94,7 @@ struct DailyRow: View {
                 }
                 .padding(.trailing, 2)
                 .onTapGesture {
-                    dailyViewModel.toggleDailyCompletion(task, context: context)
+                    dailyViewModel.toggleDailyCompletion(task)
                 }
 
                 Button { onTap?(task) } label: {
@@ -143,7 +141,7 @@ struct DailyRow: View {
                     }
                 }
                 .onTapGesture {
-                    dailyViewModel.toggleDailyCompletion(task, context: context)
+                    dailyViewModel.toggleDailyCompletion(task)
                 }
 
                 Button { onTap?(task) } label: {
@@ -177,10 +175,9 @@ struct DailyRow: View {
 
 #Preview {
     TabBar(selectedTab: .agendaView)
-        .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
-        .environment(DailyViewModel())
-        .environment(RoutineViewModel())
+        .environment(MockData.previewDailyViewModel)
+        .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())
         .environment(CalendarHelper())
 }

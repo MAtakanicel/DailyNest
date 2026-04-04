@@ -12,6 +12,14 @@ import SwiftData
 class MockData {
     static let shared = MockData()
 
+    static var previewDailyViewModel: DailyViewModel {
+        DailyViewModel(repository: DailyTaskRepository(context: previewContainer.mainContext))
+    }
+
+    static var previewRoutineViewModel: RoutineViewModel {
+        RoutineViewModel(repository: RoutineRepository(context: previewContainer.mainContext))
+    }
+    
     static var previewContainer: ModelContainer = {
         let schema = Schema([
             DailyTask.self,
@@ -31,59 +39,63 @@ class MockData {
             Routine(
                 title: "Su İç",
                 details: "Uyanır uyanmaz ve gün içinde metabolizmayı hızlandırmak için su iç.",
-                icon: "drop.fill",
-                routineDays: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday],
-                maxCount: 4, // Günde 4 defa tıklanması gerekecek
                 tintColor: .blue,
                 priority: .high,
                 isReminderOn: true,
-                reminderTime: Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: .now) ?? .now
+                reminderTime: Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: .now) ?? .now,
+                routineGoal: RoutineGoal(
+                    targetCount: 4,
+                    routineDays: WeekDay.allCases
+                )
             ),
             Routine(
                 title: "Kitap Oku",
-                    details: "Yatmadan önce en az 20 sayfa kitap oku.",
-                    icon: "book.closed.fill",
-                    routineDays: [.monday, .tuesday, .wednesday, .thursday, .friday],
-                    maxCount: 1,
-                    tintColor: .purple,
-                    priority: .medium,
-                    isReminderOn: true,
-                    reminderTime: Calendar.current.date(bySettingHour: 22, minute: 30, second: 0, of: .now) ?? .now
-                ),
+                details: "Yatmadan önce en az 20 sayfa kitap oku.",
+                tintColor: .purple,
+                priority: .medium,
+                isReminderOn: true,
+                reminderTime: Calendar.current.date(bySettingHour: 22, minute: 30, second: 0, of: .now) ?? .now,
+                routineGoal: RoutineGoal(
+                    targetCount: 1,
+                    routineDays: [.monday, .tuesday, .wednesday, .thursday, .friday]
+                )
+            ),
             Routine(
                 title: "SwiftUI Çalışması",
-                    details: "DailyNest projesine yeni özellikler ekle veya refactoring yap.",
-                    icon: "macbook.and.iphone",
-                    routineDays: [.monday, .wednesday, .friday],
-                    maxCount: 1,
-                    tintColor: .orange,
-                    priority: .high,
-                    isReminderOn: false,
-                    reminderTime: .now
+                details: "DailyNest projesine yeni özellikler ekle veya refactoring yap.",
+                tintColor: .orange,
+                priority: .high,
+                isReminderOn: false,
+                routineGoal: RoutineGoal(
+                    targetCount: 1,
+                    routineDays: [.monday, .wednesday, .friday]
+                )
             ),
             Routine(
                 title: "Fıtık Egzersizleri",
-                    details: "Sırt ve bel kaslarını güçlendirmek için mat egzersizleri yap.",
-                    icon: "figure.mind.and.body",
-                    routineDays: [.tuesday, .thursday, .saturday],
-                    maxCount: 1,
-                    tintColor: .green,
-                    priority: .medium,
-                    isReminderOn: true,
-                    reminderTime: Calendar.current.date(bySettingHour: 18, minute: 0, second: 0, of: .now) ?? .now
-                ),
+                details: "Sırt ve bel kaslarını güçlendirmek için mat egzersizleri yap.",
+                tintColor: .green,
+                priority: .medium,
+                isReminderOn: true,
+                reminderTime: Calendar.current.date(bySettingHour: 18, minute: 0, second: 0, of: .now) ?? .now,
+                routineGoal: RoutineGoal(
+                    targetCount: 1,
+                    routineDays: [.tuesday, .thursday, .saturday]
+                )
+            ),
             Routine(
                 title: "Meditasyon",
-                    details: "Haftanın stresini atmak için 15 dakika odaklanma ve nefes egzersizi.",
-                    icon: "leaf.fill",
-                    routineDays: [.saturday, .sunday],
-                    maxCount: 1,
-                    tintColor: .yellow, // veya senin Enum'ında hangi renkler varsa
-                    priority: .low,
-                    isReminderOn: false,
-                    reminderTime: .now
+                details: "Haftanın stresini atmak için 15 dakika odaklanma ve nefes egzersizi.",
+                tintColor: .yellow,
+                priority: .low,
+                isReminderOn: false,
+                routineGoal: RoutineGoal(
+                    targetCount: 1,
+                    routineDays: [.saturday, .sunday]
                 )
+            )
         ]
+
 
         let dailyTasks: [DailyTask] = [
             DailyTask(

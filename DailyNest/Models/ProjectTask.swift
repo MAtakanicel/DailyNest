@@ -25,6 +25,9 @@ final class ProjectTask: Taskable {
 
     var startDate: Date?
     var deadline: Date?
+    
+    @Relationship(deleteRule: .nullify)
+    var category: [ObjectCategory] = []
 
     init(
         title: String,

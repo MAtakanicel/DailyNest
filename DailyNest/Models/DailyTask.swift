@@ -25,6 +25,9 @@ final class DailyTask: Taskable {
     var isCompleted: Bool
     var completedAt: Date?
 
+    @Relationship(deleteRule: .nullify)
+    var category: [ObjectCategory] = []
+    
     init(
         title: String = "",
         details: String = "",

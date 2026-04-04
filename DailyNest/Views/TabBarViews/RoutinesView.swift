@@ -19,7 +19,6 @@ struct RoutinesView: View {
     @Environment(RoutineViewModel.self) private var routineViewModel
     @Environment(HomeViewModel.self) private var homeViewModel
     @Environment(SheetRouter.self) private var sheetRouter
-    @Environment(\.modelContext) private var context
     @Environment(CalendarHelper.self) private var calendarHelper
 
     @State private var selectFilter: TaskFilter = .all
@@ -102,16 +101,16 @@ struct RoutinesView: View {
         HStack {
             Button { sheetRouter.activeSheet = .routineDetail(routine) } label: {
                 Circle()
-                    .fill(routine.priority.color)
-                    .frame(width: 10)
-                    .padding(.leading, 10)
+                    .fill(routine.tintColor.color)
+                    .frame(width: 18)
+                    .padding(.leading, 8)
                 VStack(alignment: .leading, spacing: 0) {
                     Text(routine.title)
                         .foregroundColor(AppColors.cardText)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.vertical, 12)
 
-                    Text("\(routineViewModel.todaysRoutineCompletionCount(routine)) / \(routine.maxCount)")
+                    Text("\(routineViewModel.todaysRoutineCompletionCount(routine)) / \(routine.routineGoal.targetCount)")
                         .font(.subheadline)
                         .italic()
                         .foregroundStyle(AppColors.secondaryText)
@@ -173,8 +172,8 @@ struct RoutinesView: View {
     TabBar(selectedTab: .routinesView)
         .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
-        .environment(DailyViewModel())
-        .environment(RoutineViewModel())
+        .environment(MockData.previewDailyViewModel)
+        .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())
         .environment(CalendarHelper())
 }

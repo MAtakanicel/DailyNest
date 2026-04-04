@@ -7,50 +7,52 @@
 
 import Foundation
 import Observation
-import SwiftData
 
 @Observable @MainActor
 final class RoutineViewModel {
+    let repository : RoutineRepositoryProtocol
     var alertMessage: String?
 
+    init(repository: RoutineRepository) { self.repository = repository }
+    
     func newRoutineValid(title: String) -> Bool {
         !title.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
-    func createRoutine(_ routine: Routine, context: ModelContext) {
+    func createRoutine(_ routine: Routine) {
+        
+        guard newRoutineValid(title: routine.title) else { return }
 
-        context.insert(routine)
-
-        updateRoutine(routine, context: context, method: "create")
+        do{
+            try repository.create(routine)
+        }catch{
+            alertMessage  = error.localizedDescription
+        }
     }
-
-    func deleteRoutine(_ routine: Routine, context: ModelContext) {
-        context.delete(routine)
-
-        updateRoutine(routine, context: context, method: "Delete")
-    }
-
-    func updateRoutine(_ routine: Routine, context: ModelContext, method: String = "Update") {
-        do {
-            if method != "Delete" {
-                guard newRoutineValid(title: routine.title) else { return }
-
-            }
-            
-            try context.save()
-            print("Routine işlemi başarılı. (\(method)) Routine: \(routine.title)")
-
-        } catch {
-            print("Routine işlemi başarısız. (\(method)) Routine: \(routine.title)  Hata: \(error.localizedDescription)")
+    
+    func updateRoutine(_ routine: Routine){
+        guard newRoutineValid(title: routine.title) else { return }
+        
+        do{
+            try repository.update(routine)
+        }catch{
             alertMessage = error.localizedDescription
         }
     }
 
-    func toggleRoutineCompletion(_ routine: Routine, context: ModelContext) {
+    func deleteRoutine(_ routine: Routine ) {
+        do{
+            try repository.delete(routine)
+        }catch{
+            alertMessage = error.localizedDescription
+        }
+    }
+
+    func toggleRoutineCompletion(_ routine: Routine) {
         let today = routine.completionHistory.first(where: { Calendar.current.isDateInToday($0.date) })
 
         if let completion = today {
-            if completion.todaysCompletionCount < routine.maxCount {
+            if completion.todaysCompletionCount < routine.routineGoal.targetCount {
                 completion.todaysCompletionCount += 1
                 print("routine: \(routine.title), count + 1")
             }
@@ -59,8 +61,22 @@ final class RoutineViewModel {
             routine.completionHistory.append(newDailyLog)
             print("\(routine.title) yeni günlük kayıt oluşturuldu.")
         }
-        updateRoutine(routine, context: context, method: "toggleRoutineCompletion")
+        
+        do{
+            try repository.update(routine)
+        }catch{
+            alertMessage = error.localizedDescription
+        }
     }
+    
+    func toggleRoutineDay(_ routine: Routine, day: WeekDay,_ selected: Bool){
+        if selected{
+            routine.routineGoal.routineDays.append(day)
+        }else{
+            routine.routineGoal.routineDays.removeAll { $0 == day }
+        }
+    }
+    
 
     func filteredRoutines(_ routines: [Routine], searchText: String, selectFilter: TaskFilter) -> [Routine] {
         let searchFiltred = routines.filter { task in
@@ -76,11 +92,15 @@ final class RoutineViewModel {
     }
 
     /// Günlük ilerleme reset
-    func routineCompetionResetToday(_ routine: Routine, context: ModelContext) {
+    func routineCompetionResetToday(_ routine: Routine) {
         let today = routine.completionHistory.first(where: { Calendar.current.isDateInToday($0.date) })
         today?.todaysCompletionCount = 0
 
-        updateRoutine(routine, context: context, method: "routineCompetionReset")
+        do{
+            try repository.update(routine)
+        }catch{
+            alertMessage = error.localizedDescription
+        }
     }
 
     func todaysRoutineCompletionCount(_ routine: Routine) -> Int {
@@ -91,7 +111,7 @@ final class RoutineViewModel {
     func todaysRoutines(_ routines: [Routine]) -> [Routine] {
         let todayIndex = Calendar.current.component(.weekday, from: Date())
         guard let today = WeekDay(rawValue: todayIndex) else { return [] }
-        return routines.filter { $0.routineDays.contains(today) }
+        return routines.filter { $0.routineGoal.routineDays.contains(today) }
     }
 
     func routineSortedByPriority(_ routines: [Routine]) -> [Routine] {
@@ -104,9 +124,9 @@ final class RoutineViewModel {
         guard let today = WeekDay(rawValue: todayIndex) else { return [] }
 
         if isActive == .all {
-            return routines.filter { $0.routineDays.contains(today) }
+            return routines.filter { $0.routineGoal.routineDays.contains(today) }
         } else {
-            return routines.filter { $0.routineDays.contains(today) && !$0.isCompletedToday }
+            return routines.filter { $0.routineGoal.routineDays.contains(today) && !$0.isCompletedToday }
         }
     }
 
@@ -118,9 +138,9 @@ final class RoutineViewModel {
         while true {
             let todayIndex = WeekDay(rawValue: Calendar.current.component(.weekday, from: currentDate))
             guard let today = todayIndex else { return 0 }
-            if routine.routineDays.contains(today) {
+            if routine.routineGoal.routineDays.contains(today) {
                 if list.contains(where: { Calendar.current.isDate($0.date, inSameDayAs: currentDate)
-                        && ($0.todaysCompletionCount >= routine.maxCount)
+                    && ($0.todaysCompletionCount >= routine.routineGoal.targetCount)
                 }) {
                     count += 1
                     currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!

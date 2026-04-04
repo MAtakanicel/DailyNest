@@ -12,14 +12,13 @@ struct DailysSections: View {
     let header: String
     let items: [DailyTask]
     @Binding var isExpanded: Bool
-    let context: ModelContext
     @Environment(SheetRouter.self) private var sheetRouter
 
     var body: some View {
         VStack(spacing: 0) {
             Section(isExpanded: $isExpanded) {
                 ForEach(items) { item in
-                    DailyRow(task: item, context: context) { item in
+                    DailyRow(task: item) { item in
                         sheetRouter.activeSheet = .taskDetail(item)
                     }
                     .padding(2)
@@ -60,10 +59,9 @@ struct DailysSections: View {
 
 #Preview {
     TabBar(selectedTab: .mainView)
-        .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
-        .environment(DailyViewModel())
-        .environment(RoutineViewModel())
+        .environment(MockData.previewDailyViewModel)
+        .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())
         .environment(CalendarHelper())
         .environment(AppSettings())

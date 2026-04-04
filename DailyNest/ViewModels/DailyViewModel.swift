@@ -7,72 +7,62 @@
 
 import Foundation
 import Observation
-import SwiftData
 
 @Observable @MainActor
 final class DailyViewModel {
+    let repository: DailyTaskRepositoryProtocol
     var alertMessage: String?
 
+    init(repository: DailyTaskRepository){ self.repository = repository }
+    
     func newDailyValid(title: String) -> Bool {
         !title.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
     func createDaily(
-        task: DailyTask,
-        /*
-            title: String,
-            details: String = "",
-            date: Date = .now,
-            priority: TaskPriority = .medium,
-            isReminderOn: Bool = false,
-            reminderDate: Date = .now,
-             */
-        context: ModelContext
-
+        task: DailyTask
     ) {
-        /*    let task = DailyTask(
-             title: title,
-             details: details,
-             date: date,
-             priority: priority,
-             isReminderOn: isReminderOn,
-             reminderDate: reminderDate
-         )
-         */
-        context.insert(task)
+        guard newDailyValid(title: task.title) else { return }
 
-        updateDaily(task, context: context, method: "Create")
-    }
-
-    func deleteDaily(_ task: DailyTask, context: ModelContext) {
-        context.delete(task)
-
-        updateDaily(task, context: context, method: "Delete")
-    }
-
-    func updateDaily(_ task: DailyTask, context: ModelContext, method: String = "Update") {
-        do {
-            if method != "Delete" {
-                guard newDailyValid(title: task.title) else { return }
-
-                task.date = Calendar.current.startOfDay(for: task.date)
-            }
-
-            try context.save()
-            print("Daily işlemi başarılı. (\(method)) Task: \(task.title)")
-
+        task.date = Calendar.current.startOfDay(for: task.date)
+        do{
+          try repository.create(task)
         } catch {
-            print("Daily işlemi başarısız. (\(method)) Task:\(task.title) Hata: \(error.localizedDescription)")
             alertMessage = error.localizedDescription
         }
     }
 
-    func toggleDailyCompletion(_ task: DailyTask, context: ModelContext) {
+    func updateDaily(_ task: DailyTask){
+        guard newDailyValid(title: task.title) else { return }
+
+        task.date = Calendar.current.startOfDay(for: task.date)
+        
+        do{
+            try repository.update(task)
+        }catch{
+            alertMessage = error.localizedDescription
+        }
+    }
+    
+    func deleteDaily(_ task: DailyTask) {
+        do{
+            try repository.delete(task)
+        }catch{
+            alertMessage = error.localizedDescription
+        }
+    }
+
+    func toggleDailyCompletion(_ task: DailyTask) {
         task.isCompleted.toggle()
         task.completedAt = task.isCompleted ? Date() : nil
         print("Task \(task.isCompleted ? "tamamlandı" : "geri alındı").")
-
-        updateDaily(task, context: context, method: "Toggle")
+        
+        do{
+            try repository.update(task)
+        }catch{
+            alertMessage = error.localizedDescription
+        }
+            
     }
 
     func dailysForDate(_ tasks: [DailyTask], date: Date) -> [DailyTask] {

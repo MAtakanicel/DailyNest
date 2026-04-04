@@ -20,7 +20,6 @@ struct DailySheetView: View {
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(CalendarHelper.self) private var calendarHelper
     @Environment(MatrixSettings.self) private var matrixSettings
-    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
     @State private var isAlertShown: Bool = false
@@ -37,7 +36,7 @@ struct DailySheetView: View {
                 AppColors.background.ignoresSafeArea()
 
                 forms
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, 25)
                     .animation(.smooth(duration: 0.5), value: mode)
                     .padding(.top, 5)
             }
@@ -47,7 +46,7 @@ struct DailySheetView: View {
                 }
 
                 Button("Confirm", role: .destructive) {
-                    dailyViewModel.deleteDaily(task, context: context)
+                    dailyViewModel.deleteDaily(task)
 
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                         dismiss()
@@ -70,8 +69,8 @@ struct DailySheetView: View {
                         isValid: dailyViewModel.newDailyValid(title: task.title),
                         isTask: true,
                         onConfirm: mode == .create ?
-                            { dailyViewModel.createDaily(task: task, context: context) } :
-                            { dailyViewModel.updateDaily(task, context: context) }
+                            { dailyViewModel.createDaily(task: task) } :
+                            { dailyViewModel.updateDaily(task) }
                     )
                 }
             }
@@ -87,37 +86,32 @@ struct DailySheetView: View {
 
             case .create, .edit:
                 VStack(alignment: .leading, spacing: 0) {
-                    sectionDivider
+                    SectionDivider(deviderType: .top)
 
                     TitleField(title: $task.title)
 
-                    sectionDivider
+                    SectionDivider(deviderType: .regular)
 
                     DescriptionField(details: $task.details)
 
-                    sectionDivider
+                    SectionDivider(deviderType: .regular)
 
                     DateSection(date: $task.date)
 
-                    sectionDivider
+                    SectionDivider(deviderType: .regular)
 
                     PrioritySection(selected: $task.priority)
 
-                    sectionDivider
+                    SectionDivider(deviderType: .regular)
 
                     ReminderSection(isReminderOn: $task.isReminderOn, reminderDate: $task.reminderDate)
+                    
+                    SectionDivider(deviderType: .bottom)
                 }
-                .padding(.horizontal, 10)
             }
         }
     }
 
-    private var sectionDivider: some View {
-        Divider()
-            .opacity(0.5)
-            .padding(.vertical, 15)
-            .padding(.horizontal, 30)
-    }
 }
 
 #Preview {
@@ -130,7 +124,7 @@ struct DailySheetView: View {
             isReminderOn: true
         ),
         mode: .create)
-            .environment(DailyViewModel())
+        .environment(MockData.previewDailyViewModel)
             .environment(SheetRouter())
             .environment(MatrixSettings())
             .environment(CalendarHelper())

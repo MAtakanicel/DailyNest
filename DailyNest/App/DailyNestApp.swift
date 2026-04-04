@@ -11,6 +11,8 @@ import SwiftUI
 @main
 struct DailyNestApp: App {
     let container: ModelContainer // DB Konteyneri
+    let dailyRepository : DailyTaskRepository
+    let routineRepository : RoutineRepository
 
     init() {
         do {
@@ -26,16 +28,26 @@ struct DailyNestApp: App {
 
             // 3. Konteyner oluştur.
             container = try ModelContainer(for: schema, configurations: [modelConfiguration])
-
+            let dailyRepository = DailyTaskRepository(context: container.mainContext)
+            self.dailyRepository = dailyRepository
+            
+            let routineRepository = RoutineRepository(context: container.mainContext)
+            self.routineRepository = routineRepository
+            
+            _homeViewModel = State(initialValue: HomeViewModel())
+            _dailyViewModel = State(initialValue: DailyViewModel(repository: dailyRepository))
+            _routineViewModel = State(initialValue: RoutineViewModel(repository: routineRepository))
+            
             print(modelConfiguration.url.path) // db yolunu ekrana fırlat
         } catch {
             fatalError("Veritabanı Hatası : \(error.localizedDescription)")
         }
     }
 
-    @State private var homeViewModel = HomeViewModel()
-    @State private var dailyViewModel = DailyViewModel()
-    @State private var routineViewModel = RoutineViewModel()
+    
+    @State private var homeViewModel : HomeViewModel
+    @State private var dailyViewModel : DailyViewModel
+    @State private var routineViewModel : RoutineViewModel
     @State private var sheetRouter = SheetRouter()
     @State private var calendarHelper = CalendarHelper()
     @State private var appSettings = AppSettings()

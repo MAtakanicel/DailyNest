@@ -10,7 +10,6 @@ import SwiftUI
 
 struct RoutineSection: View {
     let items: [Routine]
-    let context: ModelContext
     @Binding var isExpanded: Bool
     @Environment(SheetRouter.self) private var sheetRouter
 
@@ -18,7 +17,7 @@ struct RoutineSection: View {
         VStack(spacing: 0) {
             Section(isExpanded: $isExpanded) {
                 ForEach(items) { item in
-                    RoutineRow(routine: item, context: context) { item in
+                    RoutineRow(routine: item) { item in
                         sheetRouter.activeSheet = .routineDetail(item)
                     }
                     .padding(2)
@@ -62,8 +61,8 @@ struct RoutineSection: View {
     TabBar(selectedTab: .mainView)
         .modelContainer(MockData.previewContainer)
         .environment(HomeViewModel())
-        .environment(DailyViewModel())
-        .environment(RoutineViewModel())
+        .environment(MockData.previewDailyViewModel)
+        .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())
         .environment(CalendarHelper())
         .environment(AppSettings())
