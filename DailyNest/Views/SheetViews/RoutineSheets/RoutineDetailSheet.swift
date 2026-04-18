@@ -167,15 +167,23 @@ struct RoutineDetailSheet: View {
     }
 
     private var goalDateSection: some View {
-        HStack(spacing: 0) {
-            Text("Goal Date: ")
-                .font(.headline.bold())
-                .foregroundColor(AppColors.primaryText)
-                .padding(.trailing, 5)
-
-            Text(calendarHelper.formatDate(task.routineGoal.goalDate, .medium))
-                .font(.body)
-                .foregroundColor(AppColors.secondaryText)
+        Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 16) {
+            GridRow {
+                Text("Goal Start Date:")
+                    .font(.headline.bold())
+                    .foregroundColor(AppColors.primaryText)
+                Text(calendarHelper.formatDate(task.routineGoal.startDate, .medium))
+                    .font(.body)
+                    .foregroundColor(AppColors.secondaryText)
+            }
+            GridRow {
+                Text("Goal End Date:")
+                    .font(.headline.bold())
+                    .foregroundColor(AppColors.primaryText)
+                Text(calendarHelper.formatDate(task.routineGoal.goalDate, .medium))
+                    .font(.body)
+                    .foregroundColor(AppColors.secondaryText)
+            }
         }
     }
 }

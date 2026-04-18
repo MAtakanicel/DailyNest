@@ -7,9 +7,15 @@
 
 import SwiftUI
 
+enum ReminderType{
+    case task, routine
+}
+
 struct ReminderSection: View {
+    let type : ReminderType
     @Binding var isReminderOn: Bool
     @Binding var reminderDate: Date
+    
     
     var body: some View {
         HStack(spacing: 0) {
@@ -31,11 +37,21 @@ struct ReminderSection: View {
         .padding(.bottom, 10)
 
         HStack {
-            Spacer()
-            DatePicker("", selection: $reminderDate, in: Date.now...)
-                .labelsHidden()
-                .datePickerStyle(.wheel)
-            Spacer()
+            switch type {
+            case .task:
+                Spacer()
+                DatePicker("", selection: $reminderDate, in: Date.now...)
+                    .labelsHidden()
+                    .datePickerStyle(.wheel)
+                Spacer()
+            case .routine:
+                Spacer()
+                DatePicker("", selection: $reminderDate, in: Date.now..., displayedComponents: .hourAndMinute)
+                    
+                    .labelsHidden()
+                    .datePickerStyle(.wheel)
+                Spacer()
+            }
         }
         .transition(.move(edge: .leading).combined(with: .opacity))
         .visible(isReminderOn)

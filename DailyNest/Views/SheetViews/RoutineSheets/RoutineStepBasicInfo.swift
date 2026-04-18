@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RoutineStep1BasicInfo: View {
+struct RoutineStepBasicInfo: View {
     @Bindable var task: Routine
 
     var body: some View {
@@ -69,7 +69,7 @@ struct RoutineStep1BasicInfo: View {
 
 #Preview {
     ScrollView {
-        RoutineStep1BasicInfo(task: Routine(
+        RoutineStepBasicInfo(task: Routine(
             title: "Kitap Oku",
             details: "Her gün okuma alışkanlığı",
             tintColor: .purple,

@@ -82,12 +82,14 @@ final class RoutineGoal {
     var goalDate: Date // hedeflenen zaman için
     var periodValue: Int // kaç periyot olacağı (günde 2 kez, haftada 4 kez...)
     var periodUnit: RoutinePeriodUnit // Adet birimi
+    var startDate: Date
     
     init(
         targetCount: Int = 1,
         routineDays: [WeekDay] = [.monday, .tuesday, .wednesday, .thursday, .friday],
         scheduleType: RoutineScheduleType = .daily,
-        goalDate: Date = .now,
+        goalDate: Date = Calendar.current.date(byAdding: .day, value: 1, to: .now) ?? .now,
+        startDate: Date = .now,
         periodValue: Int = 1,
         periodUnit: RoutinePeriodUnit = .day
     ) {
@@ -97,5 +99,6 @@ final class RoutineGoal {
         self.goalDate = goalDate
         self.periodValue = periodValue
         self.periodUnit = periodUnit
+        self.startDate = startDate
     }
 }

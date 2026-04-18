@@ -65,25 +65,20 @@ struct RoutineSheetView: View {
 
                 TabView(selection: $currentStep) {
                     ScrollView {
-                        RoutineStep1BasicInfo(task: task)
+                        RoutineStepBasicInfo(task: task)
                             .padding(.horizontal, 25)
                             .padding(.top, 5)
                     }
                     .tag(0)
 
                     ScrollView {
-                        RoutineStep2Schedule(task: task)
+                        RoutineStepSchedule(task: task)
                             .padding(.horizontal, 25)
                             .padding(.top, 5)
                     }
                     .tag(1)
 
-                    ScrollView {
-                        RoutineStep3Details(task: task)
-                            .padding(.horizontal, 25)
-                            .padding(.top, 5)
-                    }
-                    .tag(2)
+
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
             }
@@ -93,7 +88,7 @@ struct RoutineSheetView: View {
 
     private var stepIndicator: some View {
         HStack(spacing: 6) {
-            ForEach(0..<3) { i in
+            ForEach(0..<2) { i in
                 Capsule()
                     .fill(i <= currentStep ? AppColors.routine : AppColors.secondaryText.opacity(0.25))
                     .frame(width: i == currentStep ? 28 : 8, height: 8)

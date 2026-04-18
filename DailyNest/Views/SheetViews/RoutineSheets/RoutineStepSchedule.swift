@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct RoutineStep2Schedule: View {
+struct RoutineStepSchedule: View {
     @Bindable var task: Routine
+    @Environment(MatrixSettings.self) private var matrixSettings
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -21,7 +22,7 @@ struct RoutineStep2Schedule: View {
             if task.routineGoal.scheduleType == .timed {
                 frequencySection
                 SectionDivider(deviderType: .regular)
-            } else {
+            } else if task.routineGoal.scheduleType == .weekly{
                 activeDaysSection
                 SectionDivider(deviderType: .regular)
             }
@@ -31,6 +32,14 @@ struct RoutineStep2Schedule: View {
             SectionDivider(deviderType: .regular)
 
             goalDateSection
+
+            SectionDivider(deviderType: .regular)
+
+            PrioritySection(selected: $task.priority)
+
+            SectionDivider(deviderType: .regular)
+
+            ReminderSection(type: .routine,isReminderOn: $task.isReminderOn, reminderDate: $task.reminderTime)
 
             SectionDivider(deviderType: .bottom)
         }
@@ -123,10 +132,10 @@ struct RoutineStep2Schedule: View {
 
     private var dailyGoalSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Daily Goal")
-                .font(.headline.bold())
-                .foregroundColor(AppColors.primaryText)
-
+            Text(task.routineGoal.scheduleType == .timed ? "Session Goal" : "Daily Goal")
+                    .font(.headline.bold())
+                    .foregroundColor(AppColors.primaryText)
+            
             Stepper(value: $task.routineGoal.targetCount, in: 1...10) {
                 HStack(spacing: 6) {
                     Text("Complete")
@@ -134,7 +143,7 @@ struct RoutineStep2Schedule: View {
                     Text("\(task.routineGoal.targetCount)x")
                         .font(.headline.bold())
                         .foregroundColor(AppColors.routine)
-                    Text("per day")
+                    Text(task.routineGoal.scheduleType == .timed ? "each session" :"per day")
                         .foregroundColor(AppColors.secondaryText)
                 }
             }
@@ -143,40 +152,57 @@ struct RoutineStep2Schedule: View {
     }
 
     private var goalDateSection: some View {
-        HStack( spacing: 16) {
-            Text("Goal End Date:")
-                .font(.headline.bold())
-                .foregroundColor(AppColors.primaryText)
-
-            DatePicker(
-                "",
-                selection: $task.routineGoal.goalDate,
-                in: Date.now...,
-                displayedComponents: .date
-            )
-            .labelsHidden()
-            .datePickerStyle(.compact)
-            .tint(AppColors.routine)
+        VStack(alignment: .leading,spacing: 16){
+            HStack( spacing: 0) {
+                Text("Goal Started Date:")
+                    .font(.headline.bold())
+                    .foregroundColor(AppColors.primaryText)
+                
+                Spacer()
+                
+                DatePicker(
+                    "",
+                    selection: $task.routineGoal.startDate,
+                    in: Date.now...,
+                    displayedComponents: .date
+                )
+                .labelsHidden()
+                .datePickerStyle(.compact)
+                .tint(AppColors.routine)
+                .padding(.trailing,12)
+            }
+            
+            HStack( spacing: 0) {
+                Text("Goal End Date:")
+                    .font(.headline.bold())
+                    .foregroundColor(AppColors.primaryText)
+                
+                Spacer()
+                DatePicker(
+                    "",
+                    selection: $task.routineGoal.goalDate,
+                    in: tomorrow...,
+                    displayedComponents: .date
+                )
+                .labelsHidden()
+                .datePickerStyle(.compact)
+                .tint(AppColors.routine)
+                .padding(.trailing,12)
+            }
+            
         }
     }
     
-    private var sessionUnit: String{
-        switch task.routineGoal.periodUnit {
-        case .day:
-            return "day"
-        
-        case .week:
-            return "week"
-            
-        case.month:
-            return "month"
-        }
+    ///Taşınacak... ( View dump kalmalı !!)
+    private var tomorrow: Date {
+        Calendar.current.date(byAdding: .day, value: 1, to: .now) ?? .now
     }
+    
 }
 
 #Preview {
     ScrollView {
-        RoutineStep2Schedule(task: Routine(
+        RoutineStepSchedule(task: Routine(
             title: "Kitap Oku",
             details: "",
             tintColor: .blue,
@@ -195,4 +221,5 @@ struct RoutineStep2Schedule: View {
         .padding(.horizontal, 25)
     }
     .environment(MockData.previewRoutineViewModel)
+    .environment(MatrixSettings())
 }

@@ -104,7 +104,7 @@ struct DailySheetView: View {
 
                     SectionDivider(deviderType: .regular)
 
-                    ReminderSection(isReminderOn: $task.isReminderOn, reminderDate: $task.reminderDate)
+                    ReminderSection(type: .task,isReminderOn: $task.isReminderOn, reminderDate: $task.reminderDate)
                     
                     SectionDivider(deviderType: .bottom)
                 }
