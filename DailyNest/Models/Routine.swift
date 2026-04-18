@@ -13,7 +13,6 @@ final class Routine {
     var id: UUID = UUID()
     
     var icon: String = ""
-    var motivation: String = ""
     
     var title: String
     var details: String // Description
