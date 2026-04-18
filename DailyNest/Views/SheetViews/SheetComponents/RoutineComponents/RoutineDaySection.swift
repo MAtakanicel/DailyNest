@@ -39,25 +39,3 @@ struct RoutineDaySection: View {
         
     }
 }
-/*
-#Preview {
-    NavigationStack {
-        RoutineSheetView(routine: Routine(
-            title: "Deneme",
-            details: "Deniyoruz",
-            tintColor: .blue,
-            priority: .high,
-            isReminderOn: false,
-            reminderTime: .now,
-            routineGoal: RoutineGoal(
-                targetCount: 3, routineDays: [.friday,.sunday,.thursday], scheduleType: .daily, goalDate:, periodValue: <#T##Int#>, periodUnit: <#T##RoutinePeriodUnit#>
-            )
-        ),mode: .create
-        )
-        .environment(RoutineViewModel())
-        .environment(SheetRouter())
-        .environment(CalendarHelper())
-        .environment(MatrixSettings())
-    }
-}
-*/

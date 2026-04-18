@@ -12,10 +12,8 @@ import SwiftData
 final class Routine {
     var id: UUID = UUID()
     
-    var icon: String = ""
-    
     var title: String
-    var details: String // Description
+    var details: String // Motivasyon
     
     @Relationship(deleteRule: .cascade)
     var routineGoal: RoutineGoal
