@@ -54,7 +54,7 @@ struct MainPage: View {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         DailysSections(
-                            header: "Geçmiş Görevler",
+                            header: "Overdue",
                             items: dailyViewModel.overdueDailys(dailyTasks),
                             isExpanded: $settings.pastSectionIsExpanded
                         )
@@ -141,28 +141,28 @@ struct MainPage: View {
     private var topMenu: some View {
         Menu {
             menuVisibilityButton(
-                appSettings.pastSectionIsHidden ? "Show past task section" : "Hide Past Task Section",
+                appSettings.pastSectionIsHidden ? "Show Overdue Tasks" : "Hide Overdue Tasks",
                 image: appSettings.pastSectionIsHidden ? "eye" : "eye.slash"
             ) {
                 withAnimation { appSettings.pastSectionIsHidden.toggle() }
             }
 
             menuVisibilityButton(
-                appSettings.todaySectionIsHidden ? "Show Todays Section" : "Hide todays Section",
+                appSettings.todaySectionIsHidden ? "Show Today's Tasks" : "Hide Today's Tasks",
                 image: appSettings.todaySectionIsHidden ? "eye" : "eye.slash"
             ) {
                 withAnimation { appSettings.todaySectionIsHidden.toggle() }
             }
 
             menuVisibilityButton(
-                appSettings.routineSectionIsHidden ? "show Routine Section" : "Hide Routine Section",
+                appSettings.routineSectionIsHidden ? "Show Routines" : "Hide Routines",
                 image: appSettings.routineSectionIsHidden ? "eye" : "eye.slash"
             ) {
                 withAnimation { appSettings.routineSectionIsHidden.toggle() }
             }
 
             menuVisibilityButton(
-                appSettings.completedSectionIsHidden ? "Show completed section" : "Hide Completed Section",
+                appSettings.completedSectionIsHidden ? "Show Completed" : "Hide Completed",
                 image: appSettings.completedSectionIsHidden ? "eye" : "eye.slash"
             ) {
                 withAnimation { appSettings.completedSectionIsHidden.toggle() }
@@ -198,7 +198,7 @@ struct MainPage: View {
                     .font(.subheadline)
             }
 
-            TextField("Adınız", text: $userName)
+            TextField("Your name", text: $userName)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
                 .background(

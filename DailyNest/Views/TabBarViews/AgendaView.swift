@@ -96,7 +96,7 @@ struct AgendaView: View {
                 .font(.title2).bold()
             if !isExpanded {
                 if selectedDate == Calendar.current.startOfDay(for: Date()) {
-                    Text("Bugün")
+                    Text("Today")
                         .font(.caption)
                         .foregroundColor(AppColors.secondaryText)
                 }
@@ -125,10 +125,10 @@ struct AgendaView: View {
             Image(systemName: "exclamationmark.triangle")
                 .font(.largeTitle)
                 .foregroundColor(.gray)
-            Text("Bugün hiç görev yok.")
+            Text("No tasks today.")
                 .font(.title)
                 .foregroundColor(.gray)
-            Text("Yeni bir görev eklemek için +'yi tapabilirsin.")
+            Text("Tap + to add a new task.")
         }
     }
 

@@ -9,13 +9,15 @@ import SwiftUI
 
 struct DescriptionField: View {
     @Binding var details: String
+    var placeholder: String = "Notes (optional)"
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             RoundedRectangle(cornerRadius: 16)
                 .fill(.gray.opacity(0.1))
                 .stroke(AppColors.overlayStroke.opacity(0.15), lineWidth: 0.5)
 
-            Text("Description (optional)")
+            Text(placeholder)
                 .foregroundColor(AppColors.secondaryText)
                 .font(.caption)
                 .padding(8)

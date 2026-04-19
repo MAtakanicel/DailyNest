@@ -92,7 +92,7 @@ struct DailySheetView: View {
 
                     SectionDivider(deviderType: .regular)
 
-                    DescriptionField(details: $task.details)
+                    DescriptionField(details: $task.details, placeholder: "Description (optional)")
 
                     SectionDivider(deviderType: .regular)
 

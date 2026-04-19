@@ -49,7 +49,7 @@ struct RoutinesView: View {
                 .cornerRadius(12)
                 .padding(.horizontal, 20)
 
-                Picker("Filtre", selection: $selectFilter) {
+                Picker("Filter", selection: $selectFilter) {
                     ForEach(TaskFilter.allCases, id: \.self) { filter in
                         Text(filter.rawValue)
                             .tag(filter)
@@ -93,7 +93,7 @@ struct RoutinesView: View {
                 }
             }
         }
-        .navigationTitle("MyRoutines")
+        .navigationTitle("My Routines")
         .navigationBarTitleDisplayMode(.inline)
     }
 
