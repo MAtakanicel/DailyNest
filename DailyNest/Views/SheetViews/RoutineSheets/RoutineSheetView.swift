@@ -116,7 +116,7 @@ struct RoutineSheetView: View {
                         .font(.title3.italic())
                         .foregroundColor(AppColors.primaryText)
                         .lineLimit(1)
-                    Text("Editing · Step \(currentStep + 1)/3")
+                    Text("Editing · Step \(currentStep + 1)/2")
                         .font(.caption)
                         .foregroundColor(AppColors.secondaryText)
                 }

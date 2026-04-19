@@ -12,6 +12,7 @@ struct DailyDetailView: View {
 
     @Environment(CalendarHelper.self) private var calendarHelper
     @Environment(MatrixSettings.self) private var matrixSettings
+    @Environment(DailyViewModel.self) private var dailyViewModel
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             SectionDivider(deviderType: .top)
@@ -60,9 +61,10 @@ struct DailyDetailView: View {
                 )
             }
 
-            SectionDivider(deviderType: .regular)
+         
 
             HStack(spacing: 0) {
+                SectionDivider(deviderType: .regular)
                 Text("Reminder:")
                     .foregroundColor(AppColors.primaryText)
                     .font(.headline.bold())
@@ -82,7 +84,33 @@ struct DailyDetailView: View {
             .padding(.bottom, 10)
 
             SectionDivider(deviderType: .bottom)
+            
+            doneButton
         }
+    }
+    
+    private var doneButton: some View {
+        HStack{
+            Spacer()
+            
+            Button{ dailyViewModel.toggleDailyCompletion(task) } label: {
+                Text(task.isCompleted ? "Undo" :"Complete")
+                    .font(.headline.bold())
+                    .foregroundStyle(AppColors.primaryText)
+                    
+            }
+            .padding(12)
+            .padding(.horizontal,4)
+            .background(
+                Capsule()
+                    .fill(task.isCompleted ? AppColors.checkmarkRed : AppColors.checkmarkGreen)
+                    .stroke(AppColors.overlayStroke.opacity(0.15), lineWidth: 0.25)
+            )
+            .padding(8)
+            
+            Spacer()
+        }
+
     }
 
 }

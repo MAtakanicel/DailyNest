@@ -22,6 +22,10 @@ struct RoutineDetailSheet: View {
 
             SectionDivider(deviderType: .regular)
 
+            todayProgressSection
+
+            SectionDivider(deviderType: .regular)
+
             if !task.details.isEmpty {
                 descriptionSection
                 SectionDivider(deviderType: .regular)
@@ -67,6 +71,60 @@ struct RoutineDetailSheet: View {
         .padding(.vertical, 4)
     }
 
+    private var todayProgressSection: some View {
+        let count = routineViewModel.todaysRoutineCompletionCount(task)
+        let target = task.routineGoal.targetCount
+        let isCompleted = task.isCompletedToday
+
+        return VStack(alignment: .leading, spacing: 12) {
+            Text("Today's Progress")
+                .font(.headline.bold())
+                .foregroundColor(AppColors.primaryText)
+
+            HStack(spacing: 0) {
+                // Tamamlanma adımlarını temsil eden daireler
+                HStack(spacing: 6) {
+                    ForEach(0..<target, id: \.self) { i in
+                        Circle()
+                            .fill(i < count ? task.tintColor.color : .gray.opacity(0.18))
+                            .frame(width: 14, height: 14)
+                            .animation(
+                                .spring(response: 0.3, dampingFraction: 0.6).delay(Double(i) * 0.04),
+                                value: count
+                            )
+                    }
+                }
+
+                Text("  \(count) / \(target)")
+                    .font(.subheadline.bold())
+                    .foregroundColor(isCompleted ? task.tintColor.color : AppColors.secondaryText)
+                    .contentTransition(.numericText())
+                    .animation(.spring(response: 0.3, dampingFraction: 0.7), value: count)
+
+                Spacer()
+
+                Button {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                        isCompleted
+                            ? routineViewModel.routineCompetionResetToday(task)
+                            : routineViewModel.toggleRoutineCompletion(task)
+                    }
+                } label: {
+                    Text(isCompleted ? "Undo" : "Complete")
+                        .font(.subheadline.bold())
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 8)
+                        .background(
+                            Capsule()
+                                .fill(isCompleted ? AppColors.checkmarkRed.opacity(0.85) : task.tintColor.color)
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
     private var descriptionSection: some View {
         Text(task.details)
             .foregroundColor(AppColors.primaryText)
@@ -90,7 +148,7 @@ struct RoutineDetailSheet: View {
                     .padding(.vertical, 5)
                     .background(Capsule().fill(AppColors.routine))
 
-                Text("· \(task.routineGoal.targetCount)× per day")
+                Text("· \(task.routineGoal.targetCount)× " + (task.routineGoal.scheduleType == .timed ? "per session" : "per day"))
                     .font(.subheadline)
                     .foregroundColor(AppColors.secondaryText)
             }
@@ -186,6 +244,7 @@ struct RoutineDetailSheet: View {
             }
         }
     }
+    
 }
 
 #Preview {
