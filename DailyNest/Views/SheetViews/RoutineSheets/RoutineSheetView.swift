@@ -24,7 +24,7 @@ struct RoutineSheetView: View {
         _task = State(initialValue: routine)
     }
 
-    private var isLastStep: Bool { currentStep == 2 }
+    private var isLastStep: Bool { currentStep == 1 }
     private var step1Valid: Bool { routineViewModel.newRoutineValid(title: task.title) }
 
     var body: some View {
@@ -102,11 +102,11 @@ struct RoutineSheetView: View {
         ToolbarItem(placement: .principal) {
             switch mode {
             case .create:
-                HStack(spacing: 4) {
+                VStack(spacing: 4) {
                     Text("New Routine")
                         .font(.headline.bold())
                         .foregroundColor(AppColors.primaryText)
-                    Text("· Step \(currentStep + 1)/3")
+                    Text("· Step \(currentStep + 1)/2")
                         .font(.caption)
                         .foregroundColor(AppColors.secondaryText)
                 }
@@ -128,9 +128,15 @@ struct RoutineSheetView: View {
         ToolbarItem(placement: .topBarLeading) {
             switch mode {
             case .create:
-                Button("Cancel") { dismiss() }
-                    .foregroundColor(.red.opacity(0.9))
-                    .font(.title3)
+                if isLastStep{
+                    Button("Back") { withAnimation { currentStep -= 1 }}
+                        .foregroundColor(.red.opacity(0.9))
+                        .font(.title3)
+                }else {
+                    Button("Cancel") { dismiss() }
+                        .foregroundColor(.red.opacity(0.9))
+                        .font(.title3)
+                }
             case .detail:
                 Button {
                     isAlertShown = true

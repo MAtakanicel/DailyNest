@@ -26,40 +26,42 @@ class CalendarHelper {
 
     /// Belirli bir ayın tüm Haftaları
     func weeksInMonth(for date: Date) -> [[Date]] {
-        guard let startOfMonth = calendar.dateInterval(of: .month, for: date)?.start else { return [] }
-        guard let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: startOfMonth)?.start else { return [] }
+        guard let startOfMonth = calendar.dateInterval(of: .month, for: date)?.start,
+              let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: startOfMonth)?.start,
+              let monthEnd = calendar.dateInterval(of: .month, for: date)?.end else { return [] }
 
         var weeks: [[Date]] = []
         var current = startOfWeek
 
-        while current < calendar.dateInterval(of: .month, for: date)!.end {
+        while current < monthEnd {
             let week = (0 ..< 7).compactMap {
                 calendar.date(byAdding: .day, value: $0, to: current)
             }
             weeks.append(week)
-            current = calendar.date(byAdding: .weekOfYear, value: 1, to: current)!
+            guard let next = calendar.date(byAdding: .weekOfYear, value: 1, to: current) else { break }
+            current = next
         }
         return weeks
     }
 
     func nextMounth(after date: Date) -> Date {
         var components = calendar.dateComponents([.year, .month], from: date)
-        components.month! += 1
-        return calendar.date(from: components)!
+        components.month = (components.month ?? 0) + 1
+        return calendar.date(from: components) ?? date
     }
 
     func previousMounth(before date: Date) -> Date {
         var components = calendar.dateComponents([.year, .month], from: date)
-        components.month! -= 1
-        return calendar.date(from: components)!
+        components.month = (components.month ?? 0) - 1
+        return calendar.date(from: components) ?? date
     }
 
     func nextWeek(after date: Date) -> Date {
-        calendar.date(byAdding: .weekOfYear, value: 1, to: date)!
+        calendar.date(byAdding: .weekOfYear, value: 1, to: date) ?? date
     }
 
     func previousWeek(before date: Date) -> Date {
-        calendar.date(byAdding: .weekOfYear, value: -1, to: date)!
+        calendar.date(byAdding: .weekOfYear, value: -1, to: date) ?? date
     }
 
     func monthTitle(for date: Date) -> String {
