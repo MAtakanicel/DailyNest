@@ -175,7 +175,7 @@ struct DailyRow: View {
 
 #Preview {
     TabBar(selectedTab: .agendaView)
-        .environment(HomeViewModel())
+        .environment(ProgressCardViewModel())
         .environment(MockData.previewDailyViewModel)
         .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())

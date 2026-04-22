@@ -19,38 +19,23 @@ enum FloatingTab: String, CaseIterable {
 struct TabBar: View {
     @Environment(\.modelContext) private var context
     @Environment(SheetRouter.self) private var sheetRouter
+    @Environment(AppSettings.self) private var appSettings
 
     @Query private var dailyTasks: [DailyTask]
     @Query private var routineTasks: [Routine]
 
     @State var selectedTab: FloatingTab = .mainView
+    @State private var showNamePopUp: Bool = false
 
     @Namespace private var tabBarAnimation
 
     var body: some View {
         @Bindable var router = sheetRouter
+        @Bindable var bindableSettings = appSettings
 
         ZStack(alignment: .bottom) {
             // İçerik Alanı
-            Group {
-                switch selectedTab {
-                case .mainView: NavigationStack {
-                        MainPage()
-                    }
-                case .routinesView: NavigationStack {
-                        RoutinesView()
-                    }
-                case .agendaView: NavigationStack {
-                        AgendaView()
-                    }
-                case .settingsView: NavigationStack {
-                        SettingsView()
-                    }
-                case .priorityMatrixView: NavigationStack {
-                        PriorityMatrixView()
-                    }
-                }
-            }
+            mainContent
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .safeAreaInset(edge: .bottom) {
                 Color.clear.frame(height: 80) // TabBar yüksekliği kadar boşluk
@@ -63,24 +48,18 @@ struct TabBar: View {
                 case .newRoutine: RoutineSheetView(routine: Routine(routineGoal: RoutineGoal()), mode: .create)
                 }
             }
-            // Floating Tab Bar
-            HStack(spacing: 0) {
-                tabButton(.mainView)
-                tabButton(.routinesView)
-                tabButton(.agendaView)
-                tabButton(.priorityMatrixView)
-                tabButton(.settingsView)
+
+            tabBar
+
+            if showNamePopUp {
+                welcomePopUp(userName: $bindableSettings.userName)
+                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
             }
-            .padding(.top, 10)
-            .padding(.bottom, 10)
-            .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-            .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 6)
-            .padding(.horizontal, 30)
         }
         .ignoresSafeArea(.keyboard)
         .onAppear {
             checkAndLoadMockData()
+            showNamePopUp = appSettings.userName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         }
     }
 
@@ -94,7 +73,94 @@ struct TabBar: View {
         #endif
     }
 
-    /// Tek tek tab butonu
+    private var mainContent: some View{
+        Group {
+            switch selectedTab {
+            case .mainView: NavigationStack {
+                    MainPage()
+                }
+            case .routinesView: NavigationStack {
+                    RoutinesView()
+                }
+            case .agendaView: NavigationStack {
+                    AgendaView()
+                }
+            case .settingsView: NavigationStack {
+                    SettingsView()
+                }
+            case .priorityMatrixView: NavigationStack {
+                    PriorityMatrixView()
+                }
+            }
+        }
+    }
+    
+    private var tabBar: some View{
+        HStack(spacing: 0) {
+            tabButton(.mainView)
+            tabButton(.routinesView)
+            tabButton(.agendaView)
+            tabButton(.priorityMatrixView)
+            tabButton(.settingsView)
+        }
+        .padding(.top, 10)
+        .padding(.bottom, 10)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 6)
+        .padding(.horizontal, 30)
+    }
+    
+    // MARK: - Welcome Popup
+
+    private func welcomePopUp(userName: Binding<String>) -> some View {
+        let trimmed = userName.wrappedValue.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        return ZStack {
+            Color.clear
+                .background(.ultraThinMaterial)
+                .ignoresSafeArea()
+
+            VStack(spacing: 16) {
+                VStack(spacing: 4) {
+                    Text("Welcome to DailyNest")
+                        .foregroundColor(AppColors.primaryText)
+                        .font(.title2.bold())
+
+                    Text("What should we call you?")
+                        .foregroundStyle(AppColors.secondaryText)
+                        .font(.subheadline)
+                }
+
+                TextField("Your name", text: userName)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .background(RoundedRectangle(cornerRadius: 16).fill(Color(.systemGray6)))
+                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color(.systemGray4), lineWidth: 0.75))
+                    .padding(.horizontal, 20)
+
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        showNamePopUp = false
+                    }
+                } label: {
+                    Text("Continue")
+                        .foregroundStyle(trimmed.isEmpty ? .gray : AppColors.appleSignInText)
+                        .font(.title3)
+                        .padding(12)
+                }
+                .background(trimmed.isEmpty ? Color.gray.opacity(0.2) : AppColors.appleSignInBackground.opacity(0.85))
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .disabled(trimmed.isEmpty)
+            }
+            .padding(.vertical)
+            .background(RoundedRectangle(cornerRadius: 24).fill(Color(.systemBackground).opacity(0.75)))
+            .overlay(RoundedRectangle(cornerRadius: 24).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+            .padding(25)
+        }
+    }
+
+    /// Tab Bar Button component
     private func tabButton(_ tab: FloatingTab) -> some View {
         Button {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
@@ -107,12 +173,12 @@ struct TabBar: View {
 
                 if selectedTab == tab {
                     Circle()
-                        .fill(AppColors.button)
+                        .fill(AppColors.daily)
                         .frame(width: 5, height: 5)
                         .matchedGeometryEffect(id: "TabDot", in: tabBarAnimation) // Animasyon için namespace (Şimdilik basit)
                 }
             }
-            .foregroundColor(selectedTab == tab ? AppColors.button : .gray.opacity(0.8))
+            .foregroundColor(selectedTab == tab ? AppColors.daily : .gray.opacity(0.8))
             .frame(maxWidth: .infinity)
         }
     }
@@ -121,11 +187,12 @@ struct TabBar: View {
 #Preview {
     TabBar()
         .modelContainer(MockData.previewContainer)
-        .environment(HomeViewModel())
+        .environment(ProgressCardViewModel())
         .environment(MockData.previewDailyViewModel)
         .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())
         .environment(CalendarHelper())
-        .environment(AppSettings())
+        .environment(MainPageSettings())
         .environment(MatrixSettings())
+        .environment(AppSettings())
 }

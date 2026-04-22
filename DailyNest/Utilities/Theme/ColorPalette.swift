@@ -13,8 +13,8 @@ enum AppColors {
     static let warning: Color = .dynamic(lightHex: "#FF9500", darkHex: "#FF9F0A")
     static let icon: Color = .dynamic(lightHex: "#8E8E93", darkHex: "#98989E")
 
-    static let button: Color = .dynamic(lightHex: "#F59E0B", darkHex: "#FBB024")
-    static let buttonTapped: Color = .dynamic(lightHex: "#D97706", darkHex: "#E8920A")
+    static let daily: Color = .dynamic(lightHex: "#F59E0B", darkHex: "#FBB024")
+    static let dailyTapped: Color = .dynamic(lightHex: "#D97706", darkHex: "#E8920A")
 
     static let routine: Color = .dynamic(lightHex: "#10B981", darkHex: "#34D399")
     static let routineTapped: Color = .dynamic(lightHex: "#059669", darkHex: "#10B981")

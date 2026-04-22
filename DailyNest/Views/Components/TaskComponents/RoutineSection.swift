@@ -60,10 +60,10 @@ struct RoutineSection: View {
 #Preview {
     TabBar(selectedTab: .mainView)
         .modelContainer(MockData.previewContainer)
-        .environment(HomeViewModel())
+        .environment(ProgressCardViewModel())
         .environment(MockData.previewDailyViewModel)
         .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())
         .environment(CalendarHelper())
-        .environment(AppSettings())
+        .environment(MainPageSettings())
 }

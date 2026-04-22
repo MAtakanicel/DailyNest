@@ -29,7 +29,7 @@ struct NewTaskButton: View {
                         switch mode {
                         case .daily:
                             Circle()
-                                .fill(AppColors.button)
+                                .fill(AppColors.daily)
                                 .overlay(
                                     Circle()
                                         .stroke(AppColors.overlayStroke.opacity(0.1), lineWidth: 0.5)

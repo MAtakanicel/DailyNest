@@ -25,7 +25,7 @@ struct NavBarDoneButton: View {
             } label: {
                 Text("Create")
                     .font(.title3)
-                    .foregroundColor(isValid ? (isTask ? AppColors.button : AppColors.routine): .gray.opacity(0.35))
+                    .foregroundColor(isValid ? (isTask ? AppColors.daily : AppColors.routine): .gray.opacity(0.35))
             }
             .disabled(!isValid)
 
@@ -33,7 +33,7 @@ struct NavBarDoneButton: View {
             Button { mode = .edit } label: {
                 Text("Edit")
                     .font(.title3)
-                    .foregroundColor(AppColors.button)
+                    .foregroundColor(AppColors.daily)
             }
 
         case .edit:
@@ -45,7 +45,7 @@ struct NavBarDoneButton: View {
             } label: {
                 Text("Done")
                     .font(.title3)
-                    .foregroundColor(AppColors.button)
+                    .foregroundColor(AppColors.daily)
             }
         }
     }

@@ -29,7 +29,7 @@ struct ProgressCard: View {
                 Circle()
                     .stroke(lineWidth: 8)
                     .foregroundColor(.white)
-
+                
                 Circle()
                     .trim(from: 0, to: config.progress)
                     .stroke(
@@ -65,6 +65,4 @@ struct ProgressCard: View {
     }
 }
 
-#Preview {
-    ProgressCard()
-}
+

@@ -17,7 +17,6 @@ struct RoutinesView: View {
     @Query(sort: \Routine.createdAt, order: .reverse) private var routineTasks: [Routine]
 
     @Environment(RoutineViewModel.self) private var routineViewModel
-    @Environment(HomeViewModel.self) private var homeViewModel
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(CalendarHelper.self) private var calendarHelper
 
@@ -186,7 +185,7 @@ struct RoutinesView: View {
 #Preview {
     TabBar(selectedTab: .routinesView)
         .modelContainer(MockData.previewContainer)
-        .environment(HomeViewModel())
+        .environment(ProgressCardViewModel())
         .environment(MockData.previewDailyViewModel)
         .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())

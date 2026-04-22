@@ -162,7 +162,7 @@ struct RoutineSheetView: View {
                     mode = .edit
                 }
                 .font(.title3)
-                .foregroundColor(AppColors.button)
+                .foregroundColor(AppColors.daily)
 
             case .create:
                 if isLastStep {
@@ -189,7 +189,7 @@ struct RoutineSheetView: View {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { mode = .detail }
                     }
                     .font(.title3)
-                    .foregroundColor(AppColors.button)
+                    .foregroundColor(AppColors.daily)
                 } else {
                     Button("Next") {
                         withAnimation { currentStep += 1 }

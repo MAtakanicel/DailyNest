@@ -9,34 +9,24 @@ import SwiftData
 import SwiftUI
 
 struct MainPage: View {
-    @Environment(HomeViewModel.self) private var homeViewModel
+    @Environment(ProgressCardViewModel.self) private var progressCardViewModel
     @Environment(DailyViewModel.self) private var dailyViewModel
     @Environment(RoutineViewModel.self) private var routineViewModel
     @Environment(SheetRouter.self) private var sheetRouter
+    @Environment(MainPageSettings.self) private var mainPageSettings
+    @Environment(CalendarHelper.self) private var calendarHelper
     @Environment(AppSettings.self) private var appSettings
 
     @Query private var dailyTasks: [DailyTask]
     @Query(sort: \Routine.createdAt, order: .reverse) private var routineTasks: [Routine]
 
-    @State private var showNamePopUp: Bool
-    @AppStorage("userName") private var userName: String = ""
-
-    private var trimmeduserName: String {
-        userName.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
-    init() {
-        let savedName = UserDefaults.standard.string(forKey: "userName") ?? ""
-        _showNamePopUp = State(initialValue: savedName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-    }
-
     var body: some View {
-        @Bindable var settings = appSettings
+        @Bindable var settings = mainPageSettings
         ZStack {
             AppColors.background.ignoresSafeArea()
 
             mainContent
-           
+
             // New Task Button
             VStack {
                 Spacer()
@@ -47,32 +37,14 @@ struct MainPage: View {
                         sheetRouter.activeSheet = .newDaily
                     })
                     .padding(.trailing, 20)
-                    .padding(.bottom, 75) // tab bar yüksekliği kadar boşluk
+                    .padding(.bottom, 75)
                 }
-            }
-
-            if showNamePopUp {
-                Color.clear
-                    .background(.ultraThinMaterial)
-                    .ignoresSafeArea()
-
-                welcomePopUp
-                    .padding(.vertical)
-                    .background(
-                        RoundedRectangle(cornerRadius: 24)
-                            .fill(Color(.systemBackground).opacity(0.75))
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 24)
-                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                    )
-                    .padding(25)
             }
         }
     }
     @ViewBuilder
     private var mainContent: some View{
-        @Bindable var settings = appSettings
+        @Bindable var settings = mainPageSettings
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 0) {
                 greetings
@@ -83,7 +55,7 @@ struct MainPage: View {
             }
             .padding(.horizontal, 20)
 
-            ProgressCard(config: homeViewModel.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .allTasks))
+            ProgressCard(config: progressCardViewModel.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .allTasks))
                 .padding(.horizontal, 30)
                 .padding(.vertical, 10)
 
@@ -132,12 +104,12 @@ struct MainPage: View {
 
     private var greetings: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("\(homeViewModel.getDaytime())  \(userName) 👋")
+            Text("\(calendarHelper.getDaytime())  \(appSettings.userName) 👋")
                 .font(.title2.bold())
                 .foregroundColor(AppColors.primaryText)
                 .padding(.top, 15)
 
-            Text(homeViewModel.formattedDate())
+            Text(calendarHelper.formattedDate())
                 .font(.subheadline)
                 .padding(.bottom, 1)
                 .padding(.leading, 15)
@@ -147,31 +119,31 @@ struct MainPage: View {
     private var topMenu: some View {
         Menu {
             menuVisibilityButton(
-                appSettings.pastSectionIsHidden ? "Show Overdue Tasks" : "Hide Overdue Tasks",
-                image: appSettings.pastSectionIsHidden ? "eye" : "eye.slash"
+                mainPageSettings.pastSectionIsHidden ? "Show Overdue Tasks" : "Hide Overdue Tasks",
+                image: mainPageSettings.pastSectionIsHidden ? "eye" : "eye.slash"
             ) {
-                withAnimation { appSettings.pastSectionIsHidden.toggle() }
+                withAnimation { mainPageSettings.pastSectionIsHidden.toggle() }
             }
 
             menuVisibilityButton(
-                appSettings.todaySectionIsHidden ? "Show Today's Tasks" : "Hide Today's Tasks",
-                image: appSettings.todaySectionIsHidden ? "eye" : "eye.slash"
+                mainPageSettings.todaySectionIsHidden ? "Show Today's Tasks" : "Hide Today's Tasks",
+                image: mainPageSettings.todaySectionIsHidden ? "eye" : "eye.slash"
             ) {
-                withAnimation { appSettings.todaySectionIsHidden.toggle() }
+                withAnimation { mainPageSettings.todaySectionIsHidden.toggle() }
             }
 
             menuVisibilityButton(
-                appSettings.routineSectionIsHidden ? "Show Routines" : "Hide Routines",
-                image: appSettings.routineSectionIsHidden ? "eye" : "eye.slash"
+                mainPageSettings.routineSectionIsHidden ? "Show Routines" : "Hide Routines",
+                image: mainPageSettings.routineSectionIsHidden ? "eye" : "eye.slash"
             ) {
-                withAnimation { appSettings.routineSectionIsHidden.toggle() }
+                withAnimation { mainPageSettings.routineSectionIsHidden.toggle() }
             }
 
             menuVisibilityButton(
-                appSettings.completedSectionIsHidden ? "Show Completed" : "Hide Completed",
-                image: appSettings.completedSectionIsHidden ? "eye" : "eye.slash"
+                mainPageSettings.completedSectionIsHidden ? "Show Completed" : "Hide Completed",
+                image: mainPageSettings.completedSectionIsHidden ? "eye" : "eye.slash"
             ) {
-                withAnimation { appSettings.completedSectionIsHidden.toggle() }
+                withAnimation { mainPageSettings.completedSectionIsHidden.toggle() }
             }
 
         } label: {
@@ -191,55 +163,17 @@ struct MainPage: View {
         }
     }
 
-    private var welcomePopUp: some View {
-        VStack(spacing: 16) {
-            VStack(spacing: 4) {
-                Text("Welcome to DailyNest")
-                    .foregroundColor(AppColors.primaryText)
-                    .font(.title2)
-                    .bold()
-
-                Text("What should we call you?")
-                    .foregroundStyle(AppColors.secondaryText)
-                    .font(.subheadline)
-            }
-
-            TextField("Your name", text: $userName)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(Color(.systemGray6))
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color(.systemGray4), lineWidth: 0.75)
-                )
-                .padding(.horizontal, 20)
-
-            Button(action: {
-                showNamePopUp.toggle()
-            }) {
-                Text("Continue")
-                    .foregroundStyle(trimmeduserName.isEmpty ? .gray : AppColors.appleSignInText)
-                    .font(.title3)
-                    .padding(12)
-            }
-            .background(trimmeduserName.isEmpty ? Color.gray.opacity(0.2) : AppColors.appleSignInBackground.opacity(0.85))
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-            .disabled(trimmeduserName.isEmpty)
-        }
-    }
 }
 
 #Preview {
     TabBar(selectedTab: .mainView)
         .modelContainer(MockData.previewContainer)
-        .environment(HomeViewModel())
+        .environment(ProgressCardViewModel())
         .environment(MockData.previewDailyViewModel)
         .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())
         .environment(CalendarHelper())
-        .environment(AppSettings())
+        .environment(MainPageSettings())
         .environment(MatrixSettings())
+        .environment(AppSettings())
 }

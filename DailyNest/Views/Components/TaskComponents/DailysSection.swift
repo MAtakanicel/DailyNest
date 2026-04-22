@@ -59,10 +59,10 @@ struct DailysSections: View {
 
 #Preview {
     TabBar(selectedTab: .mainView)
-        .environment(HomeViewModel())
+        .environment(ProgressCardViewModel())
         .environment(MockData.previewDailyViewModel)
         .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())
         .environment(CalendarHelper())
-        .environment(AppSettings())
+        .environment(MainPageSettings())
 }

@@ -58,7 +58,7 @@ struct DatePickerSheet: View {
                 }
                 .background(
                     Capsule()
-                        .fill(AppColors.button)
+                        .fill(AppColors.daily)
                 )
                 .padding(.top, 15)
             }

@@ -159,7 +159,7 @@ struct AgendaView: View {
 #Preview {
     TabBar(selectedTab: .agendaView)
         .modelContainer(MockData.previewContainer)
-        .environment(HomeViewModel())
+        .environment(ProgressCardViewModel())
         .environment(MockData.previewDailyViewModel)
         .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())

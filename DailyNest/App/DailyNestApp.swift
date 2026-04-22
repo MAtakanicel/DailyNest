@@ -34,7 +34,7 @@ struct DailyNestApp: App {
             let routineRepository = RoutineRepository(context: container.mainContext)
             self.routineRepository = routineRepository
             
-            _homeViewModel = State(initialValue: HomeViewModel())
+            _progressCardViewModel = State(initialValue: ProgressCardViewModel())
             _dailyViewModel = State(initialValue: DailyViewModel(repository: dailyRepository))
             _routineViewModel = State(initialValue: RoutineViewModel(repository: routineRepository))
             
@@ -45,25 +45,27 @@ struct DailyNestApp: App {
     }
 
     
-    @State private var homeViewModel : HomeViewModel
+    @State private var progressCardViewModel : ProgressCardViewModel
     @State private var dailyViewModel : DailyViewModel
     @State private var routineViewModel : RoutineViewModel
     @State private var sheetRouter = SheetRouter()
     @State private var calendarHelper = CalendarHelper()
-    @State private var appSettings = AppSettings()
+    @State private var mainPageSettings = MainPageSettings()
     @State private var matrixSettings: MatrixSettings = .init()
+    @State private var appSettings = AppSettings()
 
     var body: some Scene {
         WindowGroup {
             TabBar()
         }
         .modelContainer(container) // Veri tabanı DI
-        .environment(homeViewModel)
+        .environment(progressCardViewModel)
         .environment(dailyViewModel)
         .environment(routineViewModel)
         .environment(sheetRouter)
         .environment(calendarHelper)
-        .environment(appSettings)
+        .environment(mainPageSettings)
         .environment(matrixSettings)
+        .environment(appSettings)
     }
 }

@@ -93,4 +93,15 @@ class CalendarHelper {
         formatter.timeStyle = style
         return formatter.string(from: date)
     }
+
+    func getDaytime() -> String {
+        let hour = calendar.component(.hour, from: Date())
+        if hour < 13 { return "Good Morning," }
+        if hour < 19 { return "Hello," }
+        return "Good Evening,"
+    }
+
+    func formattedDate() -> String {
+        Date().formatted(.dateTime.weekday(.wide).day().month(.wide))
+    }
 }

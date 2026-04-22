@@ -17,7 +17,7 @@ struct SettingsView: View {
 #Preview {
     TabBar(selectedTab: .settingsView)
         .modelContainer(MockData.previewContainer)
-        .environment(HomeViewModel())
+        .environment(ProgressCardViewModel())
         .environment(MockData.previewDailyViewModel)
         .environment(MockData.previewRoutineViewModel)
         .environment(SheetRouter())

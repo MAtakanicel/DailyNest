@@ -15,7 +15,7 @@ enum CellMode {
     private var accentColor: Color {
         switch self {
         case .routine: return AppColors.routine
-        case .regular: return AppColors.button
+        case .regular: return AppColors.daily
         }
     }
 

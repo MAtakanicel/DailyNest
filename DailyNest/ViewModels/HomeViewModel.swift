@@ -1,5 +1,5 @@
 //
-//  HomeViewModel.swift
+//  ProgressCardViewModel.swift
 //  DailyNest
 //
 //  Created by Atakan on 30.01.2026.
@@ -10,9 +10,9 @@ import Observation
 import SwiftUI
 
 @Observable @MainActor
-final class HomeViewModel {
+final class ProgressCardViewModel {
     func createProgressCard(dailyTasks: [DailyTask], routineTasks: [Routine], type: ProgressDataType) -> ProgressCardConfig {
-        let todayIndex = Calendar.current.component(.weekday, from: Date()) // Bu gününün indexi
+        let todayIndex = Calendar.current.component(.weekday, from: Date())
         let todayWeekDay = WeekDay(rawValue: todayIndex)
 
         let todaysTasks = dailyTasks.filter { Calendar.current.isDateInToday($0.date) }
@@ -56,22 +56,5 @@ final class HomeViewModel {
             progressText: "\(completedCount) / \(totalCount) completed.",
             progressColor: colors
         )
-    }
-
-    func getDaytime() -> String {
-        let calendar = Calendar(identifier: .gregorian)
-        let hour = calendar.component(.hour, from: Date())
-
-        if hour >= 0 && hour < 13 {
-            return "Good Morning,"
-        } else if hour >= 13 && hour < 19 {
-            return "Hello,"
-        } else {
-            return "Good Evening,"
-        }
-    }
-
-    func formattedDate() -> String {
-        return Date().formatted(.dateTime.weekday(.wide).day().month(.wide))
     }
 }
