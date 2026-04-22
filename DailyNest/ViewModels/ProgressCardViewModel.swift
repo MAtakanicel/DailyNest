@@ -31,19 +31,19 @@ final class ProgressCardViewModel {
             totalCount = todaysTasks.count + activeRoutineTasks.count
             completedCount = todaysTasks.filter { $0.isCompleted }.count + activeRoutineTasks.filter { $0.isCompletedToday }.count
             title = "Today's Progress"
-            colors = [AppColors.progressBlue, AppColors.progressBlue.opacity(0.6)]
+            colors = [AppColors.daily, AppColors.routine]
 
         case .dailyTasks:
             totalCount = todaysTasks.count
             completedCount = todaysTasks.filter { $0.isCompleted }.count
             title = "Today's Tasks"
-            colors = [AppColors.progressPurple, AppColors.progressPurple.opacity(0.6)]
+            colors = [AppColors.daily, AppColors.daily.opacity(0.55)]
 
         case .routineTasks:
             totalCount = activeRoutineTasks.count
             completedCount = activeRoutineTasks.filter { $0.isCompletedToday }.count
             title = "Today's Routines"
-            colors = [AppColors.progressGreen, AppColors.progressGreen.opacity(0.6)]
+            colors = [AppColors.routine, AppColors.routine.opacity(0.55)]
         }
 
         let progress = totalCount > 0 ? CGFloat(completedCount) / CGFloat(totalCount) : 0.0
