@@ -15,6 +15,7 @@ final class DailyViewModel {
 
     init(repository: DailyTaskRepository){ self.repository = repository }
     
+    // MARK: - SwiftData Funcs
     func newDailyValid(title: String) -> Bool {
         !title.trimmingCharacters(in: .whitespaces).isEmpty
     }
@@ -52,6 +53,21 @@ final class DailyViewModel {
         }
     }
 
+    // MARK: - Daily Filters
+    func quadrantTasks(
+        from tasks: [DailyTask],
+        priority: TaskPriority,
+        showCompleted: Bool,
+        timeFilter: MatrixTimeFilter,
+        date: Date,
+        startDate: Date,
+        endDate: Date
+    ) -> [DailyTask] {
+        let active = showCompleted ? tasks : activeDailys(tasks)
+        let timeFiltered = self.timeFilter(active, filter: timeFilter, date: date, startDate: startDate, endDate: endDate)
+        return priorityFilter(timeFiltered, priority: priority)
+    }
+    
     func toggleDailyCompletion(_ task: DailyTask) {
         task.isCompleted.toggle()
         task.completedAt = task.isCompleted ? Date() : nil

@@ -34,51 +34,12 @@ struct RoutinesView: View {
                     .padding(.vertical, 10)
                     .background(GradientSectionBackground(viewStyle: .calendar))
 
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundColor(AppColors.primaryText)
-                    TextField("Search Routine", text: $searchText)
-                        .foregroundColor(AppColors.primaryText)
-                }
-                .padding(10)
-                .background(.ultraThinMaterial)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(.gray.opacity(0.7), lineWidth: 0.5)
-                )
-                .cornerRadius(12)
-                .padding(.horizontal, 20)
+                searchBar
 
-                Picker("Filter", selection: $selectFilter) {
-                    ForEach(TaskFilter.allCases, id: \.self) { filter in
-                        Text(filter.rawValue)
-                            .tag(filter)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding(.bottom, 5)
-                .padding(.horizontal, 40)
+                filterBar
 
-                ScrollView {
-                    LazyVStack {
-                        Section {
-                            ForEach(
-                                routineViewModel.filteredRoutines(
-                                    routineViewModel.routineSortedByPriority(
-                                        routineViewModel.calendarFilterRoutine(
-                                            routineTasks, selectDay: selectedDate, isActive: selectFilter
-                                        )
-                                    ),
-                                    searchText: searchText,
-                                    selectFilter: selectFilter
-                                )
-                            ) { task in
-                                routineRow(routine: task)
-                                    .padding(.bottom, 5)
-                            }
-                        }
-                    }
-                }
+                routineList
+                
                 Spacer()
             }
             .padding(.horizontal, 20)
@@ -96,7 +57,62 @@ struct RoutinesView: View {
         .navigationTitle("My Routines")
         .navigationBarTitleDisplayMode(.inline)
     }
+    
+    // MARK: - Components
+    
+    /// Search Bar
+    private var searchBar : some View{
+        HStack {
+            Image(systemName: "magnifyingglass")
+                .foregroundColor(AppColors.primaryText)
+            TextField("Search Routine", text: $searchText)
+                .foregroundColor(AppColors.primaryText)
+        }
+        .padding(10)
+        .background(.ultraThinMaterial)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(.gray.opacity(0.7), lineWidth: 0.5)
+        )
+        .cornerRadius(12)
+        .padding(.horizontal, 20)
+    }
+    
+    /// Filter
+    private var filterBar: some View {
+        Picker("Filter", selection: $selectFilter) {
+            ForEach(TaskFilter.allCases, id: \.self) { filter in
+                Text(filter.rawValue)
+                    .tag(filter)
+            }
+        }
+        .pickerStyle(.segmented)
+        .padding(.bottom, 5)
+        .padding(.horizontal, 40)
+    }
+    
+    /// Routine List
+    private var routineList: some View{
+        ScrollView {
+            LazyVStack {
+                Section {
+                    ForEach(
+                        routineViewModel.displayedRoutines(
+                            forRoutinesView: routineTasks,
+                            searchText: searchText,
+                            selectedDate: selectedDate,
+                            selectFilter: selectFilter)
+                    ) { task in
+                        routineRow(routine: task)
+                            .padding(.bottom, 5)
+                    }
+                }
+            }
+        }
+        
+    }
 
+    /// Routine Row
     private func routineRow(routine: Routine) -> some View {
         HStack {
             Button { sheetRouter.activeSheet = .routineDetail(routine) } label: {
@@ -144,8 +160,7 @@ struct RoutinesView: View {
         .shadow(color: .gray.opacity(0.25), radius: 2, x: 0, y: 2)
     }
 
-    // MARK: - WeekRow
-
+    /// Week Row
     private func weekRow() -> some View {
         HStack(spacing: 0) {
             ForEach(calendarHelper.weekDays(for: Date()), id: \.self) { date in

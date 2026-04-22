@@ -65,4 +65,6 @@ struct ProgressCard: View {
     }
 }
 
-#Preview {}
+#Preview {
+    ProgressCard()
+}

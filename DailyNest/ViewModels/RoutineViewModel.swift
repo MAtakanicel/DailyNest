@@ -12,6 +12,17 @@ import Observation
 final class RoutineViewModel {
     let repository : RoutineRepositoryProtocol
     var alertMessage: String?
+    
+    func displayedRoutines(
+        forRoutinesView tasks: [Routine],
+        searchText: String,
+        selectedDate: Date,
+        selectFilter: TaskFilter
+    ) -> [Routine] {
+        let calendarFiltered = calendarFilterRoutine(tasks, selectDay: selectedDate, isActive: selectFilter)
+        let sorted = routineSortedByPriority(calendarFiltered)
+        return filteredRoutines(sorted, searchText: searchText, selectFilter: selectFilter)
+    }
 
     init(repository: RoutineRepository) { self.repository = repository }
     

@@ -59,33 +59,9 @@ struct PriorityMatrixView: View {
         ZStack {
             AppColors.background.ignoresSafeArea()
 
-            VStack(spacing: 10) {
-                HStack(spacing: 10) {
-                    quadrant(
-                        priority: .veryHigh,
-                        corner: .topLeading
-                    )
-
-                    quadrant(
-                        priority: .high,
-                        corner: .topTrailing
-                    )
-                }
-
-                HStack(spacing: 10) {
-                    quadrant(
-                        priority: .medium,
-                        corner: .bottomLeading
-                    )
-
-                    quadrant(
-                        priority: .low,
-                        corner: .bottomTrailing
-                    )
-                }
-            }
-            .padding(.bottom, 70)
-            .padding(.horizontal)
+            matrixContent
+                .padding(.bottom, 70)
+                .padding(.horizontal)
         }
         .navigationTitle("Priority Matrix")
         .navigationBarTitleDisplayMode(.inline)
@@ -110,20 +86,103 @@ struct PriorityMatrixView: View {
             }
         }
     }
+    private var matrixContent: some View{
+        VStack(spacing: 10) {
+            HStack(spacing: 10) {
+                quadrant(
+                    priority: .veryHigh,
+                    corner: .topLeading
+                )
 
+                quadrant(
+                    priority: .high,
+                    corner: .topTrailing
+                )
+            }
+
+            HStack(spacing: 10) {
+                quadrant(
+                    priority: .medium,
+                    corner: .bottomLeading
+                )
+
+                quadrant(
+                    priority: .low,
+                    corner: .bottomTrailing
+                )
+            }
+        }
+    }
+    
+  
+    private var toolbarContent: some View {
+        Menu {
+            Button { isShowCompletedTasks.toggle() } label: {
+                Text(
+                    isShowCompletedTasks ?
+                        "Hide completed tasks" :
+                        "Show completed tasks"
+                )
+
+                Image(systemName: isShowCompletedTasks ? "eye.slash" : "eye")
+            }
+
+            Button { matrixSettings.quadrantMatrixColorIsShown.toggle() } label: {
+                Label(
+                    matrixSettings.quadrantMatrixColorIsShown ? "Priority Color disable" : "Priority Color enable",
+                    systemImage: matrixSettings.quadrantMatrixColorIsShown ? "sun.min" : "sun.max"
+                )
+                .foregroundColor(AppColors.primaryText)
+            }
+
+            Button {
+                activeLocalSheet = .matrixSettingsSheet
+            } label: {
+                Label("Priority Matrix Settings", systemImage: "gearshape")
+                    .foregroundColor(AppColors.primaryText)
+            }
+
+            Menu {
+                timeFilterButton("Todays Tasks", .daily)
+
+                timeFilterButton("Weekly Tasks", .weekly)
+
+                timeFilterButton("Monthly Tasks", .monthly)
+
+                Button {
+                    activeLocalSheet = .customDateFilterSheet
+                } label: {
+                    Text("Custom Filter")
+                        .foregroundColor(AppColors.primaryText)
+
+                    timeFilterState == .custom ? Image(systemName: "checkmark") : nil
+                }
+            }
+            label: {
+                Label("Time Filter", systemImage: "calendar")
+                    .foregroundColor(AppColors.primaryText)
+            }
+
+        } label: {
+            Image(systemName: "slider.horizontal.3")
+                .foregroundColor(AppColors.primaryText)
+        }
+    }
+    
+    //MARK: - Components
     private func quadrant(priority: TaskPriority, corner: RoundedCorner) -> some View {
         var quadrantTasks: [DailyTask] {
-            dailyViewModel.priorityFilter(
-                dailyViewModel.timeFilter(
-                    isShowCompletedTasks ? dailyTasks : dailyViewModel.activeDailys(dailyTasks),
-                    filter: timeFilterState,
-                    date: Date(),
-                    startDate: timeFilterStartDate,
-                    endDate: timeFilterEndDate
-                ),
-                priority: priority
+            dailyViewModel.quadrantTasks(
+                from: dailyTasks,
+                priority: priority,
+                showCompleted: isShowCompletedTasks,
+                timeFilter: timeFilterState,
+                date: Date(),
+                startDate: timeFilterStartDate,
+                endDate: timeFilterEndDate
             )
         }
+        
         return VStack(alignment: .leading, spacing: 0) {
             Text("\(priority.icon(settings: matrixSettings)) \(priority.title(settings: matrixSettings))")
                 .foregroundColor(AppColors.primaryText)
@@ -182,59 +241,7 @@ struct PriorityMatrixView: View {
         }
     }
 
-    private var toolbarContent: some View {
-        Menu {
-            Button { isShowCompletedTasks.toggle() } label: {
-                Text(
-                    isShowCompletedTasks ?
-                        "Hide completed tasks" :
-                        "Show completed tasks"
-                )
-
-                Image(systemName: isShowCompletedTasks ? "eye.slash" : "eye")
-            }
-
-            Button { matrixSettings.quadrantMatrixColorIsShown.toggle() } label: {
-                Label(
-                    matrixSettings.quadrantMatrixColorIsShown ? "Priority Color disable" : "Priority Color enable",
-                    systemImage: matrixSettings.quadrantMatrixColorIsShown ? "sun.min" : "sun.max"
-                )
-                .foregroundColor(AppColors.primaryText)
-            }
-
-            Button {
-                activeLocalSheet = .matrixSettingsSheet
-            } label: {
-                Label("Priority Matrix Settings", systemImage: "gearshape")
-                    .foregroundColor(AppColors.primaryText)
-            }
-
-            Menu {
-                timeFilterButton("Todays Tasks", .daily)
-
-                timeFilterButton("Weekly Tasks", .weekly)
-
-                timeFilterButton("Monthly Tasks", .monthly)
-
-                Button {
-                    activeLocalSheet = .customDateFilterSheet
-                } label: {
-                    Text("Custom Filter")
-                        .foregroundColor(AppColors.primaryText)
-
-                    timeFilterState == .custom ? Image(systemName: "checkmark") : nil
-                }
-            }
-            label: {
-                Label("Time Filter", systemImage: "calendar")
-                    .foregroundColor(AppColors.primaryText)
-            }
-
-        } label: {
-            Image(systemName: "slider.horizontal.3")
-                .foregroundColor(AppColors.primaryText)
-        }
-    }
+  
 }
 
 #Preview {

@@ -29,42 +29,9 @@ struct AgendaView: View {
     var body: some View {
         ZStack {
             AppColors.background.ignoresSafeArea()
-            VStack(spacing: 0) {
-                // MARK: - Takvim Grid
-
-                CalendarComponent(
-                    selectedDate: $selectedDate,
-                    displayedDate: $displayedDate,
-                    isExpanded: $isExpanded,
-                    rowHeight: rowHeight
-                )
-                Divider()
-
-                if isVisibleTaskList {
-                    taskList
-                } else {
-                    Spacer()
-                    noTasksView
-                    Spacer()
-                }
-                Spacer()
-            }
-            .gesture(
-                DragGesture()
-                    .onEnded { value in
-                        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                            if value.translation.height > 30 {
-                                isExpanded = true
-                            } else if value.translation.height < -30 {
-                                isExpanded = false
-                            }
-                        }
-                    }
-            )
-            .onChange(of: selectedDate) { _, newDate in
-                displayedDate = newDate
-            }
-
+            
+            mainContent
+            
             VStack {
                 Spacer()
 
@@ -88,6 +55,45 @@ struct AgendaView: View {
                 tabBarMenu
             }
         }
+    }
+    
+    private var mainContent: some View{
+        VStack(spacing: 0) {
+            // MARK: - Takvim Grid
+
+            CalendarComponent(
+                selectedDate: $selectedDate,
+                displayedDate: $displayedDate,
+                isExpanded: $isExpanded,
+                rowHeight: rowHeight
+            )
+            Divider()
+
+            if isVisibleTaskList {
+                taskList
+            } else {
+                Spacer()
+                emptyView
+                Spacer()
+            }
+            Spacer()
+        }
+        .gesture(
+            DragGesture()
+                .onEnded { value in
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        if value.translation.height > 30 {
+                            isExpanded = true
+                        } else if value.translation.height < -30 {
+                            isExpanded = false
+                        }
+                    }
+                }
+        )
+        .onChange(of: selectedDate) { _, newDate in
+            displayedDate = newDate
+        }
+
     }
 
     private var navBarTitle: some View {
@@ -120,7 +126,7 @@ struct AgendaView: View {
         .padding(.top, 10)
     }
 
-    private var noTasksView: some View {
+    private var emptyView: some View {
         VStack(spacing: 20) {
             Image(systemName: "exclamationmark.triangle")
                 .font(.largeTitle)

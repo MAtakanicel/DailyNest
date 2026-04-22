@@ -35,59 +35,8 @@ struct MainPage: View {
         ZStack {
             AppColors.background.ignoresSafeArea()
 
-            // Top Bar
-            VStack(alignment: .leading, spacing: 10) {
-                HStack(spacing: 0) {
-                    greetings
-
-                    Spacer()
-
-                    topMenu
-                }
-                .padding(.horizontal, 20)
-
-                ProgressCard(config: homeViewModel.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .allTasks))
-                    .padding(.horizontal, 30)
-                    .padding(.vertical, 10)
-
-                // Sections
-                ScrollView {
-                    LazyVStack(spacing: 0) {
-                        DailysSections(
-                            header: "Overdue",
-                            items: dailyViewModel.overdueDailys(dailyTasks),
-                            isExpanded: $settings.pastSectionIsExpanded
-                        )
-                        .padding(.bottom, 20)
-                        .visible(!dailyViewModel.overdueDailys(dailyTasks).isEmpty && !settings.pastSectionIsHidden)
-
-                        DailysSections(
-                            header: "Today",
-                            items: dailyViewModel.todaysActiveDailys(dailyTasks),
-                            isExpanded: $settings.todaySectionIsExpanded,
-                        )
-                        .padding(.bottom, 20)
-                        .visible(!settings.todaySectionIsHidden)
-
-                        RoutineSection(
-                            items: routineViewModel.todaysRoutines(routineTasks),
-                            isExpanded: $settings.routineSectionIsExpanded
-                        )
-                        .padding(.bottom, 20)
-                        .visible(!settings.routineSectionIsHidden)
-
-                        DailysSections(
-                            header: "Completed",
-                            items: dailyViewModel.todayCompletedDailys(dailyTasks),
-                            isExpanded: $settings.completedSectionIsExpanded
-                        )
-                        .opacity(0.75)
-                        .visible(!dailyViewModel.todayCompletedDailys(dailyTasks).isEmpty && !settings.completedSectionIsHidden)
-                    }
-                }
-                .padding(.horizontal, 20)
-            }
-
+            mainContent
+           
             // New Task Button
             VStack {
                 Spacer()
@@ -121,7 +70,64 @@ struct MainPage: View {
             }
         }
     }
+    @ViewBuilder
+    private var mainContent: some View{
+        @Bindable var settings = appSettings
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 0) {
+                greetings
 
+                Spacer()
+
+                topMenu
+            }
+            .padding(.horizontal, 20)
+
+            ProgressCard(config: homeViewModel.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .allTasks))
+                .padding(.horizontal, 30)
+                .padding(.vertical, 10)
+
+            // Sections
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    DailysSections(
+                        header: "Overdue",
+                        items: dailyViewModel.overdueDailys(dailyTasks),
+                        isExpanded: $settings.pastSectionIsExpanded
+                    )
+                    .padding(.bottom, 20)
+                    .visible(!dailyViewModel.overdueDailys(dailyTasks).isEmpty && !settings.pastSectionIsHidden)
+
+                    DailysSections(
+                        header: "Today",
+                        items: dailyViewModel.todaysActiveDailys(dailyTasks),
+                        isExpanded: $settings.todaySectionIsExpanded,
+                    )
+                    .padding(.bottom, 20)
+                    .visible(!settings.todaySectionIsHidden)
+
+                    RoutineSection(
+                        items: routineViewModel.todaysRoutines(routineTasks),
+                        isExpanded: $settings.routineSectionIsExpanded
+                    )
+                    .padding(.bottom, 20)
+                    .visible(!settings.routineSectionIsHidden)
+
+                    DailysSections(
+                        header: "Completed",
+                        items: dailyViewModel.todayCompletedDailys(dailyTasks),
+                        isExpanded: $settings.completedSectionIsExpanded
+                    )
+                    .opacity(0.75)
+                    .visible(!dailyViewModel.todayCompletedDailys(dailyTasks).isEmpty && !settings.completedSectionIsHidden)
+                }
+            }
+            .padding(.horizontal, 20)
+        }
+
+    }
+    
+    
     // MARK: - Top Bar
 
     private var greetings: some View {
