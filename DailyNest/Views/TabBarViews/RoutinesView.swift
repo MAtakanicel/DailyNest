@@ -16,116 +16,102 @@ enum TaskFilter: String, CaseIterable, Hashable {
 struct RoutinesView: View {
     @Query(sort: \Routine.createdAt, order: .reverse) private var routineTasks: [Routine]
 
-    @Environment(RoutineViewModel.self) private var routineViewModel
+    @Environment(RoutineService.self) private var routineService
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(CalendarHelper.self) private var calendarHelper
 
-    @State private var selectFilter: TaskFilter = .all
-    @State private var searchText: String = ""
-    @State private var selectedDate: Date = .init()
+    @State private var vm: RoutinesViewModel?
 
     var body: some View {
         ZStack {
             AppColors.background.ignoresSafeArea()
 
-            VStack(spacing: 16) {
-                weekRow()
-                    .padding(.vertical, 10)
-                    .background(GradientSectionBackground(viewStyle: .calendar))
+            if let vm {
+                @Bindable var bindableVM = vm
+                VStack(spacing: 16) {
+                    weekRow(vm: vm)
+                        .padding(.vertical, 10)
+                        .background(GradientSectionBackground(viewStyle: .calendar))
 
-                searchBar
+                    searchBar(text: $bindableVM.searchText)
 
-                filterBar
+                    filterBar(selection: $bindableVM.selectFilter)
 
-                routineList
-                
-                Spacer()
-            }
-            .padding(.horizontal, 20)
+                    routineList(vm: vm)
 
-            VStack {
-                Spacer()
-                HStack {
                     Spacer()
-                    NewTaskButton(mode: .routine, onTap: { sheetRouter.activeSheet = .newRoutine })
-                        .padding(.trailing, 20)
-                        .padding(.bottom, 75) // tab bar yüksekliği kadar boşluk
                 }
+                .padding(.horizontal, 20)
             }
+
+            NewTaskButton(mode: .routine, onTap: { sheetRouter.activeSheet = .newRoutine })
         }
         .navigationTitle("My Routines")
         .navigationBarTitleDisplayMode(.inline)
+        .task {
+            if vm == nil { vm = RoutinesViewModel(service: routineService) }
+        }
+        .alert("Error", isPresented: Binding(
+            get: { vm?.alertMessage != nil },
+            set: { if !$0 { vm?.alertMessage = nil } }
+        )) {
+            Button("OK") { vm?.alertMessage = nil }
+        } message: {
+            Text(vm?.alertMessage ?? "")
+        }
     }
-    
+
     // MARK: - Components
-    
-    /// Search Bar
-    private var searchBar : some View{
+
+    private func searchBar(text: Binding<String>) -> some View {
         HStack {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(AppColors.primaryText)
-            TextField("Search Routine", text: $searchText)
+            TextField("Search Routine", text: text)
                 .foregroundColor(AppColors.primaryText)
         }
         .padding(10)
         .background(.ultraThinMaterial)
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(.gray.opacity(0.7), lineWidth: 0.5)
-        )
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(.gray.opacity(0.7), lineWidth: 0.5))
         .cornerRadius(12)
         .padding(.horizontal, 20)
     }
-    
-    /// Filter
-    private var filterBar: some View {
-        Picker("Filter", selection: $selectFilter) {
-            ForEach(TaskFilter.allCases, id: \.self) { filter in
-                Text(filter.rawValue)
-                    .tag(filter)
-            }
+
+    private func filterBar(selection: Binding<TaskFilter>) -> some View {
+        Picker("Filter", selection: selection) {
+            ForEach(TaskFilter.allCases, id: \.self) { Text($0.rawValue).tag($0) }
         }
-        .pickerStyle(.segmented)
+        .pickerStyle(.segmented) 
         .padding(.bottom, 5)
         .padding(.horizontal, 40)
     }
-    
-    /// Routine List
-    private var routineList: some View{
+
+    private func routineList(vm: RoutinesViewModel) -> some View {
         ScrollView {
             LazyVStack {
-                Section {
-                    ForEach(
-                        routineViewModel.displayedRoutines(
-                            forRoutinesView: routineTasks,
-                            searchText: searchText,
-                            selectedDate: selectedDate,
-                            selectFilter: selectFilter)
-                    ) { task in
-                        routineRow(routine: task)
-                            .padding(.bottom, 5)
-                    }
+                ForEach(vm.displayedRoutines(routineTasks)) { task in
+                    routineRow(routine: task, vm: vm)
+                        .padding(.bottom, 5)
                 }
             }
         }
-        
     }
 
-    /// Routine Row
-    private func routineRow(routine: Routine) -> some View {
+    private func routineRow(routine: Routine, vm: RoutinesViewModel) -> some View {
         HStack {
             Button { sheetRouter.activeSheet = .routineDetail(routine) } label: {
-                Circle()
-                    .fill(routine.tintColor.color)
-                    .frame(width: 18)
-                    .padding(.leading, 8)
+                Rectangle()
+                    .fill(ColorHelper.color(from: routine.colorHex))
+                    .frame(width: 10)
+                    .padding(.trailing, 5)
+
                 VStack(alignment: .leading, spacing: 0) {
                     Text(routine.title)
                         .foregroundColor(AppColors.cardText)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.vertical, 12)
 
-                    Text("\(routineViewModel.todaysRoutineCompletionCount(routine)) / \(routine.routineGoal.targetCount)")
+                    Text("\(vm.todaysCount(routine)) / \(routine.routineGoal.targetCount)")
                         .font(.subheadline)
                         .italic()
                         .foregroundStyle(AppColors.secondaryText)
@@ -135,10 +121,9 @@ struct RoutinesView: View {
 
                 VStack(alignment: .trailing, spacing: 0) {
                     HStack(spacing: 0) {
-                        Text("\(routineViewModel.routineCompletionSeries(routine))")
+                        Text("\(vm.streak(routine))")
                             .bold()
                             .foregroundColor(AppColors.primaryText)
-
                         Text(" days")
                             .foregroundColor(AppColors.secondaryText)
                             .font(.footnote)
@@ -159,13 +144,12 @@ struct RoutinesView: View {
         .shadow(color: .gray.opacity(0.25), radius: 2, x: 0, y: 2)
     }
 
-    /// Week Row
-    private func weekRow() -> some View {
+    private func weekRow(vm: RoutinesViewModel) -> some View {
         HStack(spacing: 0) {
             ForEach(calendarHelper.weekDays(for: Date()), id: \.self) { date in
                 DayCell(
                     date: date,
-                    isSelected: calendarHelper.calendar.isDate(date, inSameDayAs: selectedDate),
+                    isSelected: calendarHelper.calendar.isDate(date, inSameDayAs: vm.selectedDate),
                     isToday: calendarHelper.calendar.isDateInToday(date),
                     isCurrentMonth: false,
                     hasDot: false,
@@ -174,7 +158,7 @@ struct RoutinesView: View {
                 .padding(.horizontal, 5)
                 .onTapGesture {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                        selectedDate = date
+                        vm.selectedDate = date
                     }
                 }
             }
@@ -185,9 +169,12 @@ struct RoutinesView: View {
 #Preview {
     TabBar(selectedTab: .routinesView)
         .modelContainer(MockData.previewContainer)
-        .environment(ProgressCardViewModel())
-        .environment(MockData.previewDailyViewModel)
-        .environment(MockData.previewRoutineViewModel)
+        .environment(MockData.previewDailyTaskService)
+        .environment(MockData.previewRoutineService)
+        .environment(ProgressCalculator())
         .environment(SheetRouter())
         .environment(CalendarHelper())
+        .environment(MainPageSettings())
+        .environment(MatrixSettings())
+        .environment(AppSettings())
 }

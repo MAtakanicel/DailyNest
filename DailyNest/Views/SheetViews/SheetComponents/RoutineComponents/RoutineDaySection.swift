@@ -8,34 +8,34 @@
 import SwiftUI
 
 struct RoutineDaySection: View {
-    let routine: Routine
-    
-    @Environment(RoutineViewModel.self) private var routineViewModel
+    @Bindable var routine: Routine
+
     var body: some View {
-        
         ScrollView(.horizontal, showsIndicators: false) {
-            LazyHStack(alignment:.center ,spacing: 5){
-                ForEach(WeekDay.allCases){ day in
+            LazyHStack(alignment: .center, spacing: 5) {
+                ForEach(WeekDay.allCases) { day in
                     dayButton(day: day)
                 }
                 .padding(2)
             }
         }
-        
     }
+
     private func dayButton(day: WeekDay) -> some View {
         let isSelected = routine.routineGoal.routineDays.contains(day)
-        
-        return Button(day.id.uppercased()){ routineViewModel.toggleRoutineDay(routine, day: day, !isSelected) }
-            .tint(isSelected ? AppColors.routine : AppColors.secondaryText)
-            .frame(width: 50,height: 30)
+        return Button(day.id.uppercased()) {
+            if isSelected {
+                routine.routineGoal.routineDays.removeAll { $0 == day }
+            } else {
+                routine.routineGoal.routineDays.append(day)
+            }
+        }
+        .tint(isSelected ? AppColors.routine : AppColors.secondaryText)
+        .frame(width: 50, height: 30)
         .background(
-           RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: 12)
                 .fill(.gray.opacity(0.05))
                 .stroke(isSelected ? AppColors.routine : .gray.opacity(0.5), lineWidth: 1)
-                
         )
-        
-        
     }
 }

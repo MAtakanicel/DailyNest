@@ -29,6 +29,12 @@ class MatrixSettings {
         didSet { UserDefaults.standard.set(quadrantMatrixColorIsShown, forKey: MatrixSettingsKeys.quadrantColorIsShown) }
     }
 
+    var timeFilterState: MatrixTimeFilter = {
+        MatrixTimeFilter(rawValue: UserDefaults.standard.integer(forKey: MatrixSettingsKeys.quadrantTimefilterState)) ?? .daily
+    }() {
+        didSet { UserDefaults.standard.set(timeFilterState.rawValue, forKey: MatrixSettingsKeys.quadrantTimefilterState) }
+    }
+
     // MARK: - Kadranların başlığı
 
     var quadrantVeryHighTitle: String = UserDefaults.standard.string(forKey: MatrixSettingsKeys.quadrantVeryHighTitle) ?? "Very High" {

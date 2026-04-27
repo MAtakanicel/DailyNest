@@ -12,15 +12,18 @@ struct DailysSections: View {
     let header: String
     let items: [DailyTask]
     @Binding var isExpanded: Bool
+    var onToggle: ((DailyTask) -> Void)? = nil
     @Environment(SheetRouter.self) private var sheetRouter
 
     var body: some View {
         VStack(spacing: 0) {
             Section(isExpanded: $isExpanded) {
                 ForEach(items) { item in
-                    DailyRow(task: item) { item in
-                        sheetRouter.activeSheet = .taskDetail(item)
-                    }
+                    DailyRow(
+                        task: item,
+                        onDetail: { sheetRouter.activeSheet = .taskDetail($0) },
+                        onToggle: onToggle
+                    )
                     .padding(2)
                 }
             } header: {
@@ -59,10 +62,13 @@ struct DailysSections: View {
 
 #Preview {
     TabBar(selectedTab: .mainView)
-        .environment(ProgressCardViewModel())
-        .environment(MockData.previewDailyViewModel)
-        .environment(MockData.previewRoutineViewModel)
+        .modelContainer(MockData.previewContainer)
+        .environment(MockData.previewDailyTaskService)
+        .environment(MockData.previewRoutineService)
+        .environment(ProgressCalculator())
         .environment(SheetRouter())
         .environment(CalendarHelper())
         .environment(MainPageSettings())
+        .environment(MatrixSettings())
+        .environment(AppSettings())
 }

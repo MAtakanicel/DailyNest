@@ -8,6 +8,14 @@
 import Foundation
 import SwiftData
 
+protocol Taskable {
+    var id: UUID { get }
+    var title: String { get }
+    var priority: TaskPriority { get }
+    var isCompleted: Bool { get }
+    var completedAt: Date? { get }
+}
+
 @Model
 final class TimerSession {
     var startTime: Date

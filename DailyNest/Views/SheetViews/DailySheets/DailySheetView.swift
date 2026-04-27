@@ -15,62 +15,60 @@ enum DetailSheetMode {
 
 struct DailySheetView: View {
     @State private var task: DailyTask
-
-    @Environment(DailyViewModel.self) private var dailyViewModel
+    @State private var vm: DailySheetViewModel
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(CalendarHelper.self) private var calendarHelper
     @Environment(MatrixSettings.self) private var matrixSettings
     @Environment(\.dismiss) private var dismiss
 
-    @State private var isAlertShown: Bool = false
-    @State private var mode: DetailSheetMode
-
-    init(dailyTask: DailyTask, mode: DetailSheetMode) {
-        _mode = State(initialValue: mode)
+    init(dailyTask: DailyTask, vm: DailySheetViewModel) {
         _task = State(initialValue: dailyTask)
+        _vm = State(initialValue: vm)
     }
 
     var body: some View {
+        @Bindable var bindableVM = vm
         NavigationStack {
             ZStack {
                 AppColors.background.ignoresSafeArea()
 
                 forms
                     .padding(.horizontal, 25)
-                    .animation(.smooth(duration: 0.5), value: mode)
+                    .animation(.smooth(duration: 0.5), value: vm.mode)
                     .padding(.top, 5)
             }
-            .alert("Delete '\(task.title)'?", isPresented: $isAlertShown) {
-                Button("Cancel", role: .cancel) {
-                    isAlertShown.toggle()
-                }
-
+            .alert("Delete '\(task.title)'?", isPresented: $bindableVM.isDeleteAlertShown) {
+                Button("Cancel", role: .cancel) { vm.isDeleteAlertShown = false }
                 Button("Confirm", role: .destructive) {
-                    dailyViewModel.deleteDaily(task)
-
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                        dismiss()
+                    vm.delete(task) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { dismiss() }
                     }
                 }
             } message: {
                 Text("This action cannot be undone.")
             }
+            .alert("Error", isPresented: Binding(
+                get: { vm.alertMessage != nil },
+                set: { if !$0 { vm.alertMessage = nil } }
+            )) {
+                Button("OK") { vm.alertMessage = nil }
+            } message: {
+                Text(vm.alertMessage ?? "")
+            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    NavBarBackButton(mode: $mode, isAlertShown: $isAlertShown)
+                    NavBarBackButton(mode: $bindableVM.mode, isAlertShown: $bindableVM.isDeleteAlertShown)
                 }
                 ToolbarItem(placement: .principal) {
-                    NavBarTitle(mode: mode,isDaily: true, title: task.title)
+                    NavBarTitle(mode: vm.mode, isDaily: true, title: task.title)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     NavBarDoneButton(
-                        mode: $mode,
-                        isValid: dailyViewModel.newDailyValid(title: task.title),
+                        mode: $bindableVM.mode,
+                        isValid: vm.isValid(title: task.title),
                         isTask: true,
-                        onConfirm: mode == .create ?
-                            { dailyViewModel.createDaily(task: task) } :
-                            { dailyViewModel.updateDaily(task) }
+                        onConfirm: { vm.save(task) }
                     )
                 }
             }
@@ -79,54 +77,40 @@ struct DailySheetView: View {
 
     private var forms: some View {
         ScrollView {
-            switch mode {
+            switch vm.mode {
             case .detail:
-                DailyDetailView(task: task)
+                DailyDetailView(task: task, onToggle: { vm.toggleCompletion(task) })
                     .padding(.horizontal, 10)
 
             case .create, .edit:
+                @Bindable var bindableTask = task
                 VStack(alignment: .leading, spacing: 0) {
                     SectionDivider(deviderType: .top)
-
-                    TitleField(title: $task.title)
-
+                    TitleField(title: $bindableTask.title)
                     SectionDivider(deviderType: .regular)
-
-                    DescriptionField(details: $task.details, placeholder: "Description (optional)")
-
+                    DescriptionField(details: $bindableTask.details, placeholder: "Description (optional)")
                     SectionDivider(deviderType: .regular)
-
-                    DateSection(date: $task.date)
-
+                    DateSection(date: $bindableTask.date)
                     SectionDivider(deviderType: .regular)
-
-                    PrioritySection(selected: $task.priority)
-
+                    PrioritySection(selected: $bindableTask.priority)
                     SectionDivider(deviderType: .regular)
-
-                    ReminderSection(type: .task,isReminderOn: $task.isReminderOn, reminderDate: $task.reminderDate)
-                    
+                    ReminderSection(type: .task, isReminderOn: $bindableTask.isReminderOn, reminderDate: $bindableTask.reminderDate)
                     SectionDivider(deviderType: .bottom)
                 }
             }
         }
     }
-
 }
 
 #Preview {
+    let service = MockData.previewDailyTaskService
     NavigationStack {
-        DailySheetView(dailyTask: DailyTask(
-            title: "Buy groceries",
-            details: "Milk, eggs, bread",
-            date: .now,
-            priority: .veryHigh,
-            isReminderOn: true
-        ),
-        mode: .create)
-        .environment(MockData.previewDailyViewModel)
-            .environment(SheetRouter())
-            .environment(MatrixSettings())
-            .environment(CalendarHelper())
+        DailySheetView(
+            dailyTask: DailyTask(title: "Buy groceries", details: "Milk, eggs, bread", date: .now, priority: .veryHigh, isReminderOn: true),
+            vm: DailySheetViewModel(mode: .create, service: service)
+        )
+        .environment(SheetRouter())
+        .environment(MatrixSettings())
+        .environment(CalendarHelper())
     }
 }

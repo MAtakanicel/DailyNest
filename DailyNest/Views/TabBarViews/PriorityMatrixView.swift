@@ -9,23 +9,16 @@ import SwiftData
 import SwiftUI
 
 enum RoundedCorner {
-    case topLeading
-    case topTrailing
-    case bottomLeading
-    case bottomTrailing
+    case topLeading, topTrailing, bottomLeading, bottomTrailing
 
     func backGroundShape(radius: CGFloat = 20) -> UnevenRoundedRectangle {
         switch self {
-        case .topLeading: return UnevenRoundedRectangle(topLeadingRadius: radius)
-        case .topTrailing: return UnevenRoundedRectangle(topTrailingRadius: radius)
+        case .topLeading:    return UnevenRoundedRectangle(topLeadingRadius: radius)
+        case .topTrailing:   return UnevenRoundedRectangle(topTrailingRadius: radius)
         case .bottomLeading: return UnevenRoundedRectangle(bottomLeadingRadius: radius)
         case .bottomTrailing: return UnevenRoundedRectangle(bottomTrailingRadius: radius)
         }
     }
-}
-
-enum MatrixTimeFilter: Int {
-    case daily, weekly, monthly, custom
 }
 
 enum PriorityMatrixSheet: Identifiable {
@@ -35,96 +28,90 @@ enum PriorityMatrixSheet: Identifiable {
     var id: String {
         switch self {
         case .customDateFilterSheet: return "customDateFilter"
-        case .matrixSettingsSheet: return "matrixSettingsSheet"
+        case .matrixSettingsSheet:   return "matrixSettingsSheet"
         }
     }
 }
 
 struct PriorityMatrixView: View {
-    @Environment(RoutineViewModel.self) private var routineViewModel
-    @Environment(DailyViewModel.self) private var dailyViewModel
+    @Environment(DailyTaskService.self) private var dailyService
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(MatrixSettings.self) private var matrixSettings
 
     @Query(sort: \DailyTask.date, order: .reverse) private var dailyTasks: [DailyTask]
-    @Query private var routines: [Routine]
 
-    @State private var timeFilterStartDate: Date = .init()
-    @State private var timeFilterEndDate: Date = .init()
-    @State private var isShowCompletedTasks: Bool = true
-    @State private var activeLocalSheet: PriorityMatrixSheet? = nil
-    @AppStorage(MatrixSettingsKeys.quadrantTimefilterState) private var timeFilterState: MatrixTimeFilter = .daily
+    @State private var vm: PriorityMatrixViewModel?
 
     var body: some View {
         ZStack {
             AppColors.background.ignoresSafeArea()
 
-            matrixContent
-                .padding(.bottom, 70)
-                .padding(.horizontal)
+            if let vm {
+                @Bindable var bindableVM = vm
+                matrixContent(vm: vm)
+                    .padding(.bottom, 70)
+                    .padding(.horizontal)
+                    .sheet(item: $bindableVM.activeLocalSheet) { sheet in
+                        switch sheet {
+                        case .customDateFilterSheet:
+                            DatePickerSheet(
+                                timeFilterStartDate: $bindableVM.timeFilterStartDate,
+                                timeFilterEndDate: $bindableVM.timeFilterEndDate,
+                                setDate: Binding(
+                                    get: { vm.timeFilterState },
+                                    set: { vm.timeFilterState = $0 }
+                                )
+                            )
+                            .presentationDetents([.fraction(0.35)])
+                        case .matrixSettingsSheet:
+                            MatrixSettingsSheet()
+                                .presentationDetents([.large])
+                        }
+                    }
+            }
         }
         .navigationTitle("Priority Matrix")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                toolbarContent
+                if let vm { toolbarContent(vm: vm) }
             }
         }
-        .sheet(item: $activeLocalSheet) { sheet in
-            switch sheet {
-            case .customDateFilterSheet:
-                DatePickerSheet(
-                    timeFilterStartDate: $timeFilterStartDate,
-                    timeFilterEndDate: $timeFilterEndDate,
-                    setDate: $timeFilterState
-                )
-                .presentationDetents([.fraction(0.35)])
-
-            case .matrixSettingsSheet:
-                MatrixSettingsSheet()
-                    .presentationDetents([.large])
+        .task {
+            if vm == nil {
+                vm = PriorityMatrixViewModel(service: dailyService, matrixSettings: matrixSettings)
             }
+        }
+        .alert("Error", isPresented: Binding(
+            get: { vm?.alertMessage != nil },
+            set: { if !$0 { vm?.alertMessage = nil } }
+        )) {
+            Button("OK") { vm?.alertMessage = nil }
+        } message: {
+            Text(vm?.alertMessage ?? "")
         }
     }
-    private var matrixContent: some View{
+
+    private func matrixContent(vm: PriorityMatrixViewModel) -> some View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
-                quadrant(
-                    priority: .veryHigh,
-                    corner: .topLeading
-                )
-
-                quadrant(
-                    priority: .high,
-                    corner: .topTrailing
-                )
+                quadrant(priority: .veryHigh, corner: .topLeading, vm: vm)
+                quadrant(priority: .high, corner: .topTrailing, vm: vm)
             }
-
             HStack(spacing: 10) {
-                quadrant(
-                    priority: .medium,
-                    corner: .bottomLeading
-                )
-
-                quadrant(
-                    priority: .low,
-                    corner: .bottomTrailing
-                )
+                quadrant(priority: .medium, corner: .bottomLeading, vm: vm)
+                quadrant(priority: .low, corner: .bottomTrailing, vm: vm)
             }
         }
     }
-    
-  
-    private var toolbarContent: some View {
-        Menu {
-            Button { isShowCompletedTasks.toggle() } label: {
-                Text(
-                    isShowCompletedTasks ?
-                        "Hide completed tasks" :
-                        "Show completed tasks"
-                )
 
-                Image(systemName: isShowCompletedTasks ? "eye.slash" : "eye")
+    private func toolbarContent(vm: PriorityMatrixViewModel) -> some View {
+        Menu {
+            Button {
+                vm.isShowCompletedTasks.toggle()
+            } label: {
+                Text(vm.isShowCompletedTasks ? "Hide completed tasks" : "Show completed tasks")
+                Image(systemName: vm.isShowCompletedTasks ? "eye.slash" : "eye")
             }
 
             Button { matrixSettings.quadrantMatrixColorIsShown.toggle() } label: {
@@ -132,57 +119,37 @@ struct PriorityMatrixView: View {
                     matrixSettings.quadrantMatrixColorIsShown ? "Priority Color disable" : "Priority Color enable",
                     systemImage: matrixSettings.quadrantMatrixColorIsShown ? "sun.min" : "sun.max"
                 )
-                .foregroundColor(AppColors.primaryText)
             }
 
-            Button {
-                activeLocalSheet = .matrixSettingsSheet
-            } label: {
+            Button { vm.openSettingsSheet() } label: {
                 Label("Priority Matrix Settings", systemImage: "gearshape")
-                    .foregroundColor(AppColors.primaryText)
             }
 
             Menu {
-                timeFilterButton("Todays Tasks", .daily)
-
-                timeFilterButton("Weekly Tasks", .weekly)
-
-                timeFilterButton("Monthly Tasks", .monthly)
-
+                timeFilterButton("Todays Tasks", .daily, vm: vm)
+                timeFilterButton("Weekly Tasks", .weekly, vm: vm)
+                timeFilterButton("Monthly Tasks", .monthly, vm: vm)
                 Button {
-                    activeLocalSheet = .customDateFilterSheet
+                    vm.openCustomDateSheet()
                 } label: {
                     Text("Custom Filter")
-                        .foregroundColor(AppColors.primaryText)
-
-                    timeFilterState == .custom ? Image(systemName: "checkmark") : nil
+                    if vm.timeFilterState == .custom { Image(systemName: "checkmark") }
                 }
-            }
-            label: {
+            } label: {
                 Label("Time Filter", systemImage: "calendar")
-                    .foregroundColor(AppColors.primaryText)
             }
-
         } label: {
-            Image(systemName: "slider.horizontal.3")
+            Image(systemName: "line.3.horizontal.decrease")
+                .resizable()
                 .foregroundColor(AppColors.primaryText)
+                .fontWeight(.regular)
+                .frame(width: 22, height: 12)
         }
     }
-    
-    //MARK: - Components
-    private func quadrant(priority: TaskPriority, corner: RoundedCorner) -> some View {
-        var quadrantTasks: [DailyTask] {
-            dailyViewModel.quadrantTasks(
-                from: dailyTasks,
-                priority: priority,
-                showCompleted: isShowCompletedTasks,
-                timeFilter: timeFilterState,
-                date: Date(),
-                startDate: timeFilterStartDate,
-                endDate: timeFilterEndDate
-            )
-        }
-        
+
+    private func quadrant(priority: TaskPriority, corner: RoundedCorner, vm: PriorityMatrixViewModel) -> some View {
+        let tasks = vm.tasks(for: priority, from: dailyTasks)
+
         return VStack(alignment: .leading, spacing: 0) {
             Text("\(priority.icon(settings: matrixSettings)) \(priority.title(settings: matrixSettings))")
                 .foregroundColor(AppColors.primaryText)
@@ -196,13 +163,15 @@ struct PriorityMatrixView: View {
                 .overlay(priority.color.opacity(0.1))
                 .padding(.bottom, 5)
 
-            if !quadrantTasks.isEmpty {
+            if !tasks.isEmpty {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 0) {
-                        ForEach(quadrantTasks) { task in
-                            DailyRow(task: task, rowStyle: .matrix) { _ in
-                                sheetRouter.activeSheet = .taskDetail(task)
-                            }
+                        ForEach(tasks) { task in
+                            DailyRow(
+                                task: task,
+                                rowStyle: .matrix,
+                                onDetail: { sheetRouter.activeSheet = .taskDetail($0) }
+                            )
                             .padding(.bottom, 5)
                         }
                     }
@@ -218,40 +187,38 @@ struct PriorityMatrixView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-
         .background {
             corner.backGroundShape()
                 .fill(AppColors.overlayStroke.opacity(0.05))
                 .overlay(
                     corner.backGroundShape()
                         .stroke(
-                            matrixSettings.quadrantMatrixColorIsShown ? priority.color.opacity(0.25) : AppColors.overlayStroke.opacity(0.1),
+                            matrixSettings.quadrantMatrixColorIsShown
+                                ? priority.color.opacity(0.25)
+                                : AppColors.overlayStroke.opacity(0.1),
                             lineWidth: 1
                         )
                 )
         }
     }
 
-    private func timeFilterButton(_ title: String, _ filter: MatrixTimeFilter) -> some View {
-        Button { timeFilterState = filter } label: {
+    private func timeFilterButton(_ title: String, _ filter: MatrixTimeFilter, vm: PriorityMatrixViewModel) -> some View {
+        Button { vm.applyTimeFilter(filter) } label: {
             Text(title)
-                .foregroundColor(AppColors.primaryText)
-
-            timeFilterState == filter ? Image(systemName: "checkmark") : nil
+            if vm.timeFilterState == filter { Image(systemName: "checkmark") }
         }
     }
-
-  
 }
 
 #Preview {
     TabBar(selectedTab: .priorityMatrixView)
         .modelContainer(MockData.previewContainer)
-        .environment(ProgressCardViewModel())
-        .environment(MockData.previewDailyViewModel)
-        .environment(MockData.previewRoutineViewModel)
+        .environment(MockData.previewDailyTaskService)
+        .environment(MockData.previewRoutineService)
+        .environment(ProgressCalculator())
         .environment(SheetRouter())
+        .environment(CalendarHelper())
+        .environment(MainPageSettings())
         .environment(MatrixSettings())
+        .environment(AppSettings())
 }
-
-

@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftData
-import Observation
 
 protocol DailyTaskRepositoryProtocol{
     func create(_ task: DailyTask) throws
@@ -15,7 +14,6 @@ protocol DailyTaskRepositoryProtocol{
     func delete(_ task: DailyTask) throws
 }
 
-@Observable
 class DailyTaskRepository: DailyTaskRepositoryProtocol{
     
     private let context : ModelContext

@@ -9,9 +9,9 @@ import SwiftData
 import SwiftUI
 
 struct MainPage: View {
-    @Environment(ProgressCardViewModel.self) private var progressCardViewModel
-    @Environment(DailyViewModel.self) private var dailyViewModel
-    @Environment(RoutineViewModel.self) private var routineViewModel
+    @Environment(DailyTaskService.self) private var dailyService
+    @Environment(RoutineService.self) private var routineService
+    @Environment(ProgressCalculator.self) private var calculator
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(MainPageSettings.self) private var mainPageSettings
     @Environment(CalendarHelper.self) private var calendarHelper
@@ -20,86 +20,97 @@ struct MainPage: View {
     @Query private var dailyTasks: [DailyTask]
     @Query(sort: \Routine.createdAt, order: .reverse) private var routineTasks: [Routine]
 
+    @State private var vm: MainPageViewModel?
+
     var body: some View {
         @Bindable var settings = mainPageSettings
         ZStack {
             AppColors.background.ignoresSafeArea()
 
-            mainContent
-
-            // New Task Button
-            VStack {
-                Spacer()
-
-                HStack {
-                    Spacer()
-                    NewTaskButton(mode: .daily, onTap: {
-                        sheetRouter.activeSheet = .newDaily
-                    })
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 75)
-                }
+            if let vm {
+                mainContent(vm: vm)
+                NewTaskButton(mode: .daily, onTap: { sheetRouter.activeSheet = .newDaily })
             }
         }
+        .navigationBarHidden(true)
+        .task {
+            if vm == nil {
+                vm = MainPageViewModel(
+                    dailyService: dailyService,
+                    routineService: routineService,
+                    calculator: calculator
+                )
+            }
+        }
+        .alert("Error", isPresented: Binding(
+            get: { vm?.alertMessage != nil },
+            set: { if !$0 { vm?.alertMessage = nil } }
+        )) {
+            Button("OK") { vm?.alertMessage = nil }
+        } message: {
+            Text(vm?.alertMessage ?? "")
+        }
     }
+
     @ViewBuilder
-    private var mainContent: some View{
+    private func mainContent(vm: MainPageViewModel) -> some View {
         @Bindable var settings = mainPageSettings
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 0) {
                 greetings
-
                 Spacer()
-
                 topMenu
             }
-            .padding(.horizontal, 20)
+            .padding(.leading, 20)
+            .padding(.trailing, 12)
 
-            ProgressCard(config: progressCardViewModel.createProgressCard(dailyTasks: dailyTasks, routineTasks: routineTasks, type: .allTasks))
+            ProgressCard(config: vm.progressConfig(dailys: dailyTasks, routines: routineTasks, type: .allTasks))
                 .padding(.horizontal, 30)
                 .padding(.vertical, 10)
 
-            // Sections
             ScrollView {
                 LazyVStack(spacing: 0) {
                     DailysSections(
                         header: "Overdue",
-                        items: dailyViewModel.overdueDailys(dailyTasks),
-                        isExpanded: $settings.pastSectionIsExpanded
+                        items: vm.overdue(dailyTasks),
+                        isExpanded: $settings.pastSectionIsExpanded,
+                        onToggle: { vm.toggleDailyCompletion($0) }
                     )
                     .padding(.bottom, 20)
-                    .visible(!dailyViewModel.overdueDailys(dailyTasks).isEmpty && !settings.pastSectionIsHidden)
+                    .visible(!vm.overdue(dailyTasks).isEmpty && !settings.pastSectionIsHidden)
 
                     DailysSections(
                         header: "Today",
-                        items: dailyViewModel.todaysActiveDailys(dailyTasks),
+                        items: vm.todaysActive(dailyTasks),
                         isExpanded: $settings.todaySectionIsExpanded,
+                        onToggle: { vm.toggleDailyCompletion($0) }
                     )
                     .padding(.bottom, 20)
                     .visible(!settings.todaySectionIsHidden)
 
                     RoutineSection(
-                        items: routineViewModel.todaysRoutines(routineTasks),
-                        isExpanded: $settings.routineSectionIsExpanded
+                        items: vm.todaysRoutines(routineTasks),
+                        isExpanded: $settings.routineSectionIsExpanded,
+                        onToggle: { vm.toggleRoutineCompletion($0) },
+                        completionCount: { vm.todaysRoutineCount($0) }
                     )
                     .padding(.bottom, 20)
                     .visible(!settings.routineSectionIsHidden)
 
                     DailysSections(
                         header: "Completed",
-                        items: dailyViewModel.todayCompletedDailys(dailyTasks),
-                        isExpanded: $settings.completedSectionIsExpanded
+                        items: vm.todayCompleted(dailyTasks),
+                        isExpanded: $settings.completedSectionIsExpanded,
+                        onToggle: { vm.toggleDailyCompletion($0) }
                     )
                     .opacity(0.75)
-                    .visible(!dailyViewModel.todayCompletedDailys(dailyTasks).isEmpty && !settings.completedSectionIsHidden)
+                    .visible(!vm.todayCompleted(dailyTasks).isEmpty && !settings.completedSectionIsHidden)
                 }
             }
             .padding(.horizontal, 20)
         }
-
     }
-    
-    
+
     // MARK: - Top Bar
 
     private var greetings: some View {
@@ -121,56 +132,49 @@ struct MainPage: View {
             menuVisibilityButton(
                 mainPageSettings.pastSectionIsHidden ? "Show Overdue Tasks" : "Hide Overdue Tasks",
                 image: mainPageSettings.pastSectionIsHidden ? "eye" : "eye.slash"
-            ) {
-                withAnimation { mainPageSettings.pastSectionIsHidden.toggle() }
-            }
+            ) { withAnimation { mainPageSettings.pastSectionIsHidden.toggle() } }
 
             menuVisibilityButton(
                 mainPageSettings.todaySectionIsHidden ? "Show Today's Tasks" : "Hide Today's Tasks",
                 image: mainPageSettings.todaySectionIsHidden ? "eye" : "eye.slash"
-            ) {
-                withAnimation { mainPageSettings.todaySectionIsHidden.toggle() }
-            }
+            ) { withAnimation { mainPageSettings.todaySectionIsHidden.toggle() } }
 
             menuVisibilityButton(
                 mainPageSettings.routineSectionIsHidden ? "Show Routines" : "Hide Routines",
                 image: mainPageSettings.routineSectionIsHidden ? "eye" : "eye.slash"
-            ) {
-                withAnimation { mainPageSettings.routineSectionIsHidden.toggle() }
-            }
+            ) { withAnimation { mainPageSettings.routineSectionIsHidden.toggle() } }
 
             menuVisibilityButton(
                 mainPageSettings.completedSectionIsHidden ? "Show Completed" : "Hide Completed",
                 image: mainPageSettings.completedSectionIsHidden ? "eye" : "eye.slash"
-            ) {
-                withAnimation { mainPageSettings.completedSectionIsHidden.toggle() }
-            }
-
+            ) { withAnimation { mainPageSettings.completedSectionIsHidden.toggle() } }
         } label: {
-            Image(systemName: "slider.horizontal.3")
+            Image(systemName: "line.3.horizontal.decrease")
                 .resizable()
                 .foregroundColor(AppColors.primaryText)
-                .frame(width: 26, height: 22)
-                .padding(10)
+                .fontWeight(.regular)
+                .frame(width: 22, height: 12)
+                .padding(16)
+                .background(.white)
+                .clipShape(Circle())
+                .shadow(color: .black.opacity(0.12), radius: 4, x: 0, y: 2)
         }
     }
 
-    /// Top Bar Buttons ( Visibility )
     private func menuVisibilityButton(_ title: String, image: String, tap: @escaping () -> Void) -> some View {
         Button { tap() } label: {
-            Label("\(title)", systemImage: "\(image)")
+            Label(title, systemImage: image)
                 .foregroundColor(AppColors.primaryText)
         }
     }
-
 }
 
 #Preview {
     TabBar(selectedTab: .mainView)
         .modelContainer(MockData.previewContainer)
-        .environment(ProgressCardViewModel())
-        .environment(MockData.previewDailyViewModel)
-        .environment(MockData.previewRoutineViewModel)
+        .environment(MockData.previewDailyTaskService)
+        .environment(MockData.previewRoutineService)
+        .environment(ProgressCalculator())
         .environment(SheetRouter())
         .environment(CalendarHelper())
         .environment(MainPageSettings())

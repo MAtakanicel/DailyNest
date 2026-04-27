@@ -77,38 +77,6 @@ enum WeekDay: Int, Codable, CaseIterable, Identifiable {
     }
 }
 
-protocol TimerLinkable {
-    var title: String { get }
-}
-
-extension DailyTask: TimerLinkable {}
-extension Routine: TimerLinkable {}
-
-protocol Taskable {
-    var id: UUID { get }
-    var title: String { get }
-    var priority: TaskPriority { get }
-    var isCompleted: Bool { get }
-    var completedAt: Date? { get }
-}
-
-enum RoutineColor: String,CaseIterable, Codable{
-    case blue, red, green, orange, purple, pink, yellow, teal
-    
-    var color : Color {
-        switch self {
-        case .blue: return Color.blue
-        case .red: return Color.red
-        case .green: return Color.green
-        case .orange: return Color.orange
-        case .purple: return Color.purple
-        case .pink: return Color.pink
-        case .yellow: return Color.yellow
-        case .teal: return Color.teal
-        }
-    }
-}
-
 enum RoutineScheduleType: String, Codable, CaseIterable {
     case daily, weekly, timed
 }
@@ -117,19 +85,10 @@ enum RoutinePeriodUnit: String, Codable, CaseIterable {
     case day, week, month
 }
 
-enum CategoryColor: String, CaseIterable, Codable {
-    case blue, red, green, orange, purple, pink, yellow, teal
-    
-    var color : Color {
-        switch self {
-        case .blue: return Color.blue
-        case .red: return Color.red
-        case .green: return Color.green
-        case .orange: return Color.orange
-        case .purple: return Color.purple
-        case .pink: return Color.pink
-        case .yellow: return Color.yellow
-        case .teal: return Color.teal
-        }
-    }
+enum ProjectStatus: String, Codable, CaseIterable {
+    case active, completed, archived
+}
+
+enum MatrixTimeFilter: Int {
+    case daily, weekly, monthly, custom
 }

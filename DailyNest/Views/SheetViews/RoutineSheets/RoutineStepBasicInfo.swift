@@ -22,12 +22,12 @@ struct RoutineStepBasicInfo: View {
 
             SectionDivider(deviderType: .regular)
 
-            colorPicker
+          //  colorPicker
 
             SectionDivider(deviderType: .bottom)
         }
     }
-
+/*
     private var colorPicker: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Color")
@@ -44,9 +44,9 @@ struct RoutineStepBasicInfo: View {
             }
         }
     }
-
-    private func colorCircle(color: RoutineColor) -> some View {
-        let isSelected = task.tintColor == color
+*/
+   /* private func colorCircle(color: RoutineColor) -> some View {
+        let isSelected = ColorHelper.color(from: task.colorHex) == color
         return Circle()
             .fill(color.color)
             .frame(width: 36, height: 36)
@@ -64,7 +64,7 @@ struct RoutineStepBasicInfo: View {
             .animation(.spring(response: 0.25, dampingFraction: 0.6), value: task.tintColor)
             .onTapGesture { task.tintColor = color }
     }
-
+*/
 }
 
 #Preview {
@@ -72,7 +72,6 @@ struct RoutineStepBasicInfo: View {
         RoutineStepBasicInfo(task: Routine(
             title: "Kitap Oku",
             details: "Her gün okuma alışkanlığı",
-            tintColor: .purple,
             priority: .medium,
             isReminderOn: false,
             reminderTime: .now,

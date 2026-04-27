@@ -11,15 +11,20 @@ import SwiftUI
 struct RoutineSection: View {
     let items: [Routine]
     @Binding var isExpanded: Bool
+    var onToggle: ((Routine) -> Void)? = nil
+    var completionCount: ((Routine) -> Int)? = nil
     @Environment(SheetRouter.self) private var sheetRouter
 
     var body: some View {
         VStack(spacing: 0) {
             Section(isExpanded: $isExpanded) {
                 ForEach(items) { item in
-                    RoutineRow(routine: item) { item in
-                        sheetRouter.activeSheet = .routineDetail(item)
-                    }
+                    RoutineRow(
+                        routine: item,
+                        completionCount: completionCount?(item) ?? 0,
+                        onDetail: { sheetRouter.activeSheet = .routineDetail($0) },
+                        onToggle: onToggle
+                    )
                     .padding(2)
                 }
             } header: {
@@ -60,10 +65,12 @@ struct RoutineSection: View {
 #Preview {
     TabBar(selectedTab: .mainView)
         .modelContainer(MockData.previewContainer)
-        .environment(ProgressCardViewModel())
-        .environment(MockData.previewDailyViewModel)
-        .environment(MockData.previewRoutineViewModel)
+        .environment(MockData.previewDailyTaskService)
+        .environment(MockData.previewRoutineService)
+        .environment(ProgressCalculator())
         .environment(SheetRouter())
         .environment(CalendarHelper())
         .environment(MainPageSettings())
+        .environment(MatrixSettings())
+        .environment(AppSettings())
 }

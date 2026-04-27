@@ -12,7 +12,7 @@ struct DailyDetailView: View {
 
     @Environment(CalendarHelper.self) private var calendarHelper
     @Environment(MatrixSettings.self) private var matrixSettings
-    @Environment(DailyViewModel.self) private var dailyViewModel
+    var onToggle: () -> Void = {}
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             SectionDivider(deviderType: .top)
@@ -93,7 +93,7 @@ struct DailyDetailView: View {
         HStack{
             Spacer()
             
-            Button{ dailyViewModel.toggleDailyCompletion(task) } label: {
+            Button{ onToggle() } label: {
                 Text(task.isCompleted ? "Undo" :"Complete")
                     .font(.headline.bold())
                     .foregroundStyle(AppColors.primaryText)

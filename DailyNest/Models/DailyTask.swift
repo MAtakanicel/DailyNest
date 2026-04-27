@@ -15,6 +15,7 @@ final class DailyTask: Taskable {
     var title: String
     var details: String // Description
     var date: Date // Gerçekleştirilicek tarih
+    var colorHex: String
     var createdAt: Date
 
     var priority: TaskPriority
@@ -32,6 +33,7 @@ final class DailyTask: Taskable {
         title: String = "",
         details: String = "",
         date: Date = .now,
+        colorHex: String = AppColors.dailyHex,
         priority: TaskPriority = .medium,
         isReminderOn: Bool = false,
         reminderDate: Date = .now,
@@ -43,6 +45,7 @@ final class DailyTask: Taskable {
         self.details = details
         self.priority = priority
         self.date = date
+        self.colorHex = colorHex
         self.isReminderOn = isReminderOn
         self.reminderDate = reminderDate
 

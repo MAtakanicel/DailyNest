@@ -205,7 +205,6 @@ struct RoutineStepSchedule: View {
         RoutineStepSchedule(task: Routine(
             title: "Kitap Oku",
             details: "",
-            tintColor: .blue,
             priority: .medium,
             isReminderOn: false,
             reminderTime: .now,
@@ -220,6 +219,5 @@ struct RoutineStepSchedule: View {
         ))
         .padding(.horizontal, 25)
     }
-    .environment(MockData.previewRoutineViewModel)
     .environment(MatrixSettings())
 }

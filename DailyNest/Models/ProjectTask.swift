@@ -2,55 +2,53 @@
 //  ProjectTask.swift
 //  DailyNest
 //
-//  Created by Atakan on 19.03.2026.
+//  Created by Atakan on 26.04.2026.
 //
+
 import Foundation
 import SwiftData
 
 @Model
-final class ProjectTask: Taskable {
+final class ProjectTask :Taskable {
+    
     var id: UUID = UUID()
-
     var title: String
-    var details: String? // Description
-    var createdAt: Date
-
+    var details: String?
     var priority: TaskPriority
-
+    var order: Int = 0 // sıralama için
+   
+    var isCompleted: Bool
+    
+    var startDate: Date?
+    var deadline: Date?
+    var completedAt: Date?
+    var createdAt: Date
+    
     var isReminderOn: Bool
     var reminderDate: Date?
 
-    var isCompleted: Bool
-    var completedAt: Date?
-
-    var startDate: Date?
-    var deadline: Date?
-    
-    @Relationship(deleteRule: .nullify)
-    var category: [ObjectCategory] = []
+    @Relationship(deleteRule: .nullify, inverse: \Project.projectTask)
+    var project: Project?
 
     init(
         title: String,
-        details: String? = nil,
-        priority: TaskPriority = .medium,
-        startDate: Date? = nil,
-        deadline: Date? = nil,
+        details:String?,
+        priority: TaskPriority,
+        order: Int = 0,
         isReminderOn: Bool = false,
         reminderDate: Date? = nil,
-        isCompleted: Bool = false,
-        completedAt: Date? = nil
+        
     ) {
         self.title = title
         self.details = details
         self.priority = priority
+        self.order = order
         self.isReminderOn = isReminderOn
         self.reminderDate = reminderDate
-        self.isCompleted = isCompleted
-        self.completedAt = completedAt
-        self.deadline = deadline
-        self.startDate = startDate
-
-        // Varsayılanlar
+        
+        //varsayılan
         createdAt = .now
+        isCompleted = false
     }
 }
+

@@ -12,7 +12,7 @@ struct RoutineDetailSheet: View {
 
     @Environment(CalendarHelper.self) private var calendarHelper
     @Environment(MatrixSettings.self) private var matrixSettings
-    @Environment(RoutineViewModel.self) private var routineViewModel
+    @Environment(RoutineService.self) private var routineService
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -65,14 +65,14 @@ struct RoutineDetailSheet: View {
             Spacer()
 
             Circle()
-                .fill(task.tintColor.color)
+                .fill()
                 .frame(width: 14, height: 14)
         }
         .padding(.vertical, 4)
     }
 
     private var todayProgressSection: some View {
-        let count = routineViewModel.todaysRoutineCompletionCount(task)
+        let count = routineService.todaysCount(task)
         let target = task.routineGoal.targetCount
         let isCompleted = task.isCompletedToday
 
@@ -86,7 +86,7 @@ struct RoutineDetailSheet: View {
                 HStack(spacing: 6) {
                     ForEach(0..<target, id: \.self) { i in
                         Circle()
-                            .fill(i < count ? task.tintColor.color : .gray.opacity(0.18))
+                            .fill(i < count ? ColorHelper.color(from: task.colorHex) : .gray.opacity(0.18))
                             .frame(width: 14, height: 14)
                             .animation(
                                 .spring(response: 0.3, dampingFraction: 0.6).delay(Double(i) * 0.04),
@@ -97,7 +97,7 @@ struct RoutineDetailSheet: View {
 
                 Text("  \(count) / \(target)")
                     .font(.subheadline.bold())
-                    .foregroundColor(isCompleted ? task.tintColor.color : AppColors.secondaryText)
+                    .foregroundColor(isCompleted ? ColorHelper.color(from: task.colorHex) : AppColors.secondaryText)
                     .contentTransition(.numericText())
                     .animation(.spring(response: 0.3, dampingFraction: 0.7), value: count)
 
@@ -106,19 +106,26 @@ struct RoutineDetailSheet: View {
                 Button {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                         isCompleted
-                            ? routineViewModel.routineCompetionResetToday(task)
-                            : routineViewModel.toggleRoutineCompletion(task)
+                            ? try? routineService.resetCompletionToday(task)
+                            : try? routineService.toggleCompletion(task)
                     }
                 } label: {
-                    Text(isCompleted ? "Undo" : "Complete")
+                    let buttonLabel: String = {
+                        if isCompleted { return "Undo" }
+                        if count + 1 >= target { return "Complete" }
+                        return "\(count + 1) / \(target)"
+                    }()
+                    Text(buttonLabel)
                         .font(.subheadline.bold())
                         .foregroundStyle(.white)
                         .padding(.horizontal, 18)
                         .padding(.vertical, 8)
                         .background(
                             Capsule()
-                                .fill(isCompleted ? AppColors.checkmarkRed.opacity(0.85) : task.tintColor.color)
+                                .fill(isCompleted ? AppColors.checkmarkRed.opacity(0.85) : ColorHelper.color(from: task.colorHex))
                         )
+                        .contentTransition(.interpolate)
+                        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: count)
                 }
                 .buttonStyle(.plain)
             }
@@ -205,7 +212,7 @@ struct RoutineDetailSheet: View {
             Text("Streak:")
                 .font(.headline.bold())
                 .foregroundColor(AppColors.primaryText)
-            Text("\(routineViewModel.routineCompletionSeries(task)) days")
+            Text("\(routineService.completionSeries(task)) days")
                 .font(.body)
                 .foregroundColor(AppColors.secondaryText)
         }
@@ -253,7 +260,6 @@ struct RoutineDetailSheet: View {
             RoutineDetailSheet(task: Routine(
                 title: "Kitap Oku",
                 details: "Yatmadan önce en az 20 sayfa kitap oku.",
-                tintColor: .purple,
                 priority: .medium,
                 isReminderOn: true,
                 reminderTime: Calendar.current.date(bySettingHour: 22, minute: 30, second: 0, of: .now) ?? .now,
@@ -268,7 +274,7 @@ struct RoutineDetailSheet: View {
             ))
             .padding(.horizontal, 25)
         }
-        .environment(MockData.previewRoutineViewModel)
+        .environment(MockData.previewRoutineService)
         .environment(SheetRouter())
         .environment(CalendarHelper())
         .environment(MatrixSettings())

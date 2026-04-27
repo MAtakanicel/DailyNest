@@ -20,6 +20,8 @@ struct TabBar: View {
     @Environment(\.modelContext) private var context
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(AppSettings.self) private var appSettings
+    @Environment(DailyTaskService.self) private var dailyService
+    @Environment(RoutineService.self) private var routineService
 
     @Query private var dailyTasks: [DailyTask]
     @Query private var routineTasks: [Routine]
@@ -34,20 +36,35 @@ struct TabBar: View {
         @Bindable var bindableSettings = appSettings
 
         ZStack(alignment: .bottom) {
-            // İçerik Alanı
             mainContent
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .safeAreaInset(edge: .bottom) {
-                Color.clear.frame(height: 80) // TabBar yüksekliği kadar boşluk
-            }
-            .sheet(item: $router.activeSheet) { sheet in
-                switch sheet {
-                case .taskDetail: DailySheetView(dailyTask: (sheetRouter.activeSheet?.task)!, mode: .detail)
-                case .routineDetail: RoutineSheetView(routine: (sheetRouter.activeSheet?.routine)!, mode: .detail)
-                case .newDaily: DailySheetView(dailyTask: DailyTask(), mode: .create)
-                case .newRoutine: RoutineSheetView(routine: Routine(routineGoal: RoutineGoal()), mode: .create)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .safeAreaInset(edge: .bottom) {
+                    Color.clear.frame(height: 80)
                 }
-            }
+                .sheet(item: $router.activeSheet) { sheet in
+                    switch sheet {
+                    case .taskDetail(let task):
+                        DailySheetView(
+                            dailyTask: task,
+                            vm: DailySheetViewModel(mode: .detail, service: dailyService)
+                        )
+                    case .routineDetail(let routine):
+                        RoutineSheetView(
+                            routine: routine,
+                            vm: RoutineSheetViewModel(mode: .detail, service: routineService)
+                        )
+                    case .newDaily:
+                        DailySheetView(
+                            dailyTask: DailyTask(),
+                            vm: DailySheetViewModel(mode: .create, service: dailyService)
+                        )
+                    case .newRoutine:
+                        RoutineSheetView(
+                            routine: Routine(routineGoal: RoutineGoal()),
+                            vm: RoutineSheetViewModel(mode: .create, service: routineService)
+                        )
+                    }
+                }
 
             tabBar
 
@@ -63,39 +80,27 @@ struct TabBar: View {
         }
     }
 
-    /// Data Kontrol
     private func checkAndLoadMockData() {
         #if DEBUG
-            if dailyTasks.isEmpty, routineTasks.isEmpty {
-                MockData.shared.insertSampleData(modelContext: context)
-                print("📦 Veritabanı mock data ile yüklendi.")
-            }
+        if dailyTasks.isEmpty, routineTasks.isEmpty {
+            MockData.shared.insertSampleData(modelContext: context)
+        }
         #endif
     }
 
-    private var mainContent: some View{
+    private var mainContent: some View {
         Group {
             switch selectedTab {
-            case .mainView: NavigationStack {
-                    MainPage()
-                }
-            case .routinesView: NavigationStack {
-                    RoutinesView()
-                }
-            case .agendaView: NavigationStack {
-                    AgendaView()
-                }
-            case .settingsView: NavigationStack {
-                    SettingsView()
-                }
-            case .priorityMatrixView: NavigationStack {
-                    PriorityMatrixView()
-                }
+            case .mainView:         NavigationStack { MainPage() }
+            case .routinesView:     NavigationStack { RoutinesView() }
+            case .agendaView:       NavigationStack { AgendaView() }
+            case .settingsView:     NavigationStack { SettingsView() }
+            case .priorityMatrixView: NavigationStack { PriorityMatrixView() }
             }
         }
     }
-    
-    private var tabBar: some View{
+
+    private var tabBar: some View {
         HStack(spacing: 0) {
             tabButton(.mainView)
             tabButton(.routinesView)
@@ -110,7 +115,7 @@ struct TabBar: View {
         .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 6)
         .padding(.horizontal, 30)
     }
-    
+
     // MARK: - Welcome Popup
 
     private func welcomePopUp(userName: Binding<String>) -> some View {
@@ -160,7 +165,6 @@ struct TabBar: View {
         }
     }
 
-    /// Tab Bar Button component
     private func tabButton(_ tab: FloatingTab) -> some View {
         Button {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
@@ -169,13 +173,13 @@ struct TabBar: View {
         } label: {
             VStack(spacing: 4) {
                 Image(systemName: tab.rawValue)
-                    .font(.system(size: 25, weight: .medium)) // 30 ve semibold
+                    .font(.system(size: 25, weight: .medium))
 
                 if selectedTab == tab {
                     Circle()
                         .fill(AppColors.daily)
                         .frame(width: 5, height: 5)
-                        .matchedGeometryEffect(id: "TabDot", in: tabBarAnimation) // Animasyon için namespace (Şimdilik basit)
+                        .matchedGeometryEffect(id: "TabDot", in: tabBarAnimation)
                 }
             }
             .foregroundColor(selectedTab == tab ? AppColors.daily : .gray.opacity(0.8))
@@ -187,9 +191,9 @@ struct TabBar: View {
 #Preview {
     TabBar()
         .modelContainer(MockData.previewContainer)
-        .environment(ProgressCardViewModel())
-        .environment(MockData.previewDailyViewModel)
-        .environment(MockData.previewRoutineViewModel)
+        .environment(MockData.previewDailyTaskService)
+        .environment(MockData.previewRoutineService)
+        .environment(ProgressCalculator())
         .environment(SheetRouter())
         .environment(CalendarHelper())
         .environment(MainPageSettings())

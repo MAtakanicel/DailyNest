@@ -9,68 +9,60 @@ import SwiftData
 import SwiftUI
 
 struct AgendaView: View {
+    @Environment(DailyTaskService.self) private var dailyService
     @Environment(CalendarHelper.self) private var calendarHelper
-    @Environment(DailyViewModel.self) private var dailyViewModel
     @Environment(SheetRouter.self) private var sheetRouter
 
     @Query(sort: \DailyTask.date, order: .reverse) private var dailyTasks: [DailyTask]
 
-    @State private var selectedDate = Date()
-    @State private var displayedDate = Date()
-    @State private var isExpanded = false
-    @State private var isShowCompletedTasks: Bool = true
+    @State private var vm: AgendaViewModel?
 
     private let rowHeight: CGFloat = 40
-
-    private var isVisibleTaskList: Bool {
-        !dailyViewModel.dailysForDate(dailyTasks, date: selectedDate).isEmpty
-    }
 
     var body: some View {
         ZStack {
             AppColors.background.ignoresSafeArea()
-            
-            mainContent
-            
-            VStack {
-                Spacer()
 
-                HStack {
-                    Spacer()
-                    NewTaskButton(mode: .daily, onTap: {
-                        sheetRouter.activeSheet = .newDaily
-                    })
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 75) // tab bar yüksekliği kadar boşluk
-                }
+            if let vm {
+                mainContent(vm: vm)
+                NewTaskButton(mode: .daily, onTap: { sheetRouter.activeSheet = .newDaily })
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                navBarTitle
+                if let vm { navBarTitle(vm: vm) }
             }
-
             ToolbarItem(placement: .navigationBarTrailing) {
-                tabBarMenu
+                if let vm { tabBarMenu(vm: vm) }
             }
         }
+        .task {
+            if vm == nil { vm = AgendaViewModel(service: dailyService) }
+        }
+        .alert("Error", isPresented: Binding(
+            get: { vm?.alertMessage != nil },
+            set: { if !$0 { vm?.alertMessage = nil } }
+        )) {
+            Button("OK") { vm?.alertMessage = nil }
+        } message: {
+            Text(vm?.alertMessage ?? "")
+        }
     }
-    
-    private var mainContent: some View{
-        VStack(spacing: 0) {
-            // MARK: - Takvim Grid
 
+    private func mainContent(vm: AgendaViewModel) -> some View {
+        @Bindable var bindableVM = vm
+        return VStack(spacing: 0) {
             CalendarComponent(
-                selectedDate: $selectedDate,
-                displayedDate: $displayedDate,
-                isExpanded: $isExpanded,
+                selectedDate: $bindableVM.selectedDate,
+                displayedDate: $bindableVM.displayedDate,
+                isExpanded: $bindableVM.isExpanded,
                 rowHeight: rowHeight
             )
             Divider()
 
-            if isVisibleTaskList {
-                taskList
+            if vm.isTaskListVisible(dailyTasks) {
+                taskList(vm: vm)
             } else {
                 Spacer()
                 emptyView
@@ -79,29 +71,23 @@ struct AgendaView: View {
             Spacer()
         }
         .gesture(
-            DragGesture()
-                .onEnded { value in
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                        if value.translation.height > 30 {
-                            isExpanded = true
-                        } else if value.translation.height < -30 {
-                            isExpanded = false
-                        }
-                    }
+            DragGesture().onEnded { value in
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                    vm.handleDrag(translation: value.translation.height)
                 }
+            }
         )
-        .onChange(of: selectedDate) { _, newDate in
-            displayedDate = newDate
+        .onChange(of: vm.selectedDate) { _, newDate in
+            vm.onDateChanged(newDate)
         }
-
     }
 
-    private var navBarTitle: some View {
+    private func navBarTitle(vm: AgendaViewModel) -> some View {
         VStack(spacing: 2) {
-            Text(calendarHelper.monthTitle(for: displayedDate))
+            Text(calendarHelper.monthTitle(for: vm.displayedDate))
                 .font(.title2).bold()
-            if !isExpanded {
-                if selectedDate == Calendar.current.startOfDay(for: Date()) {
+            if !vm.isExpanded {
+                if vm.selectedDate == Calendar.current.startOfDay(for: Date()) {
                     Text("Today")
                         .font(.caption)
                         .foregroundColor(AppColors.secondaryText)
@@ -110,15 +96,15 @@ struct AgendaView: View {
         }
     }
 
-    private var taskList: some View {
+    private func taskList(vm: AgendaViewModel) -> some View {
         ScrollView {
             LazyVStack {
-                ForEach(
-                    isShowCompletedTasks ? dailyViewModel.dailysForDate(dailyTasks, date: selectedDate) : dailyViewModel.activeDailys(dailyViewModel.dailysForDate(dailyTasks, date: selectedDate))
-                ) { task in
-                    DailyRow(task: task) { item in
-                        sheetRouter.activeSheet = .taskDetail(item)
-                    }
+                ForEach(vm.visibleTasks(dailyTasks)) { task in
+                    DailyRow(
+                        task: task,
+                        onDetail: { sheetRouter.activeSheet = .taskDetail($0) },
+                        onToggle: { vm.toggleCompletion($0) }
+                    )
                 }
             }
         }
@@ -138,20 +124,20 @@ struct AgendaView: View {
         }
     }
 
-    private var tabBarMenu: some View {
+    private func tabBarMenu(vm: AgendaViewModel) -> some View {
         Menu {
-            Button { isShowCompletedTasks.toggle() } label: {
-                Text(
-                    isShowCompletedTasks ?
-                        "Hide completed tasks" :
-                        "Show completed tasks"
-                )
-                Image(systemName: isShowCompletedTasks ? "eye.slash" : "eye")
+            Button {
+                vm.isShowCompletedTasks.toggle()
+            } label: {
+                Text(vm.isShowCompletedTasks ? "Hide completed tasks" : "Show completed tasks")
+                Image(systemName: vm.isShowCompletedTasks ? "eye.slash" : "eye")
             }
-
         } label: {
-            Image(systemName: "slider.horizontal.3")
+            Image(systemName: "line.3.horizontal.decrease")
+                .resizable()
                 .foregroundColor(AppColors.primaryText)
+                .fontWeight(.regular)
+                .frame(width: 22, height: 12)
         }
     }
 }
@@ -159,9 +145,12 @@ struct AgendaView: View {
 #Preview {
     TabBar(selectedTab: .agendaView)
         .modelContainer(MockData.previewContainer)
-        .environment(ProgressCardViewModel())
-        .environment(MockData.previewDailyViewModel)
-        .environment(MockData.previewRoutineViewModel)
+        .environment(MockData.previewDailyTaskService)
+        .environment(MockData.previewRoutineService)
+        .environment(ProgressCalculator())
         .environment(SheetRouter())
         .environment(CalendarHelper())
+        .environment(MainPageSettings())
+        .environment(MatrixSettings())
+        .environment(AppSettings())
 }

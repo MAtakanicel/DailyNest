@@ -14,11 +14,13 @@ enum AppColors {
     static let icon: Color = .dynamic(lightHex: "#8E8E93", darkHex: "#98989E")
 
     static let daily: Color = .dynamic(lightHex: "#F59E0B", darkHex: "#FBB024")
-    static let dailyTapped: Color = .dynamic(lightHex: "#D97706", darkHex: "#E8920A")
-
     static let routine: Color = .dynamic(lightHex: "#10B981", darkHex: "#34D399")
+    static let project: Color = .dynamic(lightHex: "#7F77DD", darkHex: "#AFA9EC")
+    static let ObjectCategory: Color = .dynamic(lightHex: "#378ADD", darkHex: "#5B9FE8")
+    
     static let routineTapped: Color = .dynamic(lightHex: "#059669", darkHex: "#10B981")
-
+    static let dailyTapped: Color = .dynamic(lightHex: "#D97706", darkHex: "#E8920A")
+    
     static let cardBackGround: Color = .dynamic(lightHex: "#FFFFFF", darkHex: "#2C2C2E")
     static let cardText: Color = .dynamic(lightHex: "#1C1C1E", darkHex: "#F2F2F7")
 
@@ -41,6 +43,15 @@ enum AppColors {
     static let appleSignInBackground: Color = .dynamic(lightHex: "#000000", darkHex: "#FFFFFF")
 
     static let overlayStroke: Color = .dynamic(lightHex: "#000000", darkHex: "#FFFFFF")
+}
+
+///Model Colors
+extension AppColors{
+    // MARK: - Light Hex Values
+    static let dailyHex      = "#F59E0B"
+    static let routineHex    = "#10B981"
+    static let projectHex    = "#7F77DD"
+    static let categoryHex   = "#378ADD"
 }
 
 // MARK: - Helpers
@@ -83,3 +94,5 @@ extension UIColor {
         self.init(red: r, green: g, blue: b, alpha: a)
     }
 }
+
+

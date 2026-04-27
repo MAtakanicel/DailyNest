@@ -17,34 +17,46 @@ struct NewTaskButton: View {
     let mode: NewTaskMode
     let onTap: () -> Void
     var body: some View {
-        Button {
-            onTap()
-        } label: {
-            Image(systemName: "plus")
-                .foregroundColor(AppColors.primaryText)
-                .font(.system(size: 25))
-                .padding(12)
-                .background(
-                    Group {
-                        switch mode {
-                        case .daily:
-                            Circle()
-                                .fill(AppColors.daily)
-                                .overlay(
+        VStack {
+            
+            Spacer()
+            
+            HStack {
+                
+                Spacer()
+                
+                Button {
+                    onTap()
+                } label: {
+                    Image(systemName: "plus")
+                        .foregroundColor(AppColors.primaryText)
+                        .font(.system(size: 25))
+                        .padding(12)
+                        .background(
+                            Group {
+                                switch mode {
+                                case .daily:
                                     Circle()
-                                        .stroke(AppColors.overlayStroke.opacity(0.1), lineWidth: 0.5)
-                                )
-
-                        case .routine:
-                            Circle()
-                                .fill(AppColors.routine)
-                                .overlay(
+                                        .fill(AppColors.daily)
+                                        .overlay(
+                                            Circle()
+                                                .stroke(AppColors.overlayStroke.opacity(0.1), lineWidth: 0.5)
+                                        )
+                                    
+                                case .routine:
                                     Circle()
-                                        .stroke(AppColors.overlayStroke.opacity(0.1), lineWidth: 0.5)
-                                )
-                        }
-                    }
-                )
+                                        .fill(AppColors.routine)
+                                        .overlay(
+                                            Circle()
+                                                .stroke(AppColors.overlayStroke.opacity(0.1), lineWidth: 0.5)
+                                        )
+                                }
+                            }
+                        )
+                }
+                .padding(.trailing, 20)
+                .padding(.bottom, 75)
+            }
         }
     }
 }

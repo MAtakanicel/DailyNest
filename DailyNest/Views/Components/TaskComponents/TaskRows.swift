@@ -14,8 +14,9 @@ enum DailyRowStyle {
 
 struct RoutineRow: View {
     var routine: Routine
-    @Environment(RoutineViewModel.self) private var routineViewModel
-    var onTap: ((Routine) -> Void)? = nil
+    var completionCount: Int
+    var onDetail: ((Routine) -> Void)? = nil
+    var onToggle: ((Routine) -> Void)? = nil
 
     var body: some View {
         HStack {
@@ -34,15 +35,9 @@ struct RoutineRow: View {
                         .padding(.leading, 10)
                 }
             }
-            .onTapGesture {
-                if !routine.isCompletedToday {
-                    routineViewModel.toggleRoutineCompletion(routine)
-                } else {
-                    routineViewModel.routineCompetionResetToday(routine)
-                }
-            }
+            .onTapGesture { onToggle?(routine) }
 
-            Button { onTap?(routine) } label: {
+            Button { onDetail?(routine) } label: {
                 Text(routine.title)
                     .foregroundColor(AppColors.cardText)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -51,7 +46,7 @@ struct RoutineRow: View {
 
             Spacer()
 
-            Text("\(routineViewModel.todaysRoutineCompletionCount(routine)) / \(routine.routineGoal.targetCount)")
+            Text("\(completionCount) / \(routine.routineGoal.targetCount)")
                 .font(.subheadline)
                 .italic()
                 .foregroundStyle(AppColors.secondaryText)
@@ -68,9 +63,9 @@ struct RoutineRow: View {
 struct DailyRow: View {
     var task: DailyTask
     var rowStyle: DailyRowStyle = .standart
-    var onTap: ((DailyTask) -> Void)? = nil
+    var onDetail: ((DailyTask) -> Void)? = nil
+    var onToggle: ((DailyTask) -> Void)? = nil
 
-    @Environment(DailyViewModel.self) private var dailyViewModel
     private var isToday: Bool {
         Calendar.current.isDate(task.date, inSameDayAs: Date())
     }
@@ -93,11 +88,9 @@ struct DailyRow: View {
                     }
                 }
                 .padding(.trailing, 2)
-                .onTapGesture {
-                    dailyViewModel.toggleDailyCompletion(task)
-                }
+                .onTapGesture { onToggle?(task) }
 
-                Button { onTap?(task) } label: {
+                Button { onDetail?(task) } label: {
                     VStack(alignment: .leading, spacing: 0) {
                         Text(task.title)
                             .foregroundColor(AppColors.cardText)
@@ -111,7 +104,6 @@ struct DailyRow: View {
                                 .font(.caption)
                                 .foregroundColor(AppColors.secondaryText)
                                 .padding(.leading, 5)
-
                         } else {
                             Text(task.date, format: .dateTime.day().month())
                                 .font(.caption)
@@ -140,11 +132,9 @@ struct DailyRow: View {
                             .padding(.leading, 10)
                     }
                 }
-                .onTapGesture {
-                    dailyViewModel.toggleDailyCompletion(task)
-                }
+                .onTapGesture { onToggle?(task) }
 
-                Button { onTap?(task) } label: {
+                Button { onDetail?(task) } label: {
                     Text(task.title)
                         .foregroundColor(AppColors.cardText)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -156,7 +146,6 @@ struct DailyRow: View {
                         .font(.subheadline)
                         .foregroundColor(AppColors.secondaryText)
                         .padding(.trailing, 15)
-
                 } else {
                     Text(task.date, format: .dateTime.day().month())
                         .font(.subheadline)
@@ -171,13 +160,4 @@ struct DailyRow: View {
             .shadow(color: .gray.opacity(0.25), radius: 2, x: 0, y: 2)
         }
     }
-}
-
-#Preview {
-    TabBar(selectedTab: .agendaView)
-        .environment(ProgressCardViewModel())
-        .environment(MockData.previewDailyViewModel)
-        .environment(MockData.previewRoutineViewModel)
-        .environment(SheetRouter())
-        .environment(CalendarHelper())
 }

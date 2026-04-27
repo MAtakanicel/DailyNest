@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftData
-import Observation
 
 protocol RoutineRepositoryProtocol{
     func create(_ routine: Routine) throws
@@ -15,7 +14,6 @@ protocol RoutineRepositoryProtocol{
     func delete(_ routine: Routine) throws
 }
 
-@Observable
 class RoutineRepository: RoutineRepositoryProtocol {
     private let context : ModelContext
     
