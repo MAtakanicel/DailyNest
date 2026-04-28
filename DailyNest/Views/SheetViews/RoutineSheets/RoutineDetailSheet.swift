@@ -107,7 +107,7 @@ struct RoutineDetailSheet: View {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                         isCompleted
                             ? try? routineService.resetCompletionToday(task)
-                            : try? routineService.toggleCompletion(task)
+                        : try? routineService.toggleCompletion(task)
                     }
                 } label: {
                     let buttonLabel: String = {

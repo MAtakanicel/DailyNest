@@ -34,78 +34,69 @@ enum PriorityMatrixSheet: Identifiable {
 }
 
 struct PriorityMatrixView: View {
-    @Environment(DailyTaskService.self) private var dailyService
+    @Environment(PriorityMatrixViewModel.self) private var vm
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(MatrixSettings.self) private var matrixSettings
 
     @Query(sort: \DailyTask.date, order: .reverse) private var dailyTasks: [DailyTask]
 
-    @State private var vm: PriorityMatrixViewModel?
-
     var body: some View {
+        @Bindable var bindableVM = vm
         ZStack {
             AppColors.background.ignoresSafeArea()
 
-            if let vm {
-                @Bindable var bindableVM = vm
-                matrixContent(vm: vm)
-                    .padding(.bottom, 70)
-                    .padding(.horizontal)
-                    .sheet(item: $bindableVM.activeLocalSheet) { sheet in
-                        switch sheet {
-                        case .customDateFilterSheet:
-                            DatePickerSheet(
-                                timeFilterStartDate: $bindableVM.timeFilterStartDate,
-                                timeFilterEndDate: $bindableVM.timeFilterEndDate,
-                                setDate: Binding(
-                                    get: { vm.timeFilterState },
-                                    set: { vm.timeFilterState = $0 }
-                                )
+            matrixContent
+                .padding(.bottom, 70)
+                .padding(.horizontal)
+                .sheet(item: $bindableVM.activeLocalSheet) { sheet in
+                    switch sheet {
+                    case .customDateFilterSheet:
+                        DatePickerSheet(
+                            timeFilterStartDate: $bindableVM.timeFilterStartDate,
+                            timeFilterEndDate: $bindableVM.timeFilterEndDate,
+                            setDate: Binding(
+                                get: { vm.timeFilterState },
+                                set: { vm.timeFilterState = $0 }
                             )
-                            .presentationDetents([.fraction(0.35)])
-                        case .matrixSettingsSheet:
-                            MatrixSettingsSheet()
-                                .presentationDetents([.large])
-                        }
+                        )
+                        .presentationDetents([.fraction(0.35)])
+                    case .matrixSettingsSheet:
+                        MatrixSettingsSheet()
+                            .presentationDetents([.large])
                     }
-            }
+                }
         }
         .navigationTitle("Priority Matrix")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                if let vm { toolbarContent(vm: vm) }
-            }
-        }
-        .task {
-            if vm == nil {
-                vm = PriorityMatrixViewModel(service: dailyService, matrixSettings: matrixSettings)
+                toolbarContent
             }
         }
         .alert("Error", isPresented: Binding(
-            get: { vm?.alertMessage != nil },
-            set: { if !$0 { vm?.alertMessage = nil } }
+            get: { vm.alertMessage != nil },
+            set: { if !$0 { vm.alertMessage = nil } }
         )) {
-            Button("OK") { vm?.alertMessage = nil }
+            Button("OK") { vm.alertMessage = nil }
         } message: {
-            Text(vm?.alertMessage ?? "")
+            Text(vm.alertMessage ?? "")
         }
     }
 
-    private func matrixContent(vm: PriorityMatrixViewModel) -> some View {
+    private var matrixContent: some View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
-                quadrant(priority: .veryHigh, corner: .topLeading, vm: vm)
-                quadrant(priority: .high, corner: .topTrailing, vm: vm)
+                quadrant(priority: .veryHigh, corner: .topLeading)
+                quadrant(priority: .high, corner: .topTrailing)
             }
             HStack(spacing: 10) {
-                quadrant(priority: .medium, corner: .bottomLeading, vm: vm)
-                quadrant(priority: .low, corner: .bottomTrailing, vm: vm)
+                quadrant(priority: .medium, corner: .bottomLeading)
+                quadrant(priority: .low, corner: .bottomTrailing)
             }
         }
     }
 
-    private func toolbarContent(vm: PriorityMatrixViewModel) -> some View {
+    private var toolbarContent: some View {
         Menu {
             Button {
                 vm.isShowCompletedTasks.toggle()
@@ -126,9 +117,9 @@ struct PriorityMatrixView: View {
             }
 
             Menu {
-                timeFilterButton("Todays Tasks", .daily, vm: vm)
-                timeFilterButton("Weekly Tasks", .weekly, vm: vm)
-                timeFilterButton("Monthly Tasks", .monthly, vm: vm)
+                timeFilterButton("Todays Tasks", .daily)
+                timeFilterButton("Weekly Tasks", .weekly)
+                timeFilterButton("Monthly Tasks", .monthly)
                 Button {
                     vm.openCustomDateSheet()
                 } label: {
@@ -147,7 +138,7 @@ struct PriorityMatrixView: View {
         }
     }
 
-    private func quadrant(priority: TaskPriority, corner: RoundedCorner, vm: PriorityMatrixViewModel) -> some View {
+    private func quadrant(priority: TaskPriority, corner: RoundedCorner) -> some View {
         let tasks = vm.tasks(for: priority, from: dailyTasks)
 
         return VStack(alignment: .leading, spacing: 0) {
@@ -202,7 +193,7 @@ struct PriorityMatrixView: View {
         }
     }
 
-    private func timeFilterButton(_ title: String, _ filter: MatrixTimeFilter, vm: PriorityMatrixViewModel) -> some View {
+    private func timeFilterButton(_ title: String, _ filter: MatrixTimeFilter) -> some View {
         Button { vm.applyTimeFilter(filter) } label: {
             Text(title)
             if vm.timeFilterState == filter { Image(systemName: "checkmark") }
@@ -213,12 +204,17 @@ struct PriorityMatrixView: View {
 #Preview {
     TabBar(selectedTab: .priorityMatrixView)
         .modelContainer(MockData.previewContainer)
-        .environment(MockData.previewDailyTaskService)
-        .environment(MockData.previewRoutineService)
-        .environment(ProgressCalculator())
         .environment(SheetRouter())
         .environment(CalendarHelper())
-        .environment(MainPageSettings())
-        .environment(MatrixSettings())
-        .environment(AppSettings())
+        .environment(MockData.previewDailyTaskService)
+        .environment(MockData.previewRoutineService)
+        .environment(MockData.previewProgressCalculator)
+        .environment(MockData.previewMainPageSettings)
+        .environment(MockData.previewMatrixSettings)
+        .environment(MockData.previewAppSettings)
+        .environment(MockData.previewMainPageViewModel)
+        .environment(MockData.previewAgendaViewModel)
+        .environment(MockData.previewRoutinesViewModel)
+        .environment(MockData.previewPriorityMatrixViewModel)
+        .environment(MockData.previewSettingsViewModel)
 }

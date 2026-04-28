@@ -9,9 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct MainPage: View {
-    @Environment(DailyTaskService.self) private var dailyService
-    @Environment(RoutineService.self) private var routineService
-    @Environment(ProgressCalculator.self) private var calculator
+    @Environment(MainPageViewModel.self) private var vm
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(MainPageSettings.self) private var mainPageSettings
     @Environment(CalendarHelper.self) private var calendarHelper
@@ -20,40 +18,26 @@ struct MainPage: View {
     @Query private var dailyTasks: [DailyTask]
     @Query(sort: \Routine.createdAt, order: .reverse) private var routineTasks: [Routine]
 
-    @State private var vm: MainPageViewModel?
-
     var body: some View {
-        @Bindable var settings = mainPageSettings
         ZStack {
             AppColors.background.ignoresSafeArea()
 
-            if let vm {
-                mainContent(vm: vm)
-                NewTaskButton(mode: .daily, onTap: { sheetRouter.activeSheet = .newDaily })
-            }
+            mainContent
+            NewTaskButton(mode: .daily, onTap: { sheetRouter.activeSheet = .newDaily })
         }
         .navigationBarHidden(true)
-        .task {
-            if vm == nil {
-                vm = MainPageViewModel(
-                    dailyService: dailyService,
-                    routineService: routineService,
-                    calculator: calculator
-                )
-            }
-        }
         .alert("Error", isPresented: Binding(
-            get: { vm?.alertMessage != nil },
-            set: { if !$0 { vm?.alertMessage = nil } }
+            get: { vm.alertMessage != nil },
+            set: { if !$0 { vm.alertMessage = nil } }
         )) {
-            Button("OK") { vm?.alertMessage = nil }
+            Button("OK") { vm.alertMessage = nil }
         } message: {
-            Text(vm?.alertMessage ?? "")
+            Text(vm.alertMessage ?? "")
         }
     }
 
     @ViewBuilder
-    private func mainContent(vm: MainPageViewModel) -> some View {
+    private var mainContent: some View {
         @Bindable var settings = mainPageSettings
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 0) {
@@ -172,12 +156,17 @@ struct MainPage: View {
 #Preview {
     TabBar(selectedTab: .mainView)
         .modelContainer(MockData.previewContainer)
-        .environment(MockData.previewDailyTaskService)
-        .environment(MockData.previewRoutineService)
-        .environment(ProgressCalculator())
         .environment(SheetRouter())
         .environment(CalendarHelper())
-        .environment(MainPageSettings())
-        .environment(MatrixSettings())
-        .environment(AppSettings())
+        .environment(MockData.previewDailyTaskService)
+        .environment(MockData.previewRoutineService)
+        .environment(MockData.previewProgressCalculator)
+        .environment(MockData.previewMainPageSettings)
+        .environment(MockData.previewMatrixSettings)
+        .environment(MockData.previewAppSettings)
+        .environment(MockData.previewMainPageViewModel)
+        .environment(MockData.previewAgendaViewModel)
+        .environment(MockData.previewRoutinesViewModel)
+        .environment(MockData.previewPriorityMatrixViewModel)
+        .environment(MockData.previewSettingsViewModel)
 }

@@ -89,6 +89,7 @@ struct DailyDetailView: View {
         }
     }
     
+    
     private var doneButton: some View {
         HStack{
             Spacer()

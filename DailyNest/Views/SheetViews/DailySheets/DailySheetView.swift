@@ -79,7 +79,10 @@ struct DailySheetView: View {
         ScrollView {
             switch vm.mode {
             case .detail:
-                DailyDetailView(task: task, onToggle: { vm.toggleCompletion(task) })
+                DailyDetailView(task: task, onToggle: {
+                    vm.toggleCompletion(task)
+                    dismiss()
+                })
                     .padding(.horizontal, 10)
 
             case .create, .edit:

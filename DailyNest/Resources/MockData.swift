@@ -96,3 +96,43 @@ class MockData {
         try? modelContext.save()
     }
 }
+
+extension MockData {
+    // MARK: - Shared Preview Instances
+    // View ile VM aynı instance'ı paylaşmalı; aksi halde @Observable
+    // tracking iki ayrı instance arasında bölünür ve preview'da senkron kaybı olur.
+
+    static let previewMatrixSettings = MatrixSettings()
+    static let previewMainPageSettings = MainPageSettings()
+    static let previewAppSettings = AppSettings()
+    static let previewProgressCalculator = ProgressCalculator()
+
+    // MARK: - Preview ViewModels
+
+    static var previewMainPageViewModel: MainPageViewModel {
+        MainPageViewModel(
+            dailyService: previewDailyTaskService,
+            routineService: previewRoutineService,
+            calculator: previewProgressCalculator
+        )
+    }
+
+    static var previewAgendaViewModel: AgendaViewModel {
+        AgendaViewModel(service: previewDailyTaskService)
+    }
+
+    static var previewRoutinesViewModel: RoutinesViewModel {
+        RoutinesViewModel(service: previewRoutineService)
+    }
+
+    static var previewPriorityMatrixViewModel: PriorityMatrixViewModel {
+        PriorityMatrixViewModel(
+            service: previewDailyTaskService,
+            matrixSettings: previewMatrixSettings
+        )
+    }
+
+    static var previewSettingsViewModel: SettingsViewModel {
+        SettingsViewModel(appSettings: previewAppSettings)
+    }
+}

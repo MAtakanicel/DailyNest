@@ -16,48 +16,41 @@ enum TaskFilter: String, CaseIterable, Hashable {
 struct RoutinesView: View {
     @Query(sort: \Routine.createdAt, order: .reverse) private var routineTasks: [Routine]
 
-    @Environment(RoutineService.self) private var routineService
+    @Environment(RoutinesViewModel.self) private var vm
     @Environment(SheetRouter.self) private var sheetRouter
     @Environment(CalendarHelper.self) private var calendarHelper
 
-    @State private var vm: RoutinesViewModel?
-
     var body: some View {
+        @Bindable var bindableVM = vm
         ZStack {
             AppColors.background.ignoresSafeArea()
 
-            if let vm {
-                @Bindable var bindableVM = vm
-                VStack(spacing: 16) {
-                    weekRow(vm: vm)
-                        .padding(.vertical, 10)
-                        .background(GradientSectionBackground(viewStyle: .calendar))
+            VStack(spacing: 16) {
+                weekRow
+                    .padding(.vertical, 10)
+                    .background(GradientSectionBackground(viewStyle: .calendar))
 
-                    searchBar(text: $bindableVM.searchText)
+                searchBar(text: $bindableVM.searchText)
 
-                    filterBar(selection: $bindableVM.selectFilter)
+                filterBar(selection: $bindableVM.selectFilter)
 
-                    routineList(vm: vm)
+                routineList
 
-                    Spacer()
-                }
-                .padding(.horizontal, 20)
+                Spacer()
             }
+            .padding(.horizontal, 20)
 
             NewTaskButton(mode: .routine, onTap: { sheetRouter.activeSheet = .newRoutine })
         }
         .navigationTitle("My Routines")
         .navigationBarTitleDisplayMode(.inline)
-        .task {
-            if vm == nil { vm = RoutinesViewModel(service: routineService) }
-        }
         .alert("Error", isPresented: Binding(
-            get: { vm?.alertMessage != nil },
-            set: { if !$0 { vm?.alertMessage = nil } }
+            get: { vm.alertMessage != nil },
+            set: { if !$0 { vm.alertMessage = nil } }
         )) {
-            Button("OK") { vm?.alertMessage = nil }
+            Button("OK") { vm.alertMessage = nil }
         } message: {
-            Text(vm?.alertMessage ?? "")
+            Text(vm.alertMessage ?? "")
         }
     }
 
@@ -86,18 +79,18 @@ struct RoutinesView: View {
         .padding(.horizontal, 40)
     }
 
-    private func routineList(vm: RoutinesViewModel) -> some View {
+    private var routineList: some View {
         ScrollView {
             LazyVStack {
                 ForEach(vm.displayedRoutines(routineTasks)) { task in
-                    routineRow(routine: task, vm: vm)
+                    routineRow(routine: task)
                         .padding(.bottom, 5)
                 }
             }
         }
     }
 
-    private func routineRow(routine: Routine, vm: RoutinesViewModel) -> some View {
+    private func routineRow(routine: Routine) -> some View {
         HStack {
             Button { sheetRouter.activeSheet = .routineDetail(routine) } label: {
                 Rectangle()
@@ -144,7 +137,7 @@ struct RoutinesView: View {
         .shadow(color: .gray.opacity(0.25), radius: 2, x: 0, y: 2)
     }
 
-    private func weekRow(vm: RoutinesViewModel) -> some View {
+    private var weekRow: some View {
         HStack(spacing: 0) {
             ForEach(calendarHelper.weekDays(for: Date()), id: \.self) { date in
                 DayCell(
@@ -169,12 +162,17 @@ struct RoutinesView: View {
 #Preview {
     TabBar(selectedTab: .routinesView)
         .modelContainer(MockData.previewContainer)
-        .environment(MockData.previewDailyTaskService)
-        .environment(MockData.previewRoutineService)
-        .environment(ProgressCalculator())
         .environment(SheetRouter())
         .environment(CalendarHelper())
-        .environment(MainPageSettings())
-        .environment(MatrixSettings())
-        .environment(AppSettings())
+        .environment(MockData.previewDailyTaskService)
+        .environment(MockData.previewRoutineService)
+        .environment(MockData.previewProgressCalculator)
+        .environment(MockData.previewMainPageSettings)
+        .environment(MockData.previewMatrixSettings)
+        .environment(MockData.previewAppSettings)
+        .environment(MockData.previewMainPageViewModel)
+        .environment(MockData.previewAgendaViewModel)
+        .environment(MockData.previewRoutinesViewModel)
+        .environment(MockData.previewPriorityMatrixViewModel)
+        .environment(MockData.previewSettingsViewModel)
 }

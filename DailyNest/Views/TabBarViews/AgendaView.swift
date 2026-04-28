@@ -9,13 +9,11 @@ import SwiftData
 import SwiftUI
 
 struct AgendaView: View {
-    @Environment(DailyTaskService.self) private var dailyService
+    @Environment(AgendaViewModel.self) private var vm
     @Environment(CalendarHelper.self) private var calendarHelper
     @Environment(SheetRouter.self) private var sheetRouter
 
     @Query(sort: \DailyTask.date, order: .reverse) private var dailyTasks: [DailyTask]
-
-    @State private var vm: AgendaViewModel?
 
     private let rowHeight: CGFloat = 40
 
@@ -23,34 +21,29 @@ struct AgendaView: View {
         ZStack {
             AppColors.background.ignoresSafeArea()
 
-            if let vm {
-                mainContent(vm: vm)
-                NewTaskButton(mode: .daily, onTap: { sheetRouter.activeSheet = .newDaily })
-            }
+            mainContent
+            NewTaskButton(mode: .daily, onTap: { sheetRouter.activeSheet = .newDaily })
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                if let vm { navBarTitle(vm: vm) }
+                navBarTitle
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                if let vm { tabBarMenu(vm: vm) }
+                tabBarMenu
             }
         }
-        .task {
-            if vm == nil { vm = AgendaViewModel(service: dailyService) }
-        }
         .alert("Error", isPresented: Binding(
-            get: { vm?.alertMessage != nil },
-            set: { if !$0 { vm?.alertMessage = nil } }
+            get: { vm.alertMessage != nil },
+            set: { if !$0 { vm.alertMessage = nil } }
         )) {
-            Button("OK") { vm?.alertMessage = nil }
+            Button("OK") { vm.alertMessage = nil }
         } message: {
-            Text(vm?.alertMessage ?? "")
+            Text(vm.alertMessage ?? "")
         }
     }
 
-    private func mainContent(vm: AgendaViewModel) -> some View {
+    private var mainContent: some View {
         @Bindable var bindableVM = vm
         return VStack(spacing: 0) {
             CalendarComponent(
@@ -62,7 +55,7 @@ struct AgendaView: View {
             Divider()
 
             if vm.isTaskListVisible(dailyTasks) {
-                taskList(vm: vm)
+                taskList
             } else {
                 Spacer()
                 emptyView
@@ -82,7 +75,7 @@ struct AgendaView: View {
         }
     }
 
-    private func navBarTitle(vm: AgendaViewModel) -> some View {
+    private var navBarTitle: some View {
         VStack(spacing: 2) {
             Text(calendarHelper.monthTitle(for: vm.displayedDate))
                 .font(.title2).bold()
@@ -96,7 +89,7 @@ struct AgendaView: View {
         }
     }
 
-    private func taskList(vm: AgendaViewModel) -> some View {
+    private var taskList: some View {
         ScrollView {
             LazyVStack {
                 ForEach(vm.visibleTasks(dailyTasks)) { task in
@@ -124,7 +117,7 @@ struct AgendaView: View {
         }
     }
 
-    private func tabBarMenu(vm: AgendaViewModel) -> some View {
+    private var tabBarMenu: some View {
         Menu {
             Button {
                 vm.isShowCompletedTasks.toggle()
@@ -145,12 +138,17 @@ struct AgendaView: View {
 #Preview {
     TabBar(selectedTab: .agendaView)
         .modelContainer(MockData.previewContainer)
-        .environment(MockData.previewDailyTaskService)
-        .environment(MockData.previewRoutineService)
-        .environment(ProgressCalculator())
         .environment(SheetRouter())
         .environment(CalendarHelper())
-        .environment(MainPageSettings())
-        .environment(MatrixSettings())
-        .environment(AppSettings())
+        .environment(MockData.previewDailyTaskService)
+        .environment(MockData.previewRoutineService)
+        .environment(MockData.previewProgressCalculator)
+        .environment(MockData.previewMainPageSettings)
+        .environment(MockData.previewMatrixSettings)
+        .environment(MockData.previewAppSettings)
+        .environment(MockData.previewMainPageViewModel)
+        .environment(MockData.previewAgendaViewModel)
+        .environment(MockData.previewRoutinesViewModel)
+        .environment(MockData.previewPriorityMatrixViewModel)
+        .environment(MockData.previewSettingsViewModel)
 }
