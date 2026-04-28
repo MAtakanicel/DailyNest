@@ -10,7 +10,7 @@ import SwiftUI
 
 
 enum ColorHelper {
-    static func color(from hex: String) -> Color{
+    static func convertColor(from hex: String) -> Color{
         Color(UIColor(hex: hex))
     }
 }

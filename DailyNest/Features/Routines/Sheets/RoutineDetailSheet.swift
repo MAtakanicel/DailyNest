@@ -65,7 +65,7 @@ struct RoutineDetailSheet: View {
             Spacer()
 
             Circle()
-                .fill()
+                .fill(ColorHelper.convertColor(from: task.colorHex))
                 .frame(width: 14, height: 14)
         }
         .padding(.vertical, 4)
@@ -86,7 +86,7 @@ struct RoutineDetailSheet: View {
                 HStack(spacing: 6) {
                     ForEach(0..<target, id: \.self) { i in
                         Circle()
-                            .fill(i < count ? ColorHelper.color(from: task.colorHex) : .gray.opacity(0.18))
+                            .fill(i < count ? ColorHelper.convertColor(from: task.colorHex) : .gray.opacity(0.18))
                             .frame(width: 14, height: 14)
                             .animation(
                                 .spring(response: 0.3, dampingFraction: 0.6).delay(Double(i) * 0.04),
@@ -97,7 +97,7 @@ struct RoutineDetailSheet: View {
 
                 Text("  \(count) / \(target)")
                     .font(.subheadline.bold())
-                    .foregroundColor(isCompleted ? ColorHelper.color(from: task.colorHex) : AppColors.secondaryText)
+                    .foregroundColor(isCompleted ? ColorHelper.convertColor(from: task.colorHex) : AppColors.secondaryText)
                     .contentTransition(.numericText())
                     .animation(.spring(response: 0.3, dampingFraction: 0.7), value: count)
 
@@ -122,7 +122,7 @@ struct RoutineDetailSheet: View {
                         .padding(.vertical, 8)
                         .background(
                             Capsule()
-                                .fill(isCompleted ? AppColors.checkmarkRed.opacity(0.85) : ColorHelper.color(from: task.colorHex))
+                                .fill(isCompleted ? AppColors.checkmarkRed.opacity(0.85) : ColorHelper.convertColor(from: task.colorHex))
                         )
                         .contentTransition(.interpolate)
                         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: count)

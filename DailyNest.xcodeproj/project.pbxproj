@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		7DEB90042F2A9BB700DC70C4 /* Exceptions for "DailyNest" folder in "DailyNest" target */ = {
+		7D619E392FA0E1770009B2AF /* Exceptions for "DailyNest" folder in "DailyNest" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -24,7 +24,7 @@
 		7DEB8FF92F2A9BB500DC70C4 /* DailyNest */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				7DEB90042F2A9BB700DC70C4 /* Exceptions for "DailyNest" folder in "DailyNest" target */,
+				7D619E392FA0E1770009B2AF /* Exceptions for "DailyNest" folder in "DailyNest" target */,
 			);
 			path = DailyNest;
 			sourceTree = "<group>";

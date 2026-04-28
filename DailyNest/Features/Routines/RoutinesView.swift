@@ -94,7 +94,7 @@ struct RoutinesView: View {
         HStack {
             Button { sheetRouter.activeSheet = .routineDetail(routine) } label: {
                 Rectangle()
-                    .fill(ColorHelper.color(from: routine.colorHex))
+                    .fill(ColorHelper.convertColor(from: routine.colorHex))
                     .frame(width: 10)
                     .padding(.trailing, 5)
 
