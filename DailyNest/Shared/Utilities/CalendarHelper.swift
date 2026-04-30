@@ -96,9 +96,9 @@ class CalendarHelper {
 
     func getDaytime() -> String {
         let hour = calendar.component(.hour, from: Date())
-        if hour < 13 { return "Good Morning," }
-        if hour < 19 { return "Hello," }
-        return "Good Evening,"
+        if hour < 13 { return "Good Morning" }
+        if hour < 19 { return "Hello" }
+        return "Good Evening"
     }
 
     func formattedDate() -> String {

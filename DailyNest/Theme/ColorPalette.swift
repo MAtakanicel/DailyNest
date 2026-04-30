@@ -47,7 +47,6 @@ enum AppColors {
 
 ///Model Colors
 extension AppColors{
-    // MARK: - Light Hex Values
     static let dailyHex      = "#F59E0B"
     static let routineHex    = "#10B981"
     static let projectHex    = "#7F77DD"
