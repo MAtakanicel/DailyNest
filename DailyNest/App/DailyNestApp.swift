@@ -35,7 +35,7 @@ struct DailyNestApp: App {
 
     init() {
         do {
-            let schema = Schema([DailyTask.self, Routine.self])
+            let schema = Schema([DailyTask.self, Routine.self, Project.self])
             let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
             container = try ModelContainer(for: schema, configurations: [modelConfiguration])
 

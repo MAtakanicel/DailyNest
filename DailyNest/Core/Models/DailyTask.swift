@@ -8,6 +8,12 @@
 import Foundation
 import SwiftData
 
+protocol Taskable {
+    var id: UUID { get }
+    var title: String { get }
+    var priority: TaskPriority { get }
+}
+
 @Model
 final class DailyTask: Taskable {
     var id: UUID = UUID()

@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class Routine {
+final class Routine :Taskable{
     var id: UUID = UUID()
     
     var title: String
